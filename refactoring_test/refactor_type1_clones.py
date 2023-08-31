@@ -52,8 +52,9 @@ def sort_clones_into_matched_clone_pairs(nodes, names):
     return all_matched_nodes
 
 
-def ast_rewrite_extract_method():
+def ast_refactor_type1_clones(nodes):
 
+    
 
     pass
 
