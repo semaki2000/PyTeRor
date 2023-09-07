@@ -45,6 +45,14 @@ def ast_refactor_type2_clones(nodes):
             if function0_str[i] != function1_str[i]:
                 print(function0_str[i])
                 print(function1_str[i])
+                words0 = function0_str[i].split()
+                words1 = function1_str[i].split()
+                for j in range(len(words0)):
+                
+                    #add space after delimiters "(", ")", "," etc.
+                    if words0[j] != words1[j]:
+
+                        print("Difference: " + words0[j] + " != " + words1[j])
 
 
         #if reparsing the unparsed strings: function defs need "\n\t pass" after them 
@@ -63,12 +71,5 @@ def ast_refactor_type2_clones(nodes):
                 print("equal!")
  """
 
-        #ast.Call object must be wrapped in ast.Expr, 
-        #otherwise it will be added onto the same line as last node.
-        # call_to_clone0 = ast.Expr(value=ast.Call(ast.Name(clone0.name), clone1.args.args, []))
-
         
-        #clone1.body = []
-        #clone1.body.append(call_to_clone0)
-
 main()
