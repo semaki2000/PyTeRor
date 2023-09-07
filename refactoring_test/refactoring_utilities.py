@@ -17,7 +17,7 @@ def parse_file_to_AST(path : str | Path ) -> ast.AST:
     #error handling
     path = Path(path) #gives valueerror if not a path
     if not path.exists():
-        raise ValueError("File does not exist: " + path)
+        raise ValueError("File does not exist: " + str(path))
     elif not path.is_file():
         raise IsADirectoryError("Given path points to a directory: " + path)
     elif not len(path.parts[-1]) > 3 and path.parts[-1][-3:] == ".py":
@@ -32,7 +32,7 @@ def parse_AST_to_file(ast_base: ast.AST, filepath: str | Path):
     """Takes an AST and a filepath, and unparses the given AST into the given file.
 
     Parameters: 
-        - ast_base - base of an AST
+        - ast_base - base of an AST from 'ast' module
         - filepath - path of location to unparse AST. str or pathlib.Path
 
     Returns:
@@ -45,14 +45,50 @@ def parse_AST_to_file(ast_base: ast.AST, filepath: str | Path):
         file.write(string_ast)
 
 
-def find_clone_nodes_in_AST(ast_base, clone_names):
+#TODO: find clone pairs between files 
+def find_clone_nodes_in_AST(ast_base: ast.AST, clone_names: list):
+    """For a single file, finds AST-nodes of functions which are clones based on function name.
+
+
+    Parameters: 
+        - ast_base - base of an AST from 'ast' module
+        - clone_names - list of lists of clone pairs in AST, identified by function names
+
+    Returns:
+        List of lists of ast-nodes, with all ast-nodes in the same list being clones with each other.
+    """
 
     clone_nodes = []
+    flattened_names = [item for subtuple in clone_names for item in subtuple]
 
     #only for one file
     for i in range(len(ast_base.body)):
         node = ast_base.body[i]
-        if isinstance(node, ast.FunctionDef) and node.name in clone_names:
+        if isinstance(node, ast.FunctionDef) and node.name in flattened_names:
             clone_nodes.append(node)
 
-    return clone_nodes
+    return sort_clones_into_matched_clone_pairs(clone_nodes, clone_names)
+
+
+def sort_clones_into_matched_clone_pairs(nodes: list, names: list):
+    """Given a list of ast-nodes and a list of which functions are clones with each other, sorts ast-nodes into clone-pairs
+
+
+    Parameters: 
+        - nodes - list of ast-nodes which are clones
+        - names - list of lists of clone pairs in AST, identified by function names
+
+    Returns:
+        List of lists of ast-nodes, with all ast-nodes in the same list being clones with each other.
+    """
+    #TODO: inefficient
+    all_matched_nodes = []
+    for sublist in names:
+
+        current_matched = []
+        all_matched_nodes.append(current_matched)
+
+        for node in nodes:
+            if node.name in sublist:
+                current_matched.append(node)
+    return all_matched_nodes

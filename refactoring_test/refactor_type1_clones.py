@@ -1,4 +1,5 @@
 import ast;
+from pathlib import Path
 from refactoring_utilities import (
     parse_file_to_AST,
     parse_AST_to_file,
@@ -9,40 +10,22 @@ from refactoring_utilities import (
 
 
 def main():
-    filename = "../test_files/calculator_test_type1clone.py"
+    filename = Path("../test_files/calculator_type1.py")
     ast_tree = parse_file_to_AST(filename)
 
-    clone_names : list = [("test_addition", "test_addition2")] #list with lists of matching clones
-    flattened_clone_names = [item for subtuple in clone_names for item in subtuple]
+    clone_names : list = [["test_addition", "test_addition2"]] #list with lists of matching clones
     
-    clone_nodes : list = find_clone_nodes_in_AST(ast_tree, flattened_clone_names)
-    matched_clone_pairs : list = sort_clones_into_matched_clone_pairs(clone_nodes, clone_names)
+    matched_clone_pairs : list = find_clone_nodes_in_AST(ast_tree, clone_names)
     
     print("Matched clone pairs:", len(matched_clone_pairs))
 
     ast_refactor_type1_clones(matched_clone_pairs)
 
-    parse_AST_to_file(ast_tree, filename.split(".")[0] + "_refactored.py")
+    parse_AST_to_file(ast_tree, filename.stem + "_refactored.py")
 
 
 def get_clone_names():
     return ["test_addition", "test_addition2"]
-
-
-
-def sort_clones_into_matched_clone_pairs(nodes, names):
-
-    #TODO: inefficient
-    all_matched_nodes = []
-    for sublist in names:
-
-        current_matched = []
-        all_matched_nodes.append(current_matched)
-
-        for node in nodes:
-            if node.name in sublist:
-                current_matched.append(node)
-    return all_matched_nodes
 
 
 def ast_refactor_type1_clones(nodes):
