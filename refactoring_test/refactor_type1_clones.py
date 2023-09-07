@@ -1,5 +1,10 @@
 import ast;
-import astor;
+from refactoring_utilities import (
+    parse_file_to_AST,
+    parse_AST_to_file,
+    find_clone_nodes_in_AST
+)
+
 
 
 
@@ -13,31 +18,17 @@ def main():
     clone_nodes : list = find_clone_nodes_in_AST(ast_tree, flattened_clone_names)
     matched_clone_pairs : list = sort_clones_into_matched_clone_pairs(clone_nodes, clone_names)
     
-    print("Test:", len(matched_clone_pairs))
+    print("Matched clone pairs:", len(matched_clone_pairs))
 
     ast_refactor_type1_clones(matched_clone_pairs)
 
     parse_AST_to_file(ast_tree, filename.split(".")[0] + "_refactored.py")
 
 
-def parse_file_to_AST(filename):
-    return astor.parse_file("../test_files/calculator_test_type1clone.py")
-
-
 def get_clone_names():
     return ["test_addition", "test_addition2"]
 
-def find_clone_nodes_in_AST(ast_tree, clone_names):
 
-    clone_nodes = []
-
-    #only for one file
-    for i in range(len(ast_tree.body)):
-        node = ast_tree.body[i]
-        if isinstance(node, ast.FunctionDef) and node.name in clone_names:
-            clone_nodes.append(node)
-
-    return clone_nodes
 
 def sort_clones_into_matched_clone_pairs(nodes, names):
 
@@ -69,17 +60,5 @@ def ast_refactor_type1_clones(nodes):
         
         clone1.body = []
         clone1.body.append(call_to_clone0)
-
-        print(clone0.body)
-        print(clone1.body)
-
-
-def parse_AST_to_file(ast_tree, filename: str):
-    
-    
-    string_ast = ast.unparse(ast_tree)
-    with open(filename, "w") as file:
-        file.write(string_ast)
-
 
 main()
