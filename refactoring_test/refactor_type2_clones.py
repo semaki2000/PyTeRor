@@ -3,7 +3,8 @@ from pathlib import Path
 from refactoring_utilities import (
     parse_file_to_AST,
     parse_AST_to_file,
-    find_clone_nodes_in_AST
+    find_clone_nodes_in_AST,
+    get_ast_node_for_pytest_decorator
 )
 
 
@@ -35,9 +36,7 @@ def ast_refactor_type2_clones(nodes):
         clone0 = clone_pair[0]
         clone1 = clone_pair[1]
 
-        #get_ast_node_for_pytest_decorator()
-        decorator = ast.parse("pytest.mark.parametrize('test_input, expected', [(4, 'IV'), (10, 'X'), (54, 'LIV'), (111, 'CXI'), ('foo', False)])").body[0].value
-        
+        decorator = get_ast_node_for_pytest_decorator(["var1", "var2"], [(1, 2), (2, 3), (3, 4)])
 
         #unparse clones to str and split by line
         func0_iter = iter(ast.unparse(clone0).splitlines())

@@ -1,7 +1,7 @@
 import pytest
 from Calculator import Calculator
 
-@pytest.mark.parametrize('test_input, expected', [(4, 'IV'), (10, 'X'), (54, 'LIV'), (111, 'CXI'), ('foo', False)])
+@pytest.mark.parametrize('var1, var2', [(1, 2), (2, 3), (3, 4)])
 def test_addition():
     calculator = Calculator()
     calculator.precision = 4

@@ -92,3 +92,25 @@ def sort_clones_into_matched_clone_pairs(nodes: list, names: list):
             if node.name in sublist:
                 current_matched.append(node)
     return all_matched_nodes
+
+
+def get_ast_node_for_pytest_decorator(f_params: list, a_params_list: list):
+    """Creates and returns a @pytest.mark.parametrize AST decorator-node 
+    from a list of formal parameters and a list of tuples with actual parameters per call.
+    https://docs.pytest.org/en/7.3.x/how-to/parametrize.html 
+
+
+    Parameters: 
+        - f_params - list of strings which are names of formal parameters
+        - a_params_list - list of tuples of actual parameters, each tuple being actual parameters for a call to the function
+
+    Returns:
+        An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
+    """
+
+    base_string = "pytest.mark.parametrize('{}', {})"
+    f_params_unpacked = ", ".join(f_params)
+
+    parse_string = base_string.format(f_params_unpacked, a_params_list)
+    return ast.parse(parse_string).body[0].value
+        
