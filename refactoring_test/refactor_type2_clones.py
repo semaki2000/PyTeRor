@@ -18,7 +18,7 @@ def main():
     
     matched_clone_pairs : list = find_clone_nodes_in_AST(ast_tree, clone_names)
     
-    print("Matched clone pairs:", len(matched_clone_pairs))
+    #print("Matched clone pairs:", len(matched_clone_pairs))
 
     ast_refactor_type2_clones(matched_clone_pairs)
 
@@ -39,35 +39,56 @@ def ast_refactor_type2_clones(nodes):
         decorator = get_ast_node_for_pytest_decorator(["var1", "var2"], [(1, 2), (2, 3), (3, 4)])
 
         #unparse clones to str and split by line
-        func0_iter = iter(ast.unparse(clone0).splitlines())
-        func1_iter = iter(ast.unparse(clone1).splitlines())
-
-        next(func0_iter)
-        next(func1_iter)    
+        func0_strlist = ast.unparse(clone0).splitlines()[1:]
+        func1_strlist = ast.unparse(clone1).splitlines()[1:]
 
 
-        while True:
-            try:
-                func0_str = next(func0_iter)
-                func1_str = next(func1_iter)
-            except StopIteration:
-                break;
+        lines_with_differences = []
+        for i in range(len(func0_strlist)):
+
+            func0_str = func0_strlist[i]
+            func1_str = func1_strlist[i]
+
 
             if func0_str != func1_str:
-                #print(func0_str)
-                #print(func1_str)
                 words0 = func0_str.split()
                 words1 = func1_str.split()
                 for j in range(len(words0)):
                 
-                    #add space after delimiters "(", ")", "," etc.
-                    #except if inside a string
-                    if words0[j] != words1[j]:
-                        pass
-                        #print("Difference: " + words0[j] + " != " + words1[j])
+                    if words0[j] != words1[j] and not i in lines_with_differences:
+                            lines_with_differences.append(i)
 
-        clone0.decorator_list.insert(0, decorator)
-        #if reparsing the unparsed strings: function defs, if, while, for need "\n\t pass" after them 
+        print("lines with differences:", lines_with_differences)
 
+        for ind in lines_with_differences:
+            print(ast.unparse(clone0.body[ind]))
+            print(ast.unparse(clone1.body[ind]))
+            find_differences(clone0.body[ind], clone1.body[ind])
         
+        clone0.decorator_list.insert(0, decorator)
+
+
+def find_differences(stmt1, stmt2):
+    
+    #specific solution for calculator example, (and assign statements). More general solution will require implementing nodevisitor?
+    #left side of an assign should have special treatment?
+    walk_stmt1 = ast.walk(stmt1)
+    walk_stmt2 = ast.walk(stmt2)
+    while True:
+        try:
+            w1 = next(walk_stmt1)
+            w2 = next(walk_stmt2)
+
+            if type(w1) != type(w2):
+                print("Differing types:", type(w1), type(w2))
+            elif type(w1) == ast.Constant and w1.value != w2.value:
+                print("val w1", w1.value)
+                print("val w1", w2.value)
+            elif type(w1) == ast.Attribute and w1.attr != w2.attr:
+                print(w1.attr)
+                print(w2.attr)
+        except StopIteration:
+            break
+
+
 main()
