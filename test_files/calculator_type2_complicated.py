@@ -1,21 +1,24 @@
 import pytest
 from Calculator import Calculator
 
-@pytest.mark.parametrize('new_var_0, new_var_1', [(2, 5), (5, 8)])
-def test_addition(new_var_0, new_var_1):
+
+def test_addition():
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'
-    (a, b) = (new_var_0, 3)
-    expected_result = new_var_1
+    
+    a, b = 2, 3
+    expected_result = 5
     actual_result = calculator.add(a, b)
     assert actual_result == expected_result
 
-def test_addition2():
+
+def test_subtraction():
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'
-    (a, b) = (5, 3)
-    expected = 8
+
+    a, b = 5, -3 #different values + different operator in front of constant.
+    expected = 2 #different name
     actual_result = calculator.add(a, b)
     assert actual_result == expected

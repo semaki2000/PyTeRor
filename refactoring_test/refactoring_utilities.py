@@ -4,6 +4,8 @@ from pathlib import Path;
 import ast;
 
 
+#TODO: turn into class
+
 def parse_file_to_AST(path : str | Path ) -> ast.AST:
     """Takes a filename, checks validity (.py file, and exists) and 
     returns a complete abstract syntax tree (AST) for the file, from the 'ast' module
@@ -27,6 +29,7 @@ def parse_file_to_AST(path : str | Path ) -> ast.AST:
     with open(path) as f:
         parsed_ast = ast.parse(f.read())
     return parsed_ast
+
 
 def parse_AST_to_file(ast_base: ast.AST, filepath: str | Path):
     """Takes an AST and a filepath, and unparses the given AST into the given file.
@@ -114,3 +117,30 @@ def get_ast_node_for_pytest_decorator(f_params: list, a_params_list: list):
     parse_string = base_string.format(f_params_unpacked, a_params_list)
     return ast.parse(parse_string).body[0].value
         
+
+def add_parameters_to_func_def(func_def: ast.FunctionDef, param_names: list):
+    """Adds given parameter names to the function definition
+
+
+    Parameters: 
+        - func_def - ast node of function definition
+        - param_names - list of strings to add as parameters to function definition
+
+    Returns:
+        None    
+    """
+    param_names.reverse()
+    for name in param_names:
+        func_def.args.args.insert(0, ast.arg(arg = name))
+
+class NameGenerator:
+    names = []
+    cnt = 0
+    def __init__(self, basename: str):
+        self.basename = basename
+
+    def new_name(self):
+        name = self.basename + "_" + str(self.cnt)
+        self.cnt += 1
+        self.names.append(name)
+        return name
