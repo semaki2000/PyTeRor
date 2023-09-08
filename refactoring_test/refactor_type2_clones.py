@@ -21,7 +21,7 @@ def main():
 
     ast_refactor_type2_clones(matched_clone_pairs)
 
-    # parse_AST_to_file(ast_tree, filename.stem + "_refactored.py")
+    parse_AST_to_file(ast_tree, filename.stem + "_refactored.py")
 
 
 def get_clone_names():
@@ -35,41 +35,40 @@ def ast_refactor_type2_clones(nodes):
         clone0 = clone_pair[0]
         clone1 = clone_pair[1]
 
-        #unparse clones to str and split by line
-        function0_str = ast.unparse(clone0).split("\n")
-        function1_str = ast.unparse(clone1).split("\n")
-
-
-        for i in range(len(function0_str)):
+        #get_ast_node_for_pytest_decorator()
+        decorator = ast.parse("pytest.mark.parametrize('test_input, expected', [(4, 'IV'), (10, 'X'), (54, 'LIV'), (111, 'CXI'), ('foo', False)])").body[0].value
         
-            if function0_str[i] != function1_str[i]:
-                print(function0_str[i])
-                print(function1_str[i])
-                words0 = function0_str[i].split()
-                words1 = function1_str[i].split()
+
+        #unparse clones to str and split by line
+        func0_iter = iter(ast.unparse(clone0).splitlines())
+        func1_iter = iter(ast.unparse(clone1).splitlines())
+
+        next(func0_iter)
+        next(func1_iter)    
+
+
+        while True:
+            try:
+                func0_str = next(func0_iter)
+                func1_str = next(func1_iter)
+            except StopIteration:
+                break;
+
+            if func0_str != func1_str:
+                #print(func0_str)
+                #print(func1_str)
+                words0 = func0_str.split()
+                words1 = func1_str.split()
                 for j in range(len(words0)):
                 
                     #add space after delimiters "(", ")", "," etc.
+                    #except if inside a string
                     if words0[j] != words1[j]:
+                        pass
+                        #print("Difference: " + words0[j] + " != " + words1[j])
 
-                        print("Difference: " + words0[j] + " != " + words1[j])
-
-
-        #if reparsing the unparsed strings: function defs need "\n\t pass" after them 
-
-
-"""     # DOES NOT WORK!     
-        clone0_walk = ast.walk(clone0)
-        clone1_walk = ast.walk(clone1)
-
-
-        for node in clone0_walk:
-            node1 = next(clone1_walk)
-            
-            print(node, " ", node1)
-            if (node == node1):
-                print("equal!")
- """
+        clone0.decorator_list.insert(0, decorator)
+        #if reparsing the unparsed strings: function defs, if, while, for need "\n\t pass" after them 
 
         
 main()
