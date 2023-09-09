@@ -1,9 +1,7 @@
 import ast;
 from pathlib import Path
 from refactoring_utilities import (
-    parse_file_to_AST,
-    parse_AST_to_file,
-    find_clone_nodes_in_AST
+    RefactorAST
 )
 
 
@@ -11,17 +9,17 @@ from refactoring_utilities import (
 
 def main():
     filename = Path("../test_files/calculator_type1.py")
-    ast_tree = parse_file_to_AST(filename)
+    rfAST = RefactorAST(filename)
 
     clone_names : list = [["test_addition", "test_addition2"]] #list with lists of matching clones
     
-    matched_clone_pairs : list = find_clone_nodes_in_AST(ast_tree, clone_names)
+    matched_clone_pairs : list = rfAST.find_clone_nodes_in_AST(clone_names)
     
-    print("Matched clone pairs:", len(matched_clone_pairs))
+    #print("Matched clone pairs:", len(matched_clone_pairs))
 
     ast_refactor_type1_clones(matched_clone_pairs)
 
-    parse_AST_to_file(ast_tree, filename.stem + "_refactored.py")
+    rfAST.parse_AST_to_file(filename.stem + "_refactored.py")
 
 
 def get_clone_names():
