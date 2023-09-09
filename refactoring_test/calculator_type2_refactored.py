@@ -10,12 +10,3 @@ def test_addition(new_var_0, new_var_1):
     expected_result = new_var_1
     actual_result = calculator.add(a, b)
     assert actual_result == expected_result
-
-def test_addition2():
-    calculator = Calculator()
-    calculator.precision = 4
-    calculator.angle_unit = 'deg'
-    (a, b) = (5, 3)
-    expected = 8
-    actual_result = calculator.add(a, b)
-    assert actual_result == expected

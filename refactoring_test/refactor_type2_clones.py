@@ -68,5 +68,6 @@ def ast_refactor_type2_clones(rfAST, nodes):
         decorator = rfAST.get_ast_node_for_pytest_decorator(rfAST.name_gen.names, values)
         rfAST.add_parameters_to_func_def(clone0, rfAST.name_gen.names)
         clone0.decorator_list.insert(0, decorator)
+        rfAST.detach_redundant_clones([clone1])
 
 main()

@@ -105,6 +105,7 @@ class RefactorAST():
         return all_matched_nodes
 
 
+    #TODO: change name or refactor. Does a lot more than just finding diffs
     def find_differences(self, clone_nodes : list):
         """Given a list of ast-nodes which are (type2) clones, finds nodes that are different between them
         and replaces those with new variables in the AST, returning the nodes that are different between clones.
@@ -131,7 +132,6 @@ class RefactorAST():
                     childrenNodes.append(next(ite))
                 
                 #if not all same type:
-                print(childrenNodes[0])
                 if not all(isinstance(child, type(childrenNodes[0])) for child in childrenNodes):
                     print("Differing types in childrenNodes:")
                     print(childrenNodes)
@@ -218,8 +218,11 @@ class RefactorAST():
         Returns:
             None    
         """
-        parent = self.ast_base
-        
+        #TODO: make it more than only top level (e.g. tests inside classes)
+        #for child in ast.iter_child_nodes(self.ast_base): 
+        for node in redundant_clones:
+            self.ast_base.body.remove(node)
+            
 
 
 class NameGenerator:
