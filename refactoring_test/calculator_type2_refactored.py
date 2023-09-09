@@ -2,7 +2,7 @@ import pytest
 from Calculator import Calculator
 
 @pytest.mark.parametrize('new_var_0, new_var_1', [(2, 5), (5, 8)])
-def test_addition(new_var_0, new_var_1, var):
+def test_addition(new_var_0, new_var_1):
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'
@@ -11,7 +11,7 @@ def test_addition(new_var_0, new_var_1, var):
     actual_result = calculator.add(a, b)
     assert actual_result == expected_result
 
-def test_addition2(var):
+def test_addition2():
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'

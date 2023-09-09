@@ -144,12 +144,21 @@ class RefactorAST():
 
                     #for "first" parent, remove constant from the AST, replace with variable
                     stmt1 = clone_nodes[0]
-                    if type(stmt1) == ast.Assign:
-                        stmt1.value = ast.Name(id=self.name_gen.new_name())
-                    elif type(stmt1) == ast.Tuple:
-                        ind = stmt1.elts.index(childrenNodes[0])
-                        stmt1.elts.pop(ind)
-                        stmt1.elts.insert(ind, ast.Name(id=self.name_gen.new_name()))
+                    var_replacement = ast.Name(id=self.name_gen.new_name())
+                    for attribute in stmt1._fields:
+                        #if attr is a list, try to find in list
+                        if type(getattr(stmt1, attribute)) == list:
+                            attr_list = getattr(stmt1, attribute)
+                            try: 
+                                ind = attr_list.index(childrenNodes[0])
+                                attr_list.pop(ind)
+                                attr_list.insert(ind, var_replacement)
+                            except ValueError:
+                                pass #wrong attr
+                        else:
+                            #not list, value can simply be overwritten
+                            if getattr(stmt1, attribute) == childrenNodes[0]:
+                                setattr(stmt1, attribute, var_replacement) 
 
                 elif type(childrenNodes[0]) == ast.Name and any(child.id != childrenNodes[0].id for child in childrenNodes):
                     
@@ -200,6 +209,17 @@ class RefactorAST():
             func_def.args.args.insert(0, ast.arg(arg = name))
 
 
+    def detach_redundant_clones(self, redundant_clones: list):
+        """Detaches given nodes from the AST.
+
+        Parameters: 
+            - redundant_clones - list of ast nodes which are redundant clones 
+
+        Returns:
+            None    
+        """
+        parent = self.ast_base
+        
 
 
 class NameGenerator:
