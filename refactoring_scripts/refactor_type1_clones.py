@@ -1,6 +1,6 @@
 import ast;
 from pathlib import Path
-from refactoring_utilities import (
+from refactoring_utils.refactoring_utilities import (
     RefactorAST
 )
 

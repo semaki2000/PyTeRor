@@ -3,11 +3,21 @@
 from pathlib import Path;
 import ast;
 import sys;
+from .NameGenerator import NameGenerator;
 
 
 
 class RefactorAST():
-    def __init__(self, filepath, new_var_name="new_var"):
+    def __init__(self, filepath : str | Path, new_var_name="new_var"):
+        """Class which includes some useful methods for refactoring code clones.
+        
+        Parameters: 
+            - filepaths - path to relevant file. Single filepath (given as str or Path).
+            - new_var_name (optional) - Name of new variables which are created when differences are lifted out of clone functions.
+                Defaults to "new_var", giving names like "new_var_0", "new_var_1".
+
+        """
+        
         
         self.ast_base = self.parse_file_to_AST(filepath)
         self.name_gen = NameGenerator(new_var_name)
@@ -24,7 +34,7 @@ class RefactorAST():
             ast.AST - base of the AST for given python file.
         """
         #error handling
-        path = Path(path) #gives valueerror if not a path
+        path = Path(path) #gives typerror if not a path
         if not path.exists():
             raise ValueError("File does not exist: " + str(path))
         elif not path.is_file():
@@ -222,16 +232,3 @@ class RefactorAST():
         for node in redundant_clones:
             self.ast_base.body.remove(node)
             
-
-
-class NameGenerator:
-    names = []
-    cnt = 0
-    def __init__(self, basename: str):
-        self.basename = basename
-
-    def new_name(self):
-        name = self.basename + "_" + str(self.cnt)
-        self.cnt += 1
-        self.names.append(name)
-        return name

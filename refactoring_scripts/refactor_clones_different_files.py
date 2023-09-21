@@ -1,15 +1,18 @@
-import ast;
+import ast
+import sys
 from pathlib import Path
-from refactoring_utilities import (
-    RefactorAST,
-)
+from refactoring_utils.RefactorAST import RefactorAST
 
 
 
 
 def main():
-    filename = Path("../test_files/calculator/calculator_type2.py")
-    rfAST = RefactorAST(filename)
+
+    filepaths = get_filepaths()
+
+    target_location = Path("../refactored_files").resolve()
+
+    rfAST = RefactorAST(filepaths)
 
     clone_names : list = [["test_addition", "test_addition2"]] #list with lists of matching clones
     
@@ -19,8 +22,20 @@ def main():
 
     ast_refactor_type2_clones(rfAST, matched_clone_pairs)
 
-    rfAST.parse_AST_to_file(filename.stem + "_refactored.py")
+    rfAST.parse_AST_to_file(target_location / (filename.stem + "_refactored.py"))
 
+
+
+def get_filepaths():
+    filepaths = []
+    for arg in sys.argv[1:]:
+        new_path = Path(arg)
+        if new_path.exists() and new_path.is_file():
+            filepaths.append(new_path.resolve())  
+        else:
+            raise FileNotFoundError(new_path)
+
+    return filepaths
 
 def get_clone_names():
     return ["test_addition", "test_addition2"]
