@@ -46,7 +46,7 @@ def get_filepaths(args):
 
 def get_clone_names():
     #TODO: actually implement. need info from clone detector
-    calculator = """return [["test_addition", "test_addition2"]]"""
+    return [["test_addition", "test_addition2"]]
     test_check = """return [
         ["test_check_with_commented_values", 
          "test_check_with_commented_lines",
@@ -57,9 +57,9 @@ def get_clone_names():
          "test_check_with_leading_blank_lines",
          "test_check_with_missing_yaml_terminator"]
          ]"""
-    return [
+    """return [
         ["test_roman_numeral_4", "test_roman_numeral_10", "test_roman_numeral_54", "test_roman_numeral_111", "test_roman_numeral_bad_input"]
-    ]
+    ]"""
 
 
 
@@ -96,8 +96,8 @@ def ast_refactor_type2_clones(rfAST, nodes):
         
         #create pytest decorator
         values = []
-        for differing_nodes in differing_nodes_list:
-            values.append([node.value for node in differing_nodes])
+        for ind in range(len(differing_nodes_list[0])):
+            values.append(tuple([l[ind].value for l in differing_nodes_list]))
             
 
         decorator = rfAST.get_ast_node_for_pytest_decorator(rfAST.name_gen.names, values)

@@ -4,6 +4,6 @@ Run refactoring_test/refactor_type1_clones.py or refactoring_test/refactor_type2
 
 
 TODO: 
-    make parametrize correct by using zip: "name, name", [(val, val), (val, val)]
-    fix name-gen to be by clone class. 
-    Just use lineno to get the right functions 
+    fix refactorAST to hold one clone class.
+    Include namegen in each refactorAST. 
+    Just use lineno to get the right functions

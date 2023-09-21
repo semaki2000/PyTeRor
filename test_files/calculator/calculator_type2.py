@@ -18,7 +18,7 @@ def test_addition2():
     calculator.precision = 4
     calculator.angle_unit = 'deg'
 
-    a, b = 5, 3 #different values
-    expected = 8 #different name 
+    a, b = 4, 3 #different values
+    expected = 7 #different name 
     actual_result = calculator.add(a, b)
     assert actual_result == expected

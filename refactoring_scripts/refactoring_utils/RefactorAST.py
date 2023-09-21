@@ -195,6 +195,7 @@ class RefactorAST():
         base_string = "pytest.mark.parametrize('{}', {})"
         f_params_unpacked = ", ".join(f_params)
 
+
         parse_string = base_string.format(f_params_unpacked, a_params_list)
         return ast.parse(parse_string).body[0].value
         
