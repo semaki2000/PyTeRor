@@ -74,7 +74,7 @@ def ast_refactor_type2_clones(rfAST, nodes):
         for ind in lines_with_differences:
             #print(ast.unparse(clone0.body[ind]))
             #print(ast.unparse(clone1.body[ind]))
-            diffs += rfAST.find_differences([clone0.body[ind], clone1.body[ind]])
+            diffs += rfAST.extract_differences([clone0.body[ind], clone1.body[ind]])
         #create pytest
         values = []
         for node_pair in diffs:

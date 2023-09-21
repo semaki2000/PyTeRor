@@ -23,5 +23,5 @@ def test_roman_numeral_bad_input():
 
 
 class RomanNumeralConverter:
-    def to_roman_numeral(self):
+    def to_roman_numeral(self, thing):
         return ""

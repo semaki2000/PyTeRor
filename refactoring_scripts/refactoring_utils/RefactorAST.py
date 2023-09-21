@@ -62,10 +62,11 @@ class RefactorAST():
 
         string_ast = ast.unparse(self.ast_base)
         with open(path, "w") as file:
-            file.write(string_ast)
+            file.write(f'{string_ast}')
 
 
     #TODO: find clone pairs between files 
+    #TODO: find clones that aren't top-level
     def find_clone_nodes_in_AST(self, clone_names: list):
         """For a single file, finds AST-nodes of functions which are clones based on function name.
 
@@ -114,8 +115,7 @@ class RefactorAST():
         return all_matched_nodes
 
 
-    #TODO: change name or refactor. Does a lot more than just finding diffs
-    def find_differences(self, clone_nodes : list):
+    def extract_differences(self, clone_nodes : list):
         """Given a list of ast-nodes which are (type2) clones, finds nodes that are different between them
         and replaces those with new variables in the AST, returning the nodes that are different between clones.
 
@@ -126,9 +126,9 @@ class RefactorAST():
         Returns:
             List of nodes which are different .
         """
-        return self.find_differences_recursive(clone_nodes)
+        return self.extract_differences_recursive(clone_nodes)
 
-    def find_differences_recursive(self, clone_nodes: list):
+    def extract_differences_recursive(self, clone_nodes: list):
         different_nodes = []
         
         iterators =  []
@@ -142,11 +142,9 @@ class RefactorAST():
                 
                 #if not all same type:
                 if not all(isinstance(child, type(childrenNodes[0])) for child in childrenNodes):
-                    print("Differing types in childrenNodes:")
-                    print(childrenNodes)
-                    sys.exit(1)
+                    self.handle_different_nodes(childrenNodes)
 
-                #constants but different values
+                #constants, but different values
                 elif type(childrenNodes[0]) == ast.Constant and any(child.value != childrenNodes[0].value for child in childrenNodes):
                     
                     different_nodes.append(childrenNodes)
@@ -174,7 +172,7 @@ class RefactorAST():
                     pass #do nothing, problem will be fixed by refactoring into one of the functions, 
                         #and deleting the other, thereby "choosing" one of the names
 
-                different_nodes += self.find_differences_recursive(childrenNodes)
+                different_nodes += self.extract_differences_recursive(childrenNodes)
             except StopIteration:
                 break
         return different_nodes
@@ -232,3 +230,7 @@ class RefactorAST():
         for node in redundant_clones:
             self.ast_base.body.remove(node)
             
+    def handle_different_nodes(self, nodes):
+        print("Differing types of nodes in clones:")
+        print(nodes)
+        sys.exit()

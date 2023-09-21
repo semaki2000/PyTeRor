@@ -5,7 +5,7 @@ from refactoring_utils.RefactorAST import RefactorAST
 from refactoring_utils.MultiFileRefactorAST import MultiFileRefactorAST
 
 
-
+#currently with function names from test_files/test_check.py
 
 def main():
     if len(sys.argv) == 1:
@@ -45,8 +45,22 @@ def get_filepaths(args):
     return filepaths
 
 def get_clone_names():
-    #TODO: actually implement. need unfo from clone detector
-    return [["test_addition", "test_addition2"]]
+    #TODO: actually implement. need info from clone detector
+    calculator = """return [["test_addition", "test_addition2"]]"""
+    test_check = """return [
+        ["test_check_with_commented_values", 
+         "test_check_with_commented_lines",
+         "test_check_without_enddate",
+         "test_check_with_enddate"],
+
+        ["test_check_with_blank_lines",
+         "test_check_with_leading_blank_lines",
+         "test_check_with_missing_yaml_terminator"]
+         ]"""
+    return [
+        ["test_roman_numeral_4", "test_roman_numeral_10", "test_roman_numeral_54", "test_roman_numeral_111", "test_roman_numeral_bad_input"]
+    ]
+
 
 
 def ast_refactor_type2_clones(rfAST, nodes):
@@ -75,16 +89,19 @@ def ast_refactor_type2_clones(rfAST, nodes):
             if any(clone_str != cur_line_str[0] for clone_str in cur_line_str):
                 lines_with_differences.append(i)
 
-        diffs = []
+        differing_nodes_list = [] #list of lists of differing nodes, each inner list as long as amount of matched clones
         for ind in lines_with_differences:
             
-            diffs += rfAST.find_differences([clone.body[ind] for clone in clones_list])
-        #create pytest
+            differing_nodes_list += rfAST.extract_differences([clone.body[ind] for clone in clones_list])
+        
+        #create pytest decorator
         values = []
-        for node_pair in diffs:
-            values.append((node_pair[0].value, node_pair[1].value))    
+        for differing_nodes in differing_nodes_list:
+            values.append([node.value for node in differing_nodes])
             
+
         decorator = rfAST.get_ast_node_for_pytest_decorator(rfAST.name_gen.names, values)
+
         rfAST.add_parameters_to_func_def(clones_list[0], rfAST.name_gen.names)
         clones_list[0].decorator_list.insert(0, decorator)
         rfAST.detach_redundant_clones(clones_list[1:])
