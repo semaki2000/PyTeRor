@@ -5,7 +5,6 @@ import ast;
 import sys;
 
 
-#TODO: turn into class
 
 class RefactorAST():
     def __init__(self, filepath, new_var_name="new_var"):

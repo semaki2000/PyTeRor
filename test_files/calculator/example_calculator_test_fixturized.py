@@ -16,8 +16,8 @@ def test_addition(calculator):
     assert actual_result == expected_result
 
 def test_subtraction(calculator):
-    a, b = 5, 3
+    a, b = 5, -3
     expected_result = 2
 
-    actual_result = calculator.subtract(a, b)
+    actual_result = calculator.add(a, b)
     assert actual_result == expected_result

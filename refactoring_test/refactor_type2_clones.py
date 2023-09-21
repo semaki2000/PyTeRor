@@ -8,7 +8,7 @@ from refactoring_utilities import (
 
 
 def main():
-    filename = Path("../test_files/calculator_type2.py")
+    filename = Path("../test_files/calculator/calculator_type2.py")
     rfAST = RefactorAST(filename)
 
     clone_names : list = [["test_addition", "test_addition2"]] #list with lists of matching clones
