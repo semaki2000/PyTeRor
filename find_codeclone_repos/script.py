@@ -1,4 +1,6 @@
 import sys
+import os
+import shutil
 from pathlib import Path
 #remove files which aren't test_*py or *_test.py (TODO: also check potential pytest.ini file(or hidden .pytest.ini))
 # run nicad on remaining files to see if code clones in tests of repo
@@ -6,23 +8,33 @@ from pathlib import Path
 
 def main():
     path = getPathObj()
-
+    tmp_dir_path = Path(str(path) + "_temp_filestructure")
+    try:
+        shutil.copytree(str(path), str(path) + "_temp_filestructure")
+    except FileExistsError:
+        print("remove tmp directory first")
+        sys.exit()
+    except shutil.Error:
+        pass
+    path = tmp_dir_path
+    print(path)
     test_files = [x for x in path.rglob("test_*.py")]
     test_files += [x for x in path.rglob("*_test.py")]
     gen = path.rglob("*")
     while True:
         try:
             next_file = next(gen)
-            if next_file in test_files:
-                print("keeping ", next_file)
-            else:
-                resp = "yes" # input()
-                if (resp == "yes"):
-                #next_file.unlink()
-                    print("unlinking", next_file)
+            if not next_file in test_files:
+                print("removing file:", next_file)
+                next_file.unlink()
         except StopIteration:
             break
 
+    #run nicad clone detector to find clones
+    print(str(path))
+    os.system("nicad6 functions py " + str(path) + "/ type2")
+
+#    os.system("cat " + str(path) + "/" + str(path) )
 
 
 
