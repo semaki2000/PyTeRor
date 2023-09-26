@@ -7,17 +7,18 @@ from pathlib import Path
 
 
 def main():
-    path = getPathObj()
-    tmp_dir_path = Path(str(path) + "_temp_filestructure")
+    path = get_path_obj()
+    orig_dir_name = str(path.name)
+    print(os.getcwd())
+    tmp_dir_path = Path(os.getcwd() + "/"+ str(path.name) + "_temp_filestructure")
     try:
-        shutil.copytree(str(path), str(path) + "_temp_filestructure")
+        shutil.copytree(str(path), str(tmp_dir_path), ignore=ignore_non_test_py_files)
     except FileExistsError:
         print("remove tmp directory first")
         sys.exit()
-    except shutil.Error:
+    except shutil.Error: #permissions thing
         pass
     path = tmp_dir_path
-    print(path)
     test_files = [x for x in path.rglob("test_*.py")]
     test_files += [x for x in path.rglob("*_test.py")]
     gen = path.rglob("*")
@@ -25,8 +26,9 @@ def main():
         try:
             next_file = next(gen)
             if not next_file in test_files:
-                print("removing file:", next_file)
-                next_file.unlink()
+                if next_file.is_file():
+                    print("removing file:", next_file)
+                    next_file.unlink()
         except StopIteration:
             break
 
@@ -34,11 +36,30 @@ def main():
     print(str(path))
     os.system("nicad6 functions py " + str(path) + "/ type2")
 
-#    os.system("cat " + str(path) + "/" + str(path) )
+    os.system("cat " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml > repo_search_results/" + orig_dir_name +"_test_clones.xml")
+    
+    os.system("./cleanNicad.sh ")
+    os.system("rm -r " + str(path))
 
 
+#copytree will only copy test files and directories
+def ignore_non_test_py_files(dir, files):
+    print(dir)
+    print(files)
+    pdir = Path(dir)
+    ignore_files = []
+    for file in files:
+        print("checking file", file)
+        filepath = Path(dir + "/" + file)
+        if filepath.match("*/test_*.py") or filepath.match("*_test.py") or filepath.is_dir():
+            pass
+        else:
+            print("ignoring", file)
+            ignore_files.append(file)
+    return ignore_files
 
-def getPathObj():
+
+def get_path_obj():
     if len(sys.argv) != 2:
         print("Usage: python script.py path_to_repository")
         sys.exit()

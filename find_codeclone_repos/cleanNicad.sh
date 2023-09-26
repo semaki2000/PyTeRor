@@ -1,5 +1,5 @@
 #!/bin/bash    
 CUR_PWD=$(pwd)
-NICAD_INSTALL_LOCATION="/usr/local/lib/nicad6/"
+NICAD_INSTALL_LOCATION="/usr/local/lib/nicad6/" #nicad install location 
 cd $NICAD_INSTALL_LOCATION
-yes | ./cleanall $CUR_PWD
+yes 2>/dev/null | ./cleanall $CUR_PWD #call script to clean up nicad files
