@@ -18,26 +18,15 @@ def main():
         sys.exit()
     except shutil.Error: #permissions thing
         pass
-    path = tmp_dir_path
-    test_files = [x for x in path.rglob("test_*.py")]
-    test_files += [x for x in path.rglob("*_test.py")]
-    gen = path.rglob("*")
-    while True:
-        try:
-            next_file = next(gen)
-            if not next_file in test_files:
-                if next_file.is_file():
-                    print("removing file:", next_file)
-                    next_file.unlink()
-        except StopIteration:
-            break
 
+    input()
+    path = tmp_dir_path
     #run nicad clone detector to find clones
     print(str(path))
     os.system("nicad6 functions py " + str(path) + "/ type2")
 
+    #TODO: change 'cat' to 'cp' !?!? lol
     os.system("cat " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml > repo_search_results/" + orig_dir_name +"_test_clones.xml")
-    
     os.system("./cleanNicad.sh ")
     os.system("rm -r " + str(path))
 
@@ -72,12 +61,6 @@ def get_path_obj():
         print("Given path does not point to a directory: \n" + stringPath)
         sys.exit()
     return pathObj
-
-
-
-
-
-
 
 
 main()
