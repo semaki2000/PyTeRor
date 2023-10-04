@@ -74,47 +74,5 @@ def get_clones():
 
 
 
-def ast_refactor_type2_clones(rfAST, nodes):
-    #type 2 clones -> need to parametrize
-    #example solution: unparse to string and find differences (too simple??)
-
-    for clones_list in nodes:
-
-
-        #unparse clones to str and split by line
-        unparsed_clones = [] # str list
-        for clone in clones_list:
-            unparsed_clones.append(ast.unparse(clone).splitlines()[1:])
-    
-
-
-        lines_with_differences = []
-        #for-loop builds up lines_with_differences by comparing contents between clones for each line, adding line-indexes that are different
-        for i in range(len(unparsed_clones[0])):
-
-            #current line for all clones
-            cur_line_str = []
-            for clone in unparsed_clones:
-                cur_line_str.append(clone[i])
-
-            if any(clone_str != cur_line_str[0] for clone_str in cur_line_str):
-                lines_with_differences.append(i)
-
-        differing_nodes_list = [] #list of lists of differing nodes, each inner list as long as amount of matched clones
-        for ind in lines_with_differences:
-            
-            differing_nodes_list += rfAST.extract_differences([clone.body[ind] for clone in clones_list])
-        
-        #create pytest decorator
-        values = []
-        for ind in range(len(differing_nodes_list[0])):
-            values.append(tuple([l[ind].value for l in differing_nodes_list]))
-            
-
-        decorator = rfAST.get_ast_node_for_pytest_decorator(rfAST.name_gen.names, values)
-
-        rfAST.add_parameters_to_func_def(clones_list[0], rfAST.name_gen.names)
-        clones_list[0].decorator_list.insert(0, decorator)
-        rfAST.detach_redundant_clones(clones_list[1:])
 
 main()

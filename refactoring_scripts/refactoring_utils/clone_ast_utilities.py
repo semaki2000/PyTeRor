@@ -39,3 +39,7 @@ class CloneASTUtilities():
         for node in redundant_clones:
             ast_base.body.remove(node)
             
+    def get_eval_node():
+        """Returns a
+        
+        """

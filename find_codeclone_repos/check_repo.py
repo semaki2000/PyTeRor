@@ -19,14 +19,12 @@ def main():
     except shutil.Error: #permissions thing
         pass
 
-    input()
     path = tmp_dir_path
     #run nicad clone detector to find clones
     print(str(path))
     os.system("nicad6 functions py " + str(path) + "/ type2")
 
-    #TODO: change 'cat' to 'cp' !?!? lol
-    os.system("cat " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml > repo_search_results/" + orig_dir_name +"_test_clones.xml")
+    os.system("cp " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml repo_search_results/" + orig_dir_name +"_test_clones.xml")
     os.system("./cleanNicad.sh ")
     os.system("rm -r " + str(path))
 
