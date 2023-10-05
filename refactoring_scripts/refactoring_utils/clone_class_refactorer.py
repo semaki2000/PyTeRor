@@ -1,5 +1,6 @@
 
 from .name_generator import NameGenerator;
+from .clone_ast_utilities import CloneASTUtilities
 from .clone import Clone
 import ast
 import sys
@@ -74,8 +75,8 @@ class CloneClassRefactorer():
         Returns:
             List of nodes which are different between the clones.
         """
-        def extract_differences_recursive(parent_nodes: list):
-            #starts at clone, nodes, works its way down AST
+        def extract_differences_recursive(parent_nodes: list, in_expr: bool):
+            #starts at clone nodes, works its way down AST
             
             iterators =  []
             for node in parent_nodes:
@@ -83,12 +84,25 @@ class CloneClassRefactorer():
             while True:
                 try:
                     child_nodes = []
+                    child_is_expr = False
                     for ite in iterators:
                         child_nodes.append(next(ite))
                     
                     #if not all same type:
                     if not all(isinstance(child, type(child_nodes[0])) for child in child_nodes):
-                        self.handle_different_nodes(child_nodes)
+                        if (in_expr):
+                            #unparse nodes to string, extract to be parameterized and replace with call to eval()
+                            self.different_nodes.append(child_nodes)
+                            eval_arg = ast.Constant(self.name_gen.new_name())
+                            eval_node = CloneASTUtilities.get_eval_call_node(eval_arg)
+                            CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], eval_node)
+                            return
+                        else:
+                            self.handle_different_nodes(child_nodes)
+                            
+                    #from here, all are same type
+                    elif type(child_nodes[0]) == ast.Expr:
+                        child_is_expr = True
 
                     #constants, but different values
                     elif type(child_nodes[0]) == ast.Constant:
@@ -96,22 +110,24 @@ class CloneClassRefactorer():
                         
 
                     elif type(child_nodes[0]) == ast.Name and any(child.id != child_nodes[0].id for child in child_nodes):
-                        
-                        pass #do nothing, problem will be fixed by refactoring into one of the functions, 
-                            #and deleting the other, thereby "choosing" one of the names
-                    
-                    elif type(child_nodes[0]) == ast.Call:
-                        self.handle_calls(parent_nodes, child_nodes)
-                            
-                    #add more cases here... 
-                    #special case needed for unary op, ...
+                        if type(parent_nodes[0]) == ast.Call:
+                            self.different_nodes.append(child_nodes)
+                            eval_arg = ast.Constant(self.name_gen.new_name())
+                            eval_node = CloneASTUtilities.get_eval_call_node(eval_arg)
+                            CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], eval_node)
 
-                    #for unary op, if no name in any expr child nodes, move whole unary op into differing nodes?
-                    extract_differences_recursive(child_nodes)
+                        #not handling obj.attribute(), only name.Call() currently. TODO
+                        else:
+
+                            pass #do nothing, problem will be fixed by refactoring into one of the functions, 
+                            #and deleting the other, thereby "choosing" one of the names
+
+                            
+                    extract_differences_recursive(child_nodes, child_is_expr if not in_expr else in_expr)
                 except StopIteration:
                     break
             return
-        extract_differences_recursive(clone_nodes)
+        extract_differences_recursive(clone_nodes, in_expr=False)
 
     def handle_different_nodes(self, nodes):
         print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
@@ -131,49 +147,8 @@ class CloneClassRefactorer():
         self.different_nodes.append(child_nodes)
 
         #for "first" parent, remove constant from the AST, replace with variable
-        stmt1 = parent_nodes[0]
         var_replacement = ast.Name(id=self.name_gen.new_name())
-        for attribute in stmt1._fields:
-            #if attr is a list, try to find in list
-            if type(getattr(stmt1, attribute)) == list:
-                attr_list = getattr(stmt1, attribute)
-                try: 
-                    ind = attr_list.index(child_nodes[0])
-                    attr_list.pop(ind)
-                    attr_list.insert(ind, var_replacement)
-                except ValueError:
-                    pass #wrong attr
-            else:
-                #not list, value can simply be overwritten
-                if getattr(stmt1, attribute) == child_nodes[0]:
-                    setattr(stmt1, attribute, var_replacement)
-
-
-
-    def handle_calls(self, parent_nodes, child_nodes):
-        """Handle ast-nodes containing ast.Call objects. Called from self.extract_differences.
-        Checks whether the calls are equal, if not, replaces them with 'eval()'.
-
-        Parameters:
-        - parent_nodes - list of the parent nodes of each ast.Call object (parent in tree)
-        - child_nodes - list of ast.Call objects
-        
-        """
-        return
-        same_func = True
-        same_args = True
-        same_keywords = True #not sure abt this one
-
-        #check func
-        funcs = []
-        for node in child_nodes:
-            funcs.append(node.func)
-        if any(type(x) != type(funcs[0]) for x in funcs):
-            same_func = False
-        elif type(funcs[0]) == ast.Name:
-            pass
-
-
+        CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], var_replacement)
 
 
     def remove_redundant_clones(self):
@@ -191,12 +166,18 @@ class CloneClassRefactorer():
         for clone in self.clones:
             clone_nodes.append(clone.ast_node)
 
-        differing_nodes_list = self.extract_differences(clone_nodes)
+        self.extract_differences(clone_nodes)
         
         #create pytest decorator
         values = []
-        for ind in range(len(differing_nodes_list[0])):
-            values.append(tuple([l[ind].value for l in differing_nodes_list]))
+        for clone_ind in range(len(self.different_nodes[0])):
+            cur_nodes_values = []
+            for node_list in self.different_nodes:
+                if type(node_list[clone_ind]) == ast.Constant:
+                    cur_nodes_values.append(node_list[clone_ind].value)
+                elif type(node_list[clone_ind]) == ast.Name:
+                    cur_nodes_values.append(node_list[clone_ind].id)
+            values.append(tuple(cur_nodes_values))
             
 
         decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)

@@ -70,7 +70,8 @@ def get_clones():
     DICT: from path to int, (absolute, not relative) filepath object to a list of linenumbers specifying start of clone
     """
     #TODO: actually implement. need info from clone detector
-    return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
+    #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
+    return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 10, 14]}]
 
 
 

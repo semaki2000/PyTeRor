@@ -39,7 +39,23 @@ class CloneASTUtilities():
         for node in redundant_clones:
             ast_base.body.remove(node)
             
-    def get_eval_node():
-        """Returns a
-        
-        """
+    def replace_node(child, parent, new_child):
+            for attribute in parent._fields:
+            #if attr is a list, try to find in list
+                if type(getattr(parent, attribute)) == list:
+                    attr_list = getattr(parent, attribute)
+                    try: 
+                        ind = attr_list.index(child)
+                        attr_list.pop(ind)
+                        attr_list.insert(ind, new_child)
+                    except ValueError:
+                        pass #wrong attr
+                else:
+                    #not list, value can simply be overwritten
+                    if getattr(parent, attribute) == child:
+                        setattr(parent, attribute, new_child)
+
+    def get_eval_call_node(arg):
+        func_name = ast.Name(id="eval")
+        eval_node = ast.Call(func=func_name, args=[arg], keywords=[])
+        return eval_node
