@@ -2,17 +2,18 @@
 from .name_generator import NameGenerator;
 from .clone_ast_utilities import CloneASTUtilities
 from .clone import Clone
+from itertools import product
 import ast
 import sys
 
-#TODO 
+
 class CloneClassRefactorer():
     redundant_clones = []
     refactored = False
     different_nodes = []
     func_names = []
-    parameterized_constants = 0
-    parameterized_other = 0
+    paramd_constants = 0
+    paramd_func_calls = 0
 
     
 
@@ -33,24 +34,28 @@ class CloneClassRefactorer():
         [print(f"   Function {x.funcname}") for x in self.clones]
 
 
+
     def process_clones(self):
         """Processes the given clones by 
             1. excluding clones which are fixtures (parameterising fixtures will unintentionally parameterize the tests using those fixtures)
         """
         remove_on_index = []
-        for clone in self.clones:
-            
+        for clone in self.clones:  
             if clone.is_fixture:
                 remove_on_index.insert(0, clone)
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
 
+
     
     def get_ast_node_for_pytest_decorator(self, f_params: list, a_params_list: list):
         """Creates and returns a @pytest.mark.parametrize AST decorator-node 
         from a list of formal parameters and a list of tuples with actual parameters per call.
         https://docs.pytest.org/en/7.3.x/how-to/parametrize.html 
+        Also takes into account preexisting parametrization, 
+        adding preexisting f_params to the f_params list, 
+        and combining the tuples of a_params with preexisting ones.
 
 
         Parameters: 
@@ -61,11 +66,26 @@ class CloneClassRefactorer():
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
         """
 
+
+        old_f_params = ""
+        old_a_params = []
+        for clone in self.clones:
+            if not clone.parametrized_values is None:
+                old_f_params += clone.parametrized_values[0] + ", "
+                old_a_params += [clone.parametrized_values[1]]
+        print(old_a_params)
+                
+        print(a_params_list)
         base_string = "pytest.mark.parametrize('{}', {})"
-        f_params_unpacked = ", ".join(f_params)
+        f_params = old_f_params + ", ".join(f_params)
 
+        #insert preexisting actual parameters into a_params_list
+        combined_list = []
+        for items in product(*old_a_params, a_params_list):
+            combined_list.append(tuple(item for sublist in items for item in sublist))
+        
 
-        parse_string = base_string.format(f_params_unpacked, a_params_list)
+        parse_string = base_string.format(f_params, combined_list)
         return ast.parse(parse_string).body[0].value
 
 
@@ -182,20 +202,31 @@ class CloneClassRefactorer():
 
                 if type(node_list[clone_ind]) == ast.Constant:
                     cur_nodes_values.append(node_list[clone_ind].value)
-                    self.parameterized_constants += 1
 
                 elif type(node_list[clone_ind]) == ast.Name:
                     cur_nodes_values.append(node_list[clone_ind].id)
-                    self.parameterized_other += 1
+
 
             values.append(tuple(cur_nodes_values))
-                    
+
         return values
+
+    def print_info(self, new_name):
+        print("Refactored")
+        [print(f"   Function {x.funcname}") for x in self.clones]
+        print("into " + new_name)
+        for x, y in [(self.paramd_constants, "constants"), (self.paramd_func_calls, "function calls")]:
+            print(f"    Parameterized {x} {y}.")
 
 
     def refactor_clones(self):
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
+        if len(self.clones) < 2:
+            print("Cannot parametrize one or fewer tests.")
+            return
+    
+        #else
         clone_nodes = []
         for clone in self.clones:
             clone_nodes.append(clone.ast_node)
@@ -209,7 +240,12 @@ class CloneClassRefactorer():
         decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)
 
         self.clones[0].add_parameters_to_func_def(self.name_gen.names)
-        self.clones[0].ast_node.decorator_list.insert(0, decorator)
+        self.clones[0].add_decorator(decorator)
+        new_name = self.clones[0].funcname + "_parameterized"
+        self.clones[0].rename_func(new_name)
         self.redundant_clones = self.clones[1:]
         self.refactored = True
         self.remove_redundant_clones()
+
+        self.print_info(new_name)
+        

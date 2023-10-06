@@ -1,3 +1,4 @@
-@pytest.mark.parametrize('new_var_0', [('with_confirmation',), ('select_command_with_arrows',), ('refuse_with_confirmation',), ('without_confirmation',)])
-def test_with_confirmation(new_var_0, proc, TIMEOUT):
+@pytest.mark.parametrize('b, proc, TIMEOUT, new_var_0', [(100, 'a', 1, 'with_confirmation'), (100, 'a', 1, 'select_command_with_arrows'), (100, 'a', 1, 'refuse_with_confirmation'), (100, 'a', 1, 'without_confirmation'), (100, 'b', 2, 'with_confirmation'), (100, 'b', 2, 'select_command_with_arrows'), (100, 'b', 2, 'refuse_with_confirmation'), (100, 'b', 2, 'without_confirmation'), (200, 'a', 1, 'with_confirmation'), (200, 'a', 1, 'select_command_with_arrows'), (200, 'a', 1, 'refuse_with_confirmation'), (200, 'a', 1, 'without_confirmation'), (200, 'b', 2, 'with_confirmation'), (200, 'b', 2, 'select_command_with_arrows'), (200, 'b', 2, 'refuse_with_confirmation'), (200, 'b', 2, 'without_confirmation')])
+def test_with_confirmation_parameterized(proc, TIMEOUT, new_var_0):
+    a = 53
     eval('new_var_0')(proc, TIMEOUT)
