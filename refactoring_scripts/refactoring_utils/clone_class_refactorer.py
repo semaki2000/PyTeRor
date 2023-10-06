@@ -10,6 +10,10 @@ class CloneClassRefactorer():
     redundant_clones = []
     refactored = False
     different_nodes = []
+    func_names = []
+    parameterized_constants = 0
+    parameterized_other = 0
+
     
 
     def __init__(self, ast_clones : list, new_var_name="new_var") -> None:
@@ -24,8 +28,24 @@ class CloneClassRefactorer():
         """
         self.clones = ast_clones
         self.name_gen = NameGenerator(new_var_name)
+        self.process_clones()
         print("Created clone class with contents:")
-        print(self.clones)
+        [print(f"   Function {x.funcname}") for x in self.clones]
+
+
+    def process_clones(self):
+        """Processes the given clones by 
+            1. excluding clones which are fixtures (parameterising fixtures will unintentionally parameterize the tests using those fixtures)
+        """
+        remove_on_index = []
+        for clone in self.clones:
+            
+            if clone.is_fixture:
+                remove_on_index.insert(0, clone)
+
+        for remove_clone in remove_on_index:
+            self.clones.remove(remove_clone)
+
     
     def get_ast_node_for_pytest_decorator(self, f_params: list, a_params_list: list):
         """Creates and returns a @pytest.mark.parametrize AST decorator-node 
@@ -35,7 +55,7 @@ class CloneClassRefactorer():
 
         Parameters: 
             - f_params - list of strings which are names of formal parameters
-            - a_params_list - list of tuples of actual parameters, each tuple being actual parameters for a call to the function
+            - a_params_list - list of tuples of actual parameters, each tuple being correctly ordered actual parameters for a call to the function
 
         Returns:
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
@@ -48,21 +68,6 @@ class CloneClassRefactorer():
         parse_string = base_string.format(f_params_unpacked, a_params_list)
         return ast.parse(parse_string).body[0].value
 
-    def add_parameters_to_func_def(self, func_def: ast.FunctionDef, param_names: list):
-        """Adds given parameter names to the function definition, 
-        putting them in front of the pre-existing parameters.
-
-
-        Parameters: 
-            - func_def - ast node of function definition
-            - param_names - list of strings to add as parameters to function definition
-
-        Returns:
-            None    
-        """
-        param_names.reverse()
-        for name in param_names:
-            func_def.args.args.insert(0, ast.arg(arg = name))
 
     def extract_differences(self, clone_nodes : list):
         """Given a list of ast-nodes which are (type2) clones, finds nodes that are different between them
@@ -83,8 +88,11 @@ class CloneClassRefactorer():
                 iterators.append(ast.iter_child_nodes(node))    
             while True:
                 try:
+
                     child_nodes = []
                     child_is_expr = False
+                    replace = False
+                    replace_node = None
                     for ite in iterators:
                         child_nodes.append(next(ite))
                     
@@ -113,10 +121,10 @@ class CloneClassRefactorer():
                         if type(parent_nodes[0]) == ast.Call:
                             self.different_nodes.append(child_nodes)
                             eval_arg = ast.Constant(self.name_gen.new_name())
-                            eval_node = CloneASTUtilities.get_eval_call_node(eval_arg)
-                            CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], eval_node)
-
+                            replace_node = CloneASTUtilities.get_eval_call_node(eval_arg)
+                            replace = True
                         #not handling obj.attribute(), only name.Call() currently. TODO
+                        #not checking args to look for differences
                         else:
 
                             pass #do nothing, problem will be fixed by refactoring into one of the functions, 
@@ -124,6 +132,8 @@ class CloneClassRefactorer():
 
                             
                     extract_differences_recursive(child_nodes, child_is_expr if not in_expr else in_expr)
+                    if replace:
+                        CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], replace_node)
                 except StopIteration:
                     break
             return
@@ -158,6 +168,30 @@ class CloneClassRefactorer():
         for clone in self.redundant_clones:
             clone.detach()
 
+    def get_differences_as_args(self):
+        """Goes ("transposed") through the nodes that are marked as different, extracting the name or value that is different from each, 
+        creating a list of tuples, where each tuple has actual parameters for the formal parameters given in pytest.mark.parametrize().
+        
+        """
+        values = []
+        
+        for clone_ind in range(len(self.different_nodes[0])):
+            cur_nodes_values = []
+
+            for node_list in self.different_nodes:
+
+                if type(node_list[clone_ind]) == ast.Constant:
+                    cur_nodes_values.append(node_list[clone_ind].value)
+                    self.parameterized_constants += 1
+
+                elif type(node_list[clone_ind]) == ast.Name:
+                    cur_nodes_values.append(node_list[clone_ind].id)
+                    self.parameterized_other += 1
+
+            values.append(tuple(cur_nodes_values))
+                    
+        return values
+
 
     def refactor_clones(self):
         """Function to refactor clones."""
@@ -169,20 +203,12 @@ class CloneClassRefactorer():
         self.extract_differences(clone_nodes)
         
         #create pytest decorator
-        values = []
-        for clone_ind in range(len(self.different_nodes[0])):
-            cur_nodes_values = []
-            for node_list in self.different_nodes:
-                if type(node_list[clone_ind]) == ast.Constant:
-                    cur_nodes_values.append(node_list[clone_ind].value)
-                elif type(node_list[clone_ind]) == ast.Name:
-                    cur_nodes_values.append(node_list[clone_ind].id)
-            values.append(tuple(cur_nodes_values))
+        values = self.get_differences_as_args()
             
 
         decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)
 
-        self.add_parameters_to_func_def(self.clones[0].ast_node, self.name_gen.names)
+        self.clones[0].add_parameters_to_func_def(self.name_gen.names)
         self.clones[0].ast_node.decorator_list.insert(0, decorator)
         self.redundant_clones = self.clones[1:]
         self.refactored = True

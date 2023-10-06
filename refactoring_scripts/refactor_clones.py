@@ -18,8 +18,7 @@ def main():
     asts_dict = {} # filepath -> ast_base (for said filepath)
     for filepath in filepaths:
         asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
-        
-    print(asts_dict.keys())
+
 
     clones = get_clones()
     clone_classes = []
@@ -71,7 +70,7 @@ def get_clones():
     """
     #TODO: actually implement. need info from clone detector
     #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
-    return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 10, 14]}]
+    return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
 
 
 

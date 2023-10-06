@@ -9,31 +9,31 @@ Runs with python 3.10 <=
 
 TODO:
 
-Find out how to handle stuff like this:
 
-```
+- Find out what to do with clones between files (probably best to ignore)
 
-@pytest.mark.functional
+- Find out how to handle stuff like this:
+
+```python
+
+
 def test_with_confirmation(proc, TIMEOUT):
     with_confirmation(proc, TIMEOUT)
 
 
-@pytest.mark.functional
 def test_select_command_with_arrows(proc, TIMEOUT):
     select_command_with_arrows(proc, TIMEOUT)
 
 
-@pytest.mark.functional
 def test_refuse_with_confirmation(proc, TIMEOUT):
     refuse_with_confirmation(proc, TIMEOUT)
 
 
-@pytest.mark.functional
 def test_without_confirmation(proc, TIMEOUT):
     without_confirmation(proc, TIMEOUT)
 
 
-COULD be refactored into:
+#COULD be refactored into:
 @pytest.mark.parametrize('name', ["with_confirmation", "select_command_with_arrows", "refuse_with_confirmation", "without_confirmation"])
 def test(proc, TIMEOUT, name):
     eval(name)(proc, TIMEOUT)
