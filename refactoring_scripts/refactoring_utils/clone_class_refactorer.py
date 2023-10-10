@@ -12,8 +12,6 @@ class CloneClassRefactorer():
     refactored = False
     different_nodes = []
     func_names = []
-    paramd_constants = 0
-    paramd_func_calls = 0
 
     
 
@@ -66,27 +64,27 @@ class CloneClassRefactorer():
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
         """
 
-
-        old_f_params = ""
-        old_a_params = []
-        for clone in self.clones:
-            if not clone.parametrized_values is None:
-                old_f_params += clone.parametrized_values[0] + ", "
-                old_a_params += [clone.parametrized_values[1]]
-        print(old_a_params)
-                
-        print(a_params_list)
-        base_string = "pytest.mark.parametrize('{}', {})"
-        f_params = old_f_params + ", ".join(f_params)
-
-        #insert preexisting actual parameters into a_params_list
-        combined_list = []
-        for items in product(*old_a_params, a_params_list):
-            combined_list.append(tuple(item for sublist in items for item in sublist))
+        args = []
+        args.append(ast.Constant(value=", ".join(f_params)))
         
-
-        parse_string = base_string.format(f_params, combined_list)
-        return ast.parse(parse_string).body[0].value
+        list_tuples = []
+        for tup in a_params_list:
+            if len(tup) == 1:
+                list_tuples.append(tup[0])
+            else:
+                list_tuples.append(ast.Tuple(elts = list(tup)))
+        args.append(ast.List(elts=list_tuples))
+        print(list_tuples)
+        pytest_node = ast.Call(
+            func=ast.Attribute(
+                value = ast.Attribute(
+                    value = ast.Name(id="pytest"), 
+                    attr = "mark"),
+                attr = "parametrize"), 
+            args = args,
+            keywords = [])
+                
+        return pytest_node
 
 
     def extract_differences(self, clone_nodes : list):
@@ -116,12 +114,13 @@ class CloneClassRefactorer():
                     for ite in iterators:
                         child_nodes.append(next(ite))
                     
-                    #if not all same type:
+                    #if not all same type, something probably wrong:
                     if not all(isinstance(child, type(child_nodes[0])) for child in child_nodes):
                         if (in_expr):
+                            #TODO: remove this part. No need for eval (probably)
                             #unparse nodes to string, extract to be parameterized and replace with call to eval()
                             self.different_nodes.append(child_nodes)
-                            eval_arg = ast.Constant(self.name_gen.new_name())
+                            eval_arg = ast.Constant(self.name_gen.new_name("constant"))
                             eval_node = CloneASTUtilities.get_eval_call_node(eval_arg)
                             CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], eval_node)
                             return
@@ -140,8 +139,7 @@ class CloneClassRefactorer():
                     elif type(child_nodes[0]) == ast.Name and any(child.id != child_nodes[0].id for child in child_nodes):
                         if type(parent_nodes[0]) == ast.Call:
                             self.different_nodes.append(child_nodes)
-                            eval_arg = ast.Constant(self.name_gen.new_name())
-                            replace_node = CloneASTUtilities.get_eval_call_node(eval_arg)
+                            replace_node = ast.Name(self.name_gen.new_name("name"))
                             replace = True
                         #not handling obj.attribute(), only name.Call() currently. TODO
                         #not checking args to look for differences
@@ -200,12 +198,7 @@ class CloneClassRefactorer():
 
             for node_list in self.different_nodes:
 
-                if type(node_list[clone_ind]) == ast.Constant:
-                    cur_nodes_values.append(node_list[clone_ind].value)
-
-                elif type(node_list[clone_ind]) == ast.Name:
-                    cur_nodes_values.append(node_list[clone_ind].id)
-
+                cur_nodes_values.append(node_list[clone_ind])
 
             values.append(tuple(cur_nodes_values))
 
@@ -215,8 +208,8 @@ class CloneClassRefactorer():
         print("Refactored")
         [print(f"   Function {x.funcname}") for x in self.clones]
         print("into " + new_name)
-        for x, y in [(self.paramd_constants, "constants"), (self.paramd_func_calls, "function calls")]:
-            print(f"    Parameterized {x} {y}.")
+        for x, y in [(self.name_gen.constants_cnt, "constants"), (self.name_gen.names_cnt, "names"), (self.name_gen.other_cnt, "other nodes")]:
+            print(f"    Parametrized {x} {y}.")
 
 
     def refactor_clones(self):

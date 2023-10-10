@@ -2,7 +2,7 @@ import sys
 import os
 import shutil
 from pathlib import Path
-#remove files which aren't test_*py or *_test.py (TODO: also check potential pytest.ini file(or hidden .pytest.ini))
+#remove files which aren't test_*py or *_test.py (TODO: also check potential pytest.ini file(or hidden .pytest.ini) for filepaths that could include tests other than tests/) 
 # run nicad on remaining files to see if code clones in tests of repo
 
 
@@ -36,12 +36,12 @@ def ignore_non_test_py_files(dir, files):
     pdir = Path(dir)
     ignore_files = []
     for file in files:
-        print("checking file", file)
+        
         filepath = Path(dir + "/" + file)
         if filepath.match("*/test_*.py") or filepath.match("*_test.py") or filepath.is_dir():
             pass
         else:
-            print("ignoring", file)
+            
             ignore_files.append(file)
     return ignore_files
 
