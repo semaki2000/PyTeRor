@@ -29,7 +29,11 @@ def test_(name): #another problem, what to call the refactored test? keep one of
 ```
 - Fix the stuff with .parametrize() (there can be multiple parametrize decorators, also result probably shouldn't be cartesian product)
 
-- Change eval(STRING) to extract name into parametrize decorator instead.
+- Parsing and unparsing from AST gives lots of formatting problems:
+    - All pre-existing whitespace and formatting is removed
+    - the .parametrize line can become very long, needs to be divided into multiple lines.
+    - Potential solutions: use a formatter (black, yapf).
+
 - Find out what to do with clones between files (probably best to ignore)
 
 - Find out how to handle stuff like this:

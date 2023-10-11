@@ -2,12 +2,13 @@
 from .name_generator import NameGenerator;
 from .clone_ast_utilities import CloneASTUtilities
 from .clone import Clone
-from itertools import product
 import ast
 import sys
 
 
 class CloneClassRefactorer():
+    """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
+        Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     redundant_clones = []
     refactored = False
     different_nodes = []

@@ -1,9 +1,12 @@
 import ast
+from black import FileMode, format_str
 from pathlib import Path;
+from .unparser import Unparser
 
 class ASTParser():
     """Class which includes static methods for parsing and unparsing an AST for a file.
-    Also does some sanity checks to make sure the file is correct. 
+    Also does some sanity checks to make sure the file is correct, 
+    in addition to formatting the pytest.mark.parametrize decorator line.
     """
     def parse_file_to_AST(path : str | Path ) -> ast.AST:
         """Takes a filename, checks validity (.py file, and exists) and 
@@ -31,7 +34,7 @@ class ASTParser():
 
 
     def parse_AST_to_file(ast_base, filepath: str | Path):
-        """Takes an AST and a filepath, and unparses the given AST into the given file.
+        """Takes an AST and a filepath, and unparses the given AST into the given file, using the ast-subclass Unparser.
 
         Parameters: 
             - ast_base - base of an AST from 'ast' module
@@ -42,6 +45,21 @@ class ASTParser():
         """
         path = Path(filepath).resolve()
 
-        string_ast = ast.unparse(ast_base)
+        target_sc = Unparser._unparse(ast_base) 
+        #target_sc = ASTParser.format_parametrize_decorator(target_sc)
         with open(path, "w") as file:
-            file.write(f'{string_ast}')
+            file.write(f'{target_sc}')
+
+
+    #TODO
+    #change from source code analysis to going through AST
+    #needs to be done here:
+    #   strings which have explicit \n in them need to be changed to multiline strings
+    #   args of pytest.mark.parametrize need to be newlined, so there isnt just one long line
+    def format_parametrize_decorator(source_code):
+        code_lines = source_code.split('\n') 
+
+        for line_ind in range(len(code_lines)):
+            if '@pytest.mark.parametrize(' in code_lines[line_ind]:
+                code_lines[line_ind] = "@pytest.mark.parametrize"
+        return '\n'.join(code_lines) 

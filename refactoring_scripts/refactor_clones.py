@@ -70,7 +70,8 @@ def get_clones():
     """
     #TODO: actually implement. need info from clone detector
     #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
-    return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
+    #return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
+    return [{Path("../test_files/test_lark_parser.py").resolve(): [164, 264, 279, 200, 295, 327, 311]}]
 
 
 
