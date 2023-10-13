@@ -3,9 +3,9 @@ import sys
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
-    is_fixture : bool = False
-    parametrized_values = None
     def __init__(self, ast_node, parent_node, lineno) -> None:
+        self.parametrized_values = None
+        self.is_fixture : bool = False
         self.ast_node = ast_node
         self.parent_node = parent_node
         self.lineno = lineno
@@ -31,7 +31,7 @@ class Clone():
                     if type(decorator.func.value.value) == ast.Name:
                         if decorator.func.value.value.id == "pytest" and decorator.func.value.attr == "mark" and decorator.func.attr == "parametrize":
 
-                            #get contents of p.m.parameterize as actual literals
+                            #get contents of p.m.parametrize as actual literals
                             #can be in tuple or single element
                             args_list = []
                             for args in decorator.args[1].elts:
@@ -62,28 +62,3 @@ class Clone():
         """Detach this clone's node from the AST."""
         
         self.parent_node.body.remove(self.ast_node)
-
-
-    def add_parameters_to_func_def(self, param_names: list):
-        """Adds given parameter names to the function definition, 
-        putting them behind the pre-existing parameters.
-
-
-        Parameters: 
-            - param_names - list of strings to add as parameters to function definition
-
-        Returns:
-            None    
-        """
-
-        for name in param_names:
-            self.ast_node.args.args.append(ast.arg(arg = name))
-
-    def add_decorator(self, decorator):
-        self.ast_node.decorator_list.insert(0, decorator)
-
-    def rename_func(self, new_name):
-        self.ast_node.name = new_name
-
-        #self.funcname = new_name
-        #do not update name, for CCR.print_info

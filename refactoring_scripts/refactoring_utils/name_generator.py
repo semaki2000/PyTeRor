@@ -1,12 +1,14 @@
 
 
 class NameGenerator:
-    names = []
-    constants_cnt = 0 #parametrized constants
-    names_cnt = 0 #parametrized names
-    other_cnt = 0 #should be 0
-    def __init__(self, basename: str):
-        self.basename = basename #not used any more, remove (in CCR class)
+    def __init__(self):
+        
+        self.names = []
+        self.constants_cnt = 0 #parametrized constants
+        self.names_cnt = 0 #parametrized names
+        self.attrs_cnt = 0
+        self.other_cnt = 0 #should be 0
+
 
     def new_name(self, context=""):
         name = "parametrized"
@@ -14,10 +16,12 @@ class NameGenerator:
             name += "_name_" + str(self.names_cnt)
             self.names_cnt += 1
         elif context == "constant":
-            name += "_constant_" + str(self.constant_cnt)
-            self.constant_cnt += 1
+            name += "_constant_" + str(self.constants_cnt)
+            self.constants_cnt += 1
+        elif context == "attr":
+            name += "_attr_" + str(self.attrs_cnt)
         else:
-            name += "var" + str(self.other_cnt)
+            name += "_var_" + str(self.other_cnt)
             self.other_cnt += 1
         self.names.append(name)
         return name
