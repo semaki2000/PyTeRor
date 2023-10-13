@@ -36,8 +36,6 @@ class CloneClass():
         self.clones[0] = self.target = TargetClone(clone_to_copy=self.clones[0])
 
 
-
-
     def process_clones(self):
         """Processes the given clones by 
             1. excluding clones which are fixtures (parameterising fixtures will unintentionally parameterize the tests using those fixtures)
@@ -50,7 +48,9 @@ class CloneClass():
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
 
+
     def print_pre_info(self):
+        """Print info before refactoring. On object creation."""
         print("Created clone class with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
@@ -165,7 +165,53 @@ class CloneClass():
 
 
     def extract_differences(self):
-        pass
+        """Uses the NodeDifference objects in the self.nodeDifferences list to extract the differences from each clone, 
+        and replace them in the target with the correct name. 
+        If two node differences have the same nodes(nodes with the same values), gives them the same name.         
+        """
+        #str representation of list of nodes -> generated name for that list of nodes
+        nodes_to_name_dict : dict = {}
+
+        #str representation of list of nodes -> earliest local definition (or None)
+        #only matters for NameNodeDifference objects (only they can be on left side of assign)
+
+        nodes_to_local_lineno_definition : dict = {}
+        for nd in self.node_differences:
+
+
+            #handle local names (don't have to be parametrized)
+            if not str(nd) in nodes_to_local_lineno_definition.keys():
+
+                nodes_to_local_lineno_definition[str(nd)] = None
+            if nd.stringtype == "name" and nd.left_side_assign:
+                if nodes_to_local_lineno_definition[str(nd)] is None or nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
+                    nodes_to_local_lineno_definition[str(nd)] = nd.lineno
+
+            #for nodes where lineno is newer than newest local definition
+
+        for nd in self.node_differences:
+
+            if nd.stringtype == "name":
+                if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
+                    nd.to_extract = False
+                
+
+
+        for nd in self.node_differences:
+
+            if not nd.to_extract:
+                continue
+
+            if str(nd) in nodes_to_name_dict.keys():
+                generated_name = nodes_to_name_dict[str(nd)]
+                
+            else:
+                generated_name = self.name_gen.new_name(nd.stringtype)
+                nodes_to_name_dict[str(nd)] = generated_name
+
+            nd.replace_nodes(parametrized_name=generated_name)
+        
+
 
     def handle_different_nodes(self, nodes):
         print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
@@ -186,11 +232,17 @@ class CloneClass():
         
         """
         values = []
+        print(self.node_differences)
         for clone_ind in range(len(self.node_differences[0])):
             cur_nodes_values = []
 
             for node_list in self.node_differences:
+                
+                if not node_list.to_extract:
+                    print("skipping one")
+                    continue
 
+                print("im here")
                 cur_nodes_values.append(node_list[clone_ind])
 
             values.append(tuple(cur_nodes_values))
@@ -199,6 +251,7 @@ class CloneClass():
     
 
     def print_post_info(self):
+        """Print info after refactoring."""
         print("Refactored")
         [print(f"   Function {x.funcname}") for x in self.clones]
         print("into " + self.target.new_funcname)
@@ -229,6 +282,7 @@ class CloneClass():
             decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
+            self.target.rename_target()
             self.redundant_clones = self.clones[1:]
             self.refactored = True
             self.remove_redundant_clones()

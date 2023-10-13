@@ -94,3 +94,10 @@ def test_(name): #what to call the refactored test? keep one of the old names? g
         - Only use ast.unparse() for the clones. keep original file as much as possible, just remove lines with clones and replace with ast.unparse() output
 
 - Find out what to do with clones between files (probably best to ignore).
+
+
+
+
+POTENTIAL BUGS
+
+- When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)  
