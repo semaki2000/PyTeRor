@@ -9,8 +9,7 @@ Runs with python 3.10 <=
 
 TODO:
 
-- Maybe try using markers when parametrizing functions in order to keep info on old function names?
-For example:
+- Problem with name of test being lost when parametrizing. Maybe try using markers when parametrizing functions in order to keep info on old function names? For example:
 ```python
 def test_name1():
     assert name1 == "aaa"
@@ -18,7 +17,7 @@ def test_name1():
 def test_name2():
     assert name2 == "bbb"
 
-#Add markers by f.ex replacing each individual set of args run with pytest.param, with keyword 'marks' set to old name of test?
+#Add markers by f.ex replacing each individual set of args run with pytest.param, with keyword 'marks' set to old name of test? New marks must then be added in pytest.ini file
 @pytest.mark.parametrize("name", (
                              pytest.param(name1, marks=pytest.mark.test_name1),
                              pytest.param(name2, marks=pytest.mark.test_name2)
@@ -35,30 +34,3 @@ def test_(name): #another problem, what to call the refactored test? keep one of
     - Potential solutions: use a formatter (black, yapf).
 
 - Find out what to do with clones between files (probably best to ignore)
-
-- Find out how to handle stuff like this:
-
-```python
-
-
-def test_with_confirmation(proc, TIMEOUT):
-    with_confirmation(proc, TIMEOUT)
-
-
-def test_select_command_with_arrows(proc, TIMEOUT):
-    select_command_with_arrows(proc, TIMEOUT)
-
-
-def test_refuse_with_confirmation(proc, TIMEOUT):
-    refuse_with_confirmation(proc, TIMEOUT)
-
-
-def test_without_confirmation(proc, TIMEOUT):
-    without_confirmation(proc, TIMEOUT)
-
-
-#COULD be refactored into:
-@pytest.mark.parametrize('name', [with_confirmation, select_command_with_arrows, refuse_with_confirmation, without_confirmation])
-def test(proc, TIMEOUT, name):
-    name(proc, TIMEOUT)
-```
