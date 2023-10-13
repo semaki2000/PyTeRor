@@ -7,6 +7,8 @@ Runs with python 3.10 <=
 
 TODO:
 
+- write extract_differences function to handle names on left side of assignment (using NameNodeDifference class)
+
 - find a better way to parametrize attribute, if any (better than get_attr())
 
 - import pytest if not imported in source already (only if changes are made)
@@ -34,7 +36,8 @@ def test_parametrized(constant):
 
 #######################################
 
-#names could be defined outside scope of test here, therefore have to be extracted into parametrize decorator
+#names could be defined outside scope of test here, 
+# therefore have to be extracted into parametrize decorator
 
 def test_name1():
     assert var_name == "aaa"
