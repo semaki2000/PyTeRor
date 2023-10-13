@@ -3,11 +3,11 @@ import sys
 from pathlib import Path
 from refactoring_utils.ast_parser import ASTParser
 from refactoring_utils.clone_ast_utilities import CloneASTUtilities
-from refactoring_utils.clone_class_refactorer import CloneClassRefactorer
+from refactoring_utils.clone_class import CloneClass
 
 
 
-#currently with function names from test_files/test_check.py
+
 
 def main():
     if len(sys.argv) == 1:
@@ -36,11 +36,12 @@ def main():
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CloneASTUtilities.find_clone_node_in_AST(ast_base, clone_lineno=lineno))
 
-        clone_classes.append(CloneClassRefactorer(ast_clone_nodes))
+        clone_classes.append(CloneClass(ast_clone_nodes))
 
         
 
     for clone_class in clone_classes:
+        
         clone_class.refactor_clones()
 
     
@@ -71,7 +72,10 @@ def get_clones():
     #TODO: actually implement. need info from clone detector
     #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
     #return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
-    return [{Path("../test_files/test_lark_parser.py").resolve(): [164, 264, 279, 200, 295, 327, 311]}]
+    #return [{Path("../test_files/test_lark_parser.py").resolve(): [164, 264, 279, 200, 295, 327, 311]}]
+    return [{Path("../test_files/ert/test_analysis_config.py").resolve(): [169, 180]},
+            {Path("../test_files/ert/test_analysis_config.py").resolve(): [191, 210]},
+            {Path("../test_files/ert/test_analysis_config.py").resolve(): [198, 217]}]
 
 
 

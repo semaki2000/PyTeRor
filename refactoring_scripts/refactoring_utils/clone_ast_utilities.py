@@ -59,3 +59,8 @@ class CloneASTUtilities():
         func_name = ast.Name(id="eval")
         eval_node = ast.Call(func=func_name, args=[arg], keywords=[])
         return eval_node
+    
+    def get_getattr_call_node(arg):
+        func_name = ast.Name(id="getattr")
+        eval_node = ast.Call(func=func_name, args=[arg], keywords=[])
+        return eval_node
