@@ -71,7 +71,8 @@ def test_name1():
 def test_name2():
     assert name2 == "bbb"
 
-#Add markers by f.ex replacing each individual set of args run with pytest.param, with keyword 'marks' set to old name of test? New marks must then be added in pytest.ini file
+#Add markers by f.ex replacing each individual set of args run with pytest.param, 
+# with keyword 'marks' set to old name of test? New marks must then be added in pytest.ini file
 @pytest.mark.parametrize("name", (
                              pytest.param(name1, marks=pytest.mark.test_name1),
                              pytest.param(name2, marks=pytest.mark.test_name2)
