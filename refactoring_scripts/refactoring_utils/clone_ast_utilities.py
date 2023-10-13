@@ -16,7 +16,7 @@ class CloneASTUtilities():
             - clone_lineno - list of lists of clone pairs in AST, identified by function names
 
         Returns:
-            List of lists of ast-nodes, with all ast-nodes in the same list being clones with each other.
+            A single Clone object, representing the clone found at given line number.
         """
 
 
@@ -40,20 +40,30 @@ class CloneASTUtilities():
             ast_base.body.remove(node)
             
     def replace_node(child, parent, new_child):
-            for attribute in parent._fields:
+        """Replaces one node with another in the AST.
+        
+        Parameters:
+            - child - original child, to be replaced
+            - parent - parent node of child.
+            - new_child - new child, which will replace 'child'
+
+        Returns:
+            None
+        """
+        for attribute in parent._fields:
             #if attr is a list, try to find in list
-                if type(getattr(parent, attribute)) == list:
-                    attr_list = getattr(parent, attribute)
-                    try: 
-                        ind = attr_list.index(child)
-                        attr_list.pop(ind)
-                        attr_list.insert(ind, new_child)
-                    except ValueError:
-                        pass #wrong attr
-                else:
-                    #not list, value can simply be overwritten
-                    if getattr(parent, attribute) == child:
-                        setattr(parent, attribute, new_child)
+            if type(getattr(parent, attribute)) == list:
+                attr_list = getattr(parent, attribute)
+                try: 
+                    ind = attr_list.index(child)
+                    attr_list.pop(ind)
+                    attr_list.insert(ind, new_child)
+                except ValueError:
+                    pass #wrong attr
+            else:
+                #not list, value can simply be overwritten
+                if getattr(parent, attribute) == child:
+                    setattr(parent, attribute, new_child)
 
     def get_eval_call_node(arg):
         func_name = ast.Name(id="eval")
@@ -62,5 +72,5 @@ class CloneASTUtilities():
     
     def get_getattr_call_node(arg):
         func_name = ast.Name(id="getattr")
-        eval_node = ast.Call(func=func_name, args=[arg], keywords=[])
-        return eval_node
+        getattr_node = ast.Call(func=func_name, args=[arg], keywords=[])
+        return getattr_node

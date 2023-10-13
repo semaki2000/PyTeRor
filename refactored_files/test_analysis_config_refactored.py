@@ -71,16 +71,16 @@ def test_setting_case_format(analysis_config):
     assert analysis_config.case_format == expected_case_format
     assert analysis_config.case_format_is_set()
 
-@pytest.mark.parametrize('parametrized_constant_0, parametrized_constant_1, parametrized_constant_2', [("Variable 'IES_INVERSION' with value 'FOO'", 'IES_INVERSION', 'FOO'), ("Variable 'BAR' not found in 'STD_ENKF' analysis", 'BAR', '1')])
-def test_incorrect_variable_raises_validation_error(parametrized_constant_0, parametrized_constant_1, parametrized_constant_2):
-    with pytest.raises(ConfigValidationError, match=parametrized_constant_0):
-        _ = AnalysisConfig.from_dict({ConfigKeys.ANALYSIS_SET_VAR: [['STD_ENKF', parametrized_constant_1, parametrized_constant_2]]})
+@pytest.mark.parametrize('', [("Variable 'IES_INVERSION' with value 'FOO'", 'IES_INVERSION', 'FOO'), ("Variable 'BAR' not found in 'STD_ENKF' analysis", 'BAR', '1')])
+def test_incorrect_variable_raises_validation_error():
+    with pytest.raises(ConfigValidationError, match="Variable 'IES_INVERSION' with value 'FOO'"):
+        _ = AnalysisConfig.from_dict({ConfigKeys.ANALYSIS_SET_VAR: [['STD_ENKF', 'IES_INVERSION', 'FOO']]})
 
-@pytest.mark.parametrize('parametrized_name_0, parametrized_constant_0, parametrized_name_1, parametrized_name_2', [(default_alpha, 3.0, default_alpha, default_alpha), (default_std_cutoff, 1e-06, default_std_cutoff, default_std_cutoff)])
-def test_default_alpha_is_set(parametrized_name_0, parametrized_constant_0, parametrized_name_1, parametrized_name_2):
-    parametrized_name_0 = parametrized_constant_0
-    assert AnalysisConfig.from_dict({}).enkf_alpha == parametrized_name_1
-    assert AnalysisConfig().enkf_alpha == parametrized_name_2
+@pytest.mark.parametrize('', [(default_alpha, 3.0, default_alpha, default_alpha), (default_std_cutoff, 1e-06, default_std_cutoff, default_std_cutoff)])
+def test_default_alpha_is_set():
+    default_alpha = 3.0
+    assert AnalysisConfig.from_dict({}).enkf_alpha == default_alpha
+    assert AnalysisConfig().enkf_alpha == default_alpha
 
 @given(st.floats(allow_nan=False, allow_infinity=False))
 def test_alpha_is_set_from_corresponding_key(value):
