@@ -2,7 +2,7 @@ import ast
 import sys
 from pathlib import Path
 from refactoring_utils.ast_parser import ASTParser
-from refactoring_utils.clone_ast_utilities import CloneASTUtilities
+from refactoring_utils.clone_ast_utilities import CloneASTUtilities as CAU
 from refactoring_utils.clone_class import CloneClass
 
 
@@ -34,7 +34,7 @@ def main():
             for lineno in clone_class[key]:
 
                 #add clone on lineno in filepath to list of clone objects
-                ast_clone_nodes.append(CloneASTUtilities.find_clone_node_in_AST(ast_base, clone_lineno=lineno))
+                ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=lineno))
 
         clone_classes.append(CloneClass(ast_clone_nodes))
 
@@ -73,10 +73,10 @@ def get_clones():
     #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
     #return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
     #return [{Path("../test_files/test_lark_parser.py").resolve(): [164, 264, 279, 200, 295, 327, 311]}]
-    return [{Path("../test_files/ert/test_analysis_config.py").resolve(): [169, 180]},
-            {Path("../test_files/ert/test_analysis_config.py").resolve(): [191, 210]},
-            {Path("../test_files/ert/test_analysis_config.py").resolve(): [198, 217]}]
-
+    #return [{Path("../test_files/ert/test_analysis_config.py").resolve(): [169, 180]},
+            #{Path("../test_files/ert/test_analysis_config.py").resolve(): [191, 210]},
+            #{Path("../test_files/ert/test_analysis_config.py").resolve(): [198, 217]}]
+    return [{Path("../test_files/ert/test_field.py").resolve(): [137, 145, 164]}]
 
 
 
