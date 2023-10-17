@@ -94,7 +94,7 @@ class CloneClass():
         return pytest_node
 
 
-    def get_differences(self, clone_nodes : list):
+    def get_clone_differences(self, clone_nodes : list):
         """Given a list of ast-nodes which are (type2) clones, finds nodes that are different between them
         and replaces those with new variables in the AST, returning the nodes that are different between clones.
 
@@ -163,8 +163,7 @@ class CloneClass():
             return
         get_differences_recursive(clone_nodes)
 
-
-    def extract_differences(self):
+    def extract_clone_differences(self):
         """Uses the NodeDifference objects in the self.nodeDifferences list to extract the differences from each clone, 
         and replace them in the target with the correct name. 
         If two node differences have the same nodes(nodes with the same values), gives them the same name.         
@@ -172,31 +171,8 @@ class CloneClass():
         #str representation of list of nodes -> generated name for that list of nodes
         nodes_to_name_dict : dict = {}
 
-        #str representation of list of nodes -> earliest local definition (or None)
-        #only matters for NameNodeDifference objects (only they can be on left side of assign)
-
-        nodes_to_local_lineno_definition : dict = {}
-        for nd in self.node_differences:
-
-
-            #handle local names (don't have to be parametrized)
-            if not str(nd) in nodes_to_local_lineno_definition.keys():
-
-                nodes_to_local_lineno_definition[str(nd)] = None
-            if nd.stringtype == "name" and nd.left_side_assign:
-                if nodes_to_local_lineno_definition[str(nd)] is None or nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
-                    nodes_to_local_lineno_definition[str(nd)] = nd.lineno
-
-            #for nodes where lineno is newer than newest local definition
-
-        for nd in self.node_differences:
-
-            if nd.stringtype == "name":
-                if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
-                    nd.to_extract = False
-                
-
-
+        #extract nodes marked ._to_extract
+        extracted_cnt = 0
         for nd in self.node_differences:
 
             if not nd.to_extract:
@@ -210,8 +186,34 @@ class CloneClass():
                 nodes_to_name_dict[str(nd)] = generated_name
 
             nd.replace_nodes(parametrized_name=generated_name)
-        
+            extracted_cnt += 1
 
+    def find_local_variables(self):
+        """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
+        If so, NodeDifference.to_extract is set to False, meaning that the AST node will not be extracted and replaced with a new name.
+
+        TODO: Check whether assignment is conditonal (May not be reached if inside if/loop). If not certain to be reached, extract anyway?
+        For now, we assume it is unconditional.
+        """
+        nodes_to_local_lineno_definition : dict = {}
+        #str representation of list of nodes -> earliest local definition (or None)
+        #only matters for NameNodeDifference objects (only they can be on left side of assign)
+
+
+        #find earliest definition of local name
+        for nd in self.node_differences:
+            #handle local names (don't have to be parametrized)
+            if not str(nd) in nodes_to_local_lineno_definition.keys():
+                nodes_to_local_lineno_definition[str(nd)] = None
+            if nd.stringtype == "name" and nd.left_side_assign:
+                if nodes_to_local_lineno_definition[str(nd)] is None or nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
+                    nodes_to_local_lineno_definition[str(nd)] = nd.lineno
+
+        #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
+        for nd in self.node_differences:
+            if nd.stringtype == "name":
+                if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
+                    nd.to_extract = False
 
     def handle_different_nodes(self, nodes):
         print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
@@ -220,6 +222,8 @@ class CloneClass():
 
 
     def remove_redundant_clones(self):
+        """Removes clones which have been parametrized from AST (and therefore subsequent output file).
+        """
         if not self.refactored:
             print("Cannot remove redundant nodes before refactoring AST")
             sys.exit()
@@ -237,16 +241,11 @@ class CloneClass():
             cur_nodes_values = []
 
             for node_list in self.node_differences:
-                
                 if not node_list.to_extract:
-                    print("skipping one")
                     continue
 
-                print("im here")
                 cur_nodes_values.append(node_list[clone_ind])
-
             values.append(tuple(cur_nodes_values))
-
         return values
     
 
@@ -271,9 +270,9 @@ class CloneClass():
         for clone in self.clones:
             clone_nodes.append(clone.ast_node)
 
-        self.get_differences(clone_nodes)
+        self.get_clone_differences(clone_nodes)
 
-        self.extract_differences()
+        self.extract_clone_differences()
         if len(self.node_differences) > 0:
 
             #create pytest decorator

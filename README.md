@@ -7,14 +7,14 @@ Runs with python 3.10 <=
 
 TODO:
 
-- write extract_differences function to handle names on left side of assignment (using NameNodeDifference class)
+- NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
 - find a better way to parametrize attribute, if any (better than get_attr())
 
 - import pytest if not imported in source already (only if changes are made)
 
 - If decorator in all clones, put in target... Else:
-- Give a warning that the refactoring could be wrong when dealing with decorators/annotations? (except .parametrize)
+    - Give a warning that the refactoring could be wrong when dealing with decorators/annotations? (except .parametrize)
 
 - Figure out when names need to be extracted, and when they dont. Idea: if it appears on left side of assign during the test, it won't have to be extracted? Only the case if it isn't potentially unreached code. Eventually, extract all names anyway. Example:
 ```python
