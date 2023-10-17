@@ -9,6 +9,14 @@ TODO:
 
 - NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
+- How to handle this
+```python
+from ert.config.field import TRANSFORM_FUNCTIONS
+
+@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
+
+```
+
 - find a better way to parametrize attribute, if any (better than get_attr())
 
 - import pytest if not imported in source already (only if changes are made)

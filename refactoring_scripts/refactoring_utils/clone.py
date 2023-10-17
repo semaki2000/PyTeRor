@@ -1,5 +1,6 @@
 import ast
 import sys
+from .clone_ast_utilities import CloneASTUtilities as CAU
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
@@ -24,35 +25,25 @@ class Clone():
 
         for decorator in self.ast_node.decorator_list:
             
-            #parametrize call, lots of if-s to avoid errors with other decorators
-            if type(decorator) == ast.Call and type(decorator.func) == ast.Attribute:
-                #if over mutiple lines for "readability"
-                if type(decorator.func.value) == ast.Attribute:
-                    if type(decorator.func.value.value) == ast.Name:
-                        if decorator.func.value.value.id == "pytest" and decorator.func.value.attr == "mark" and decorator.func.attr == "parametrize":
-
-                            #get contents of p.m.parametrize as actual literals
-                            #can be in tuple or single element
-                            args_list = []
-                            for args in decorator.args[1].elts:
-                                if type(args) == ast.Tuple:
-                                    tuple_vals = tuple(x.value for x in args.elts)
-                                elif type(args) == ast.Constant:        
-                                    tuple_vals = tuple([args.value])
-                                args_list.append(tuple_vals)
+            if CAU.is_parametrize_decorator(decorator):
+                #get contents of p.m.parametrize as actual literals
+                #can be in tuple or single element
+                args_list = []
+                for args in decorator.args[1].elts:
+                    if type(args) == ast.Tuple:
+                        tuple_vals = tuple(x.value for x in args.elts)
+                    elif type(args) == ast.Constant:        
+                        tuple_vals = tuple([args.value])
+                    args_list.append(tuple_vals)
 
 
-                            self.parametrized_values = (decorator.args[0].value, args_list)
-                            self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
-                            return
+                self.parametrized_values = (decorator.args[0].value, args_list)
+                self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
+                return
 
-                #fixture with params (fixture as call)
-                elif type(decorator.func.value) == ast.Name and decorator.func.value.id == "pytest" and decorator.func.attr == "fixture":
-                    self.is_fixture = True
-            #simple fixture (no call, only attribute)
-            elif type(decorator) == ast.Attribute and type(decorator.value) == ast.Name and  decorator.value.id == "pytest" and decorator.attr == "fixture":
-                self.is_fixture = True            
-        
+
+            elif CAU.is_fixture_decorator(decorator):
+                self.is_fixture = True
             
 
     def get_ast_node(self):
