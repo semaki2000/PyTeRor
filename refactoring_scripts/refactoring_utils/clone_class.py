@@ -15,7 +15,7 @@ class CloneClass():
     """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
-
+    cnt = 0
     def __init__(self, ast_clones : list) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
@@ -24,6 +24,8 @@ class CloneClass():
             - ast_clones - list of Clone objects
 
         """
+        self.id = self.cnt
+        self.cnt += 1
         self.redundant_clones = []
         self.refactored = False
         self.node_differences = []
@@ -38,7 +40,7 @@ class CloneClass():
 
     def process_clones(self):
         """Processes the given clones by 
-            1. excluding clones which are fixtures (parameterising fixtures will unintentionally parameterize the tests using those fixtures)
+            1. excluding clones which are fixtures (parametrising fixtures will unintentionally parametrize the tests using those fixtures)
         """
         remove_on_index = []
         for clone in self.clones:  
@@ -51,7 +53,7 @@ class CloneClass():
 
     def print_pre_info(self):
         """Print info before refactoring. On object creation."""
-        print("Created clone class with contents:")
+        print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
     
@@ -94,16 +96,9 @@ class CloneClass():
         return pytest_node
 
 
-    def get_clone_differences(self, clone_nodes : list):
-        """Given a list of ast-nodes which are (type2) clones, finds nodes that are different between them
-        and replaces those with new variables in the AST, returning the nodes that are different between clones.
-
-
-        Parameters: 
-            - nodes - list of ast-nodes which are clones
-
-        Returns:
-            List of nodes which are different between the clones.
+    def get_clone_differences(self):
+        """Travels recursively down through the AST, looking for nodes that are different.
+        When a difference is found, a NodeDifference object is created and added to self.nodeDifferences.
         """
         def get_differences_recursive(parent_nodes: list, left_side_assign = False):
             #starts at clone nodes, works its way down AST
@@ -132,6 +127,9 @@ class CloneClass():
                         else:
                             left_side_assign = False
                     #constants, but different values
+
+                    #TODO: add check for in conditional code (if/while/)
+
                     
                     if type(child_nodes[0]) == ast.Constant:
                         if any(child.value != child_nodes[0].value for child in child_nodes):
@@ -161,7 +159,7 @@ class CloneClass():
                 except StopIteration:
                     break
             return
-        get_differences_recursive(clone_nodes)
+        get_differences_recursive([clone.ast_node for clone in self.clones])
 
     def extract_clone_differences(self):
         """Uses the NodeDifference objects in the self.nodeDifferences list to extract the differences from each clone, 
@@ -174,7 +172,6 @@ class CloneClass():
         #extract nodes marked ._to_extract
         extracted_cnt = 0
         for nd in self.node_differences:
-
             if not nd.to_extract:
                 continue
 
@@ -204,9 +201,9 @@ class CloneClass():
         for nd in self.node_differences:
             #handle local names (don't have to be parametrized)
             if not str(nd) in nodes_to_local_lineno_definition.keys():
-                nodes_to_local_lineno_definition[str(nd)] = None
+                nodes_to_local_lineno_definition[str(nd)] = float('inf')
             if nd.stringtype == "name" and nd.left_side_assign:
-                if nodes_to_local_lineno_definition[str(nd)] is None or nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
+                if nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
                     nodes_to_local_lineno_definition[str(nd)] = nd.lineno
 
         #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
@@ -230,13 +227,24 @@ class CloneClass():
         for clone in self.redundant_clones:
             clone.detach()
 
+
+    def check_clone_decorators(self):
+        """Checks whether clones have the same decorators.
+        If so, decorator is kept in target.ast_node.decorators.
+        If not... ?"""
+        #TODO:
+        pass
+
+
+
+
     def get_differences_as_args(self):
         """Goes ("transposed") through the nodes that are marked as different, extracting the name or value that is different from each, 
         creating a list of tuples, where each tuple has actual parameters for the formal parameters given in pytest.mark.parametrize().
         
         """
         values = []
-        print(self.node_differences)
+        
         for clone_ind in range(len(self.node_differences[0])):
             cur_nodes_values = []
 
@@ -251,7 +259,7 @@ class CloneClass():
 
     def print_post_info(self):
         """Print info after refactoring."""
-        print("Refactored")
+        print(f"Refactored clone class {self.id}")
         [print(f"   Function {x.funcname}") for x in self.clones]
         print("into " + self.target.new_funcname)
         for x, y in [(self.name_gen.constants_cnt, "constants"), (self.name_gen.names_cnt, "names"), (self.name_gen.other_cnt, "other nodes")]:
@@ -262,15 +270,19 @@ class CloneClass():
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
-            print("Cannot parametrize one or fewer tests.")
+            print("Error in clone class {id}: Cannot parametrize one or fewer tests.")
             return
     
-        #else
+        
         clone_nodes = []
         for clone in self.clones:
             clone_nodes.append(clone.ast_node)
 
-        self.get_clone_differences(clone_nodes)
+        self.get_clone_differences()
+
+        self.check_clone_decorators()
+
+        self.find_local_variables()
 
         self.extract_clone_differences()
         if len(self.node_differences) > 0:
@@ -279,9 +291,11 @@ class CloneClass():
             values = self.get_differences_as_args()
                 
             decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)
+
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
             self.target.rename_target()
+
             self.redundant_clones = self.clones[1:]
             self.refactored = True
             self.remove_redundant_clones()

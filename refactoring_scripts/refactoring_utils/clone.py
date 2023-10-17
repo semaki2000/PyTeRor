@@ -7,6 +7,7 @@ class Clone():
     def __init__(self, ast_node, parent_node, lineno) -> None:
         self.parametrized_values = None
         self.is_fixture : bool = False
+        self.unknown_decorator = False
         self.ast_node = ast_node
         self.parent_node = parent_node
         self.lineno = lineno
@@ -27,17 +28,23 @@ class Clone():
             
             if CAU.is_parametrize_decorator(decorator):
                 #get contents of p.m.parametrize as actual literals
-                #can be in tuple or single element
-                args_list = []
-                for args in decorator.args[1].elts:
-                    if type(args) == ast.Tuple:
-                        tuple_vals = tuple(x.value for x in args.elts)
-                    elif type(args) == ast.Constant:        
-                        tuple_vals = tuple([args.value])
-                    args_list.append(tuple_vals)
+                #param_names is string
+                param_names = decorator.args[0]
+
+                # argvalues can be as name, or a list of either tuples or single elements.
+                if type(decorator.args[1]) == ast.Name: 
+                    values = decorator.args[1]
+                else:
+                    values = []
+                    for args in decorator.args[1].elts:
+                        if type(args) == ast.Tuple:
+                            tuple_vals = tuple(x.value for x in args.elts)
+                        elif type(args) == ast.Constant:        
+                            tuple_vals = tuple([args.value])
+                        values.append(tuple_vals)
 
 
-                self.parametrized_values = (decorator.args[0].value, args_list)
+                self.parametrized_values = (param_names, values)
                 self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
                 return
 
@@ -45,6 +52,10 @@ class Clone():
             elif CAU.is_fixture_decorator(decorator):
                 self.is_fixture = True
             
+            else:
+                print("unknown decorator")
+                print(ast.unparse(decorator))
+                self.unknown_decorator = True                
 
     def get_ast_node(self):
         return self.ast_node
