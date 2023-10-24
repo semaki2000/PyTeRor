@@ -28,8 +28,8 @@ class Clone():
             
             if CAU.is_parametrize_decorator(decorator):
                 #get contents of p.m.parametrize as actual literals
-                #param_names is string
-                param_names = decorator.args[0]
+                #assuming param_names is string
+                param_names = decorator.args[0].value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
                 if type(decorator.args[1]) == ast.Name: 
@@ -44,7 +44,7 @@ class Clone():
                         values.append(tuple_vals)
 
 
-                self.parametrized_values = (param_names, values)
+                self.parametrized_values = (param_names.split(","), values)
                 self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
                 return
 

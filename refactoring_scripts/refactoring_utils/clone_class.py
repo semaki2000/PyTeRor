@@ -16,22 +16,21 @@ class CloneClass():
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
     cnt = 0
-    def __init__(self, ast_clones : list) -> None:
+    def __init__(self, clones : list) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
     
         Parameters: 
-            - ast_clones - list of Clone objects
+            - clones - list of Clone objects
 
         """
         self.id = self.cnt
         self.cnt += 1
         self.redundant_clones = []
-        self.refactored = False
         self.node_differences = []
-        self.func_names = []
+        self.node_differences_in_parametrize = [] #boolean list #TODO: change variable name(s)
         self.name_gen = NameGenerator()
-        self.clones = ast_clones
+        self.clones = clones
         self.process_clones()
         #self.print_pre_info()
         #set target clone
@@ -46,9 +45,11 @@ class CloneClass():
         for clone in self.clones:  
             if clone.is_fixture:
                 remove_on_index.insert(0, clone)
+            print(clone.parametrized_values)
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
+
 
 
     def print_pre_info(self):
@@ -177,13 +178,27 @@ class CloneClass():
 
             if str(nd) in nodes_to_name_dict.keys():
                 generated_name = nodes_to_name_dict[str(nd)]
+                nd.previously_extracted = True
                 
             else:
                 generated_name = self.name_gen.new_name(nd.stringtype)
                 nodes_to_name_dict[str(nd)] = generated_name
 
-            nd.replace_nodes(parametrized_name=generated_name)
+            self.replace_nodes(nd, generated_name)
             extracted_cnt += 1
+
+
+    def replace_nodes(self, nd, generated_name):
+
+        ind = self.node_differences.index(nd)
+        if self.node_differences_in_parametrize[ind]:
+            #replace name in .parametrize decorator with new generated name
+            pass
+
+
+        nd.replace_nodes(generated_name)
+
+
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -212,6 +227,24 @@ class CloneClass():
                 if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
                     nd.to_extract = False
 
+
+    def match_parametrize_decorator(self):
+        """For each parametrize decorator, check if each parameter name is in a NodeDifferences object. 
+        If so, adds to bool list node_differences_in_parametrize, which says whether the node_difference at each index is in parametrize decorator."""
+
+        for nd in self.node_differences:
+            in_parametrize = False
+            if not nd.to_extract:
+                continue
+
+            if type(nd) == NameNodeDifference:
+                #check if name in pre-existing parametrize decorator
+                for i in range(len(self.clones)):
+                    if self.clones[i].parametrized_values != None and nd[i].id in self.clones[i].parametrized_values[0]: #if 
+                        in_parametrize = True            
+            self.node_differences_in_parametrize.append(in_parametrize)
+
+
     def handle_different_nodes(self, nodes):
         print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
         print(nodes)
@@ -221,9 +254,6 @@ class CloneClass():
     def remove_redundant_clones(self):
         """Removes clones which have been parametrized from AST (and therefore subsequent output file).
         """
-        if not self.refactored:
-            print("Cannot remove redundant nodes before refactoring AST")
-            sys.exit()
         for clone in self.redundant_clones:
             clone.detach()
 
@@ -249,12 +279,13 @@ class CloneClass():
             cur_nodes_values = []
 
             for node_list in self.node_differences:
-                if not node_list.to_extract:
+                if node_list.previously_extracted or not node_list.to_extract:
                     continue
-
+                
                 cur_nodes_values.append(node_list[clone_ind])
             values.append(tuple(cur_nodes_values))
         return values
+    
     
 
     def print_post_info(self):
@@ -283,7 +314,7 @@ class CloneClass():
         self.check_clone_decorators()
 
         self.find_local_variables()
-
+        self.match_parametrize_decorator()
         self.extract_clone_differences()
         if len(self.node_differences) > 0:
 
@@ -297,7 +328,6 @@ class CloneClass():
             self.target.rename_target()
 
             self.redundant_clones = self.clones[1:]
-            self.refactored = True
             self.remove_redundant_clones()
 
         #self.print_post_info()

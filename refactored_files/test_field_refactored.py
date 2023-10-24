@@ -66,7 +66,7 @@ def test_unknown_file_extensions_raises_config_validation_error(ext, expected, p
     with pytest.raises(ConfigValidationError, match=expected):
         _ = parse_field_line(f'FIELD F PARAMETER param{ext} INIT_FILES:f.grdecl')
 
-@pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:', transform, transform), ('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:', transform, transform), ('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:', boolean, boolean)])
+@pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:', transform), ('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:', transform), ('FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:', boolean)])
 def test_output_transform_is_gotten_from_keyword_parametrized(parse_field_line, transform, parametrized_constant_0, parametrized_name_0):
     field = parse_field_line(f'{parametrized_constant_0}{parametrized_name_0}')
     assert field.output_transformation == parametrized_name_0

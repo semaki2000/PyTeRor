@@ -7,28 +7,55 @@ Runs with python 3.10 <=
 
 TODO:
 
-- fix bug with same name appearing multiple times in args, if used multiple times in test:
+
+- fix bug with same name appearing multiple times in .parametrize args, if used multiple times in test:
 ```python
 @pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('', transform, transform), ('', transform, transform), ('', boolean, boolean)])
 ```
 
 
-- NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
+- Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
-- How to handle this
+- How to handle this?
 ```python
-from ert.config.field import TRANSFORM_FUNCTIONS
+from a import TRANSFORM_FUNCTIONS #tuple defined elsewhere
 
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
-
+@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS) #then used in annotation
+def test_...():
 ```
 
-- find a better way to parametrize attribute, if any (better than get_attr())
+- Parametrize attributes? (Probably not a good idea, but can potentially be done using get_attr)
 
-- import pytest if not imported in source already (only if changes are made)
+- 'import pytest' into source code if not imported in source already (only if changes are made to file)
 
-- If decorator in all clones, put in target... Else:
+- Problems with pre-existing decorators in clones...
+    - If there is a .parametrize decorator in all clones, put in target... Else:
     - Give a warning that the refactoring could be wrong when dealing with decorators/annotations? (except .parametrize)
+Example of above problem (from ERT-repo):
+```python
+@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
+def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
+    field = parse_field_line(
+        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:{transform}"
+    )
+    assert field.output_transformation == transform
+
+
+@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
+def test_init_transform_is_gotten_from_keyword(parse_field_line, transform):
+    field = parse_field_line(
+        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:{transform}"
+    )
+    assert field.input_transformation == transform
+
+@pytest.mark.parametrize("boolean", [True, False])
+def test_forward_init_is_gotten_from_keyword(parse_field_line, boolean):
+    field = parse_field_line(
+        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:{boolean}"
+    )
+    assert field.forward_init == boolean
+```
+
 
 - Figure out when names need to be extracted, and when they dont. Idea: if it appears on left side of assign during the test, it won't have to be extracted? Only the case if it isn't potentially unreached code. Eventually, extract all names anyway. Example:
 ```python
@@ -42,6 +69,7 @@ def test_name2():
     different_var_name = "bbb"
     assert different_var_name == "bbb"
 
+#refactored into ->
 @pytest.mark.parametrize("constant", [("aaa"), ("bbb")])
 def test_parametrized(constant):
     var_name = constant
@@ -59,11 +87,13 @@ def test_name1():
 def test_name2():
     assert different_var_name == "bbb"
 
+#refactored into -> 
 @pytest.mark.parametrize("name, constant", [(var_name, "aaa"), (different_var_name, "bbb")])
 def test_parametrized(constant):
     name = constant
     assert name == constant
 
+#How much precaution of things defined outside scope should we take?
 ```
 
 
@@ -79,7 +109,7 @@ class B:
     def test_name2():
         assert name2 == "bbb"
 ```
-- How to name new generated test? User input?
+- How to name new generated test? User input? Related to:
 - Problem with name of test being lost when parametrizing. Maybe try using markers when parametrizing functions in order to keep info on old function names? For example:
 ```python
 def test_name1():
@@ -98,7 +128,6 @@ def test_(name): #what to call the refactored test? keep one of the old names? g
     assert name == "aaa"
 
 ```
-- Fix the stuff with .parametrize() (there can be multiple parametrize decorators, also result probably shouldn't be cartesian product)
 
 - Parsing and unparsing from AST gives lots of formatting problems:
     - All pre-existing whitespace and formatting is removed in whole file

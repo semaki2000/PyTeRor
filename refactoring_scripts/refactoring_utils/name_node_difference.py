@@ -10,11 +10,7 @@ class NameNodeDifference(NodeDifference):
         self.left_side_assign = left_side_assign
         self.stringtype = "name"
 
-        if self.left_side_assign: #TODO: change to: type(ctx) == ast.Store
-            print("On left side of assign statement", end=", ")
-            print("Difference with contents:")
-            [print(ast.unparse(x)) for x in self.nodes]
-            
+        #TODO: change left_side_assign to: type(ctx) == ast.Store            
 
     
     def __str__(self):
