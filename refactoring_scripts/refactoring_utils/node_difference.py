@@ -9,6 +9,7 @@ class NodeDifference:
         self.lineno = nodes[0].lineno
         self.to_extract = True
         self.previously_extracted = False
+        self.new_name = ""
 
     def __getitem__(self, index : int):
         if 0 <= index and index < len(self.nodes):

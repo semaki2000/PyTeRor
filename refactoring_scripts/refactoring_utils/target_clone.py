@@ -8,6 +8,7 @@ class TargetClone(Clone):
     def __init__(self, clone_to_copy : Clone): 
         super().__init__(clone_to_copy.ast_node, clone_to_copy.parent_node, clone_to_copy.lineno)
         self.new_funcname = self.funcname + "_parametrized"
+        self.new_parametrized_args = []
 
     def add_parameters_to_func_def(self, param_names: list):
         """Adds given parameter names to the function definition, 

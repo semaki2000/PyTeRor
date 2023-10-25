@@ -37,27 +37,18 @@ class Clone():
                     print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
                     sys.exit()
                 else:
-                    param_names2 = param_names.split(",")
-                    self.parametrized_args2 = []
-                    for name in param_names2:
-                        self.parametrized_args2.append(ParametrizedArg(argname=name))
+                    param_names = param_names.split(",")
+                    self.parametrized_args = []
+                    for name in param_names:
+                        self.parametrized_args.append(ParametrizedArg(argname=name))
                     for args in decorator.args[1].elts:
                         if type(args) == ast.Tuple:
-                            [self.parametrized_args2[args.index(x)].add_value(x) for x in args]
+                            [self.parametrized_args[args.index(x)].add_value(x) for x in args]
                         elif type(args) == ast.Constant:        
                             #should only be one ParametrizedArg object
-                            self.parametrized_args2[0].add_value(args)
+                            self.parametrized_args[0].add_value(args)
  
-                    values = []
-                    for args in decorator.args[1].elts:
-                        if type(args) == ast.Tuple:
-                            tuple_vals = tuple(x.value for x in args.elts)
-                        elif type(args) == ast.Constant:        
-                            tuple_vals = tuple([args.value])
-                        values.append(tuple_vals)
 
-
-                self.parametrized_args = (param_names.split(","), values)
                 self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
                 return
 

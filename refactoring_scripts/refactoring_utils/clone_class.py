@@ -6,6 +6,7 @@ from .target_clone import TargetClone
 from .node_difference import NodeDifference
 from .constant_node_difference import ConstantNodeDifference
 from .name_node_difference import NameNodeDifference
+from .parametrized_arg import ParametrizedArg
 
 import ast
 import sys
@@ -58,28 +59,31 @@ class CloneClass():
         [print(f"   Function {x.funcname}") for x in self.clones]
 
     
-    def get_ast_node_for_pytest_decorator(self, f_params: list, a_params_list: list):
+    def get_ast_node_for_pytest_decorator(self):
         """Creates and returns a @pytest.mark.parametrize AST decorator-node 
-        from a list of formal parameters and a list of tuples with actual parameters per call.
+        using info from ParametrizedArg objects.
         https://docs.pytest.org/en/7.3.x/how-to/parametrize.html 
-        Also takes into account preexisting parametrization, 
+        Doesn't yet take into account preexisting parametrization, 
         adding preexisting f_params to the f_params list, 
-        and combining the tuples of a_params with preexisting ones.
-
-
-        Parameters: 
-            - f_params - list of strings which are names of formal parameters
-            - a_params_list - list of tuples of actual parameters, each tuple being correctly ordered actual parameters for a call to the function
+        or combining the tuples of a_params with preexisting ones.
 
         Returns:
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
         """
 
+        tuple_count = len(self.target.new_parametrized_args[0].values)
+        
+        f_params = []
+        a_params = [[] for x in range(tuple_count)]
+        for pdarg in self.target.new_parametrized_args:
+            f_params.append(pdarg.argname)
+            for ind in range(tuple_count):
+                a_params[ind].append(pdarg.values[ind])
         args = []
         args.append(ast.Constant(value=", ".join(f_params)))
         
         list_tuples = []
-        for tup in a_params_list:
+        for tup in a_params:
             if len(tup) == 1:
                 list_tuples.append(tup[0])
             else:
@@ -169,6 +173,7 @@ class CloneClass():
                 
             else:
                 generated_name = self.name_gen.new_name(nd.stringtype)
+                nd.new_name = generated_name
                 nodes_to_name_dict[str(nd)] = generated_name
 
             self.replace_nodes(nd, generated_name)
@@ -228,7 +233,7 @@ class CloneClass():
             if type(nd) == NameNodeDifference:
                 #check if name in pre-existing parametrize decorator
                 for i in range(len(self.clones)):
-                    if self.clones[i].parametrized_args != [] and nd[i].id in self.clones[i].parametrized_args[0]: #if 
+                    if self.clones[i].parametrized_args != [] and any(nd[i].id == x.argname for x in self.clones[i].parametrized_args):
                         in_parametrize = True            
             self.node_differences_in_parametrize.append(in_parametrize)
 
@@ -246,34 +251,20 @@ class CloneClass():
             clone.detach()
 
 
-    def check_clone_decorators(self):
-        """Checks whether clones have the same decorators.
-        If so, decorator is kept in target.ast_node.decorators.
-        If not... ?"""
-        #TODO:
-        pass
-
-
-
-
-    def get_differences_as_args(self):
+    def set_differences_as_paramd_args(self):
         """Goes ("transposed") through the nodes that are marked as different, extracting the name or value that is different from each, 
         creating a list of tuples, where each tuple has actual parameters for the formal parameters given in pytest.mark.parametrize().
         
         """
-        values = []
+        for nd in self.node_differences:
+            if nd.previously_extracted or not nd.to_extract:
+                continue
+            paramd_arg = ParametrizedArg(nd.new_name)
+            for clone_ind in range(len(self.clones)):
+                paramd_arg.add_value(nd[clone_ind]) 
         
-        for clone_ind in range(len(self.node_differences[0])):
-            cur_nodes_values = []
-
-            for node_list in self.node_differences:
-                if node_list.previously_extracted or not node_list.to_extract:
-                    continue
-                
-                cur_nodes_values.append(node_list[clone_ind])
-            values.append(tuple(cur_nodes_values))
-        return values
-    
+            self.target.new_parametrized_args.append(paramd_arg)
+        
     
 
     def print_post_info(self):
@@ -299,17 +290,15 @@ class CloneClass():
 
         self.get_clone_differences()
 
-        self.check_clone_decorators()
-
         self.find_local_variables()
         self.match_parametrize_decorator()
         self.extract_clone_differences()
         if len(self.node_differences) > 0:
 
             #create pytest decorator
-            values = self.get_differences_as_args()
+            self.set_differences_as_paramd_args()
                 
-            decorator = self.get_ast_node_for_pytest_decorator(self.name_gen.names, values)
+            decorator = self.get_ast_node_for_pytest_decorator()
 
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
