@@ -1,11 +1,12 @@
 import ast
 import sys
 from .clone_ast_utilities import CloneASTUtilities as CAU
+from .parametrized_arg import ParametrizedArg
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
     def __init__(self, ast_node, parent_node, lineno) -> None:
-        self.parametrized_values = None
+        self.parametrized_args = [] #list of parametrizedArg object
         self.is_fixture : bool = False
         self.unknown_decorator = False
         self.ast_node = ast_node
@@ -33,8 +34,20 @@ class Clone():
 
                 # argvalues can be as name, or a list of either tuples or single elements.
                 if type(decorator.args[1]) == ast.Name: 
-                    values = decorator.args[1]
+                    print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
+                    sys.exit()
                 else:
+                    param_names2 = param_names.split(",")
+                    self.parametrized_args2 = []
+                    for name in param_names2:
+                        self.parametrized_args2.append(ParametrizedArg(argname=name))
+                    for args in decorator.args[1].elts:
+                        if type(args) == ast.Tuple:
+                            [self.parametrized_args2[args.index(x)].add_value(x) for x in args]
+                        elif type(args) == ast.Constant:        
+                            #should only be one ParametrizedArg object
+                            self.parametrized_args2[0].add_value(args)
+ 
                     values = []
                     for args in decorator.args[1].elts:
                         if type(args) == ast.Tuple:
@@ -44,7 +57,7 @@ class Clone():
                         values.append(tuple_vals)
 
 
-                self.parametrized_values = (param_names.split(","), values)
+                self.parametrized_args = (param_names.split(","), values)
                 self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
                 return
 

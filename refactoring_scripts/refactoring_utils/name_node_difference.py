@@ -5,14 +5,17 @@ import ast
 #ctx can be Load/Store/Del
 class NameNodeDifference(NodeDifference):
 
-    def __init__(self, nodes, parent_nodes, left_side_assign):
+    def __init__(self, nodes, parent_nodes):
         super().__init__(nodes, parent_nodes)
-        self.left_side_assign = left_side_assign
+        self.left_side_assign = type(nodes[0].ctx) == ast.Store
         self.stringtype = "name"
 
-        #TODO: change left_side_assign to: type(ctx) == ast.Store            
-
     
+    def in_names(self, name:str):
+        """Checks whether a given string is one of the nodes of this object"""
+        return any(node.id == name for node in self.nodes)
+            
+
     def __str__(self):
         ret = []
         for node in self.nodes:

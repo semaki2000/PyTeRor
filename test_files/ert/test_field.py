@@ -133,7 +133,7 @@ def test_unknown_file_extensions_raises_config_validation_error(
         _ = parse_field_line(f"FIELD F PARAMETER param{ext} INIT_FILES:f.grdecl")
 
 
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
+@pytest.mark.parametrize("transform", ["INIT_TRANSFORM", "OUTPUT_TRANSFORM"])
 def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
     field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:{transform}"
@@ -141,7 +141,7 @@ def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
     assert field.output_transformation == transform
 
 
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
+@pytest.mark.parametrize("transform", ["INIT_TRANSFORM", "OUTPUT_TRANSFORM"])
 def test_init_transform_is_gotten_from_keyword(parse_field_line, transform):
     field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:{transform}"

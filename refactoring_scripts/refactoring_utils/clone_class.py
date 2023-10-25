@@ -45,7 +45,7 @@ class CloneClass():
         for clone in self.clones:  
             if clone.is_fixture:
                 remove_on_index.insert(0, clone)
-            print(clone.parametrized_values)
+            print("paramvals:", clone.parametrized_args)
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
@@ -101,7 +101,7 @@ class CloneClass():
         """Travels recursively down through the AST, looking for nodes that are different.
         When a difference is found, a NodeDifference object is created and added to self.nodeDifferences.
         """
-        def get_differences_recursive(parent_nodes: list, left_side_assign = False):
+        def get_differences_recursive(parent_nodes: list):
             #starts at clone nodes, works its way down AST
             #saves info on whether potential differences are on left side of an assign statement
             
@@ -120,16 +120,6 @@ class CloneClass():
                     #if not all same type, something probably wrong:
                     if not all(isinstance(child, type(child_nodes[0])) for child in child_nodes):
                         self.handle_different_nodes(child_nodes)
-                            
-                    #from here, all are same type
-                    if type(parent_nodes[0]) == ast.Assign:
-                        if child_nodes[0] in parent_nodes[0].targets:
-                            left_side_assign = True
-                        else:
-                            left_side_assign = False
-                    #constants, but different values
-
-                    #TODO: add check for in conditional code (if/while/)
 
                     
                     if type(child_nodes[0]) == ast.Constant:
@@ -139,7 +129,7 @@ class CloneClass():
 
                     elif type(child_nodes[0]) == ast.Name and any(child.id != child_nodes[0].id for child in child_nodes):
                         
-                        self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, left_side_assign))
+                        self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes))
                         continue
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
@@ -153,10 +143,7 @@ class CloneClass():
                             replace_node = ast.Name(self.name_gen.new_name("attr"))
                             CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], replace_node)
 
-                    
-                    
-                    get_differences_recursive(child_nodes, left_side_assign)
-                        
+                    get_differences_recursive(child_nodes)
                 except StopIteration:
                     break
             return
@@ -165,7 +152,8 @@ class CloneClass():
     def extract_clone_differences(self):
         """Uses the NodeDifference objects in the self.nodeDifferences list to extract the differences from each clone, 
         and replace them in the target with the correct name. 
-        If two node differences have the same nodes(nodes with the same values), gives them the same name.         
+        If two node differences have the same nodes(nodes with the same values), gives them the same name.
+        Also looks for the names in       
         """
         #str representation of list of nodes -> generated name for that list of nodes
         nodes_to_name_dict : dict = {}
@@ -175,7 +163,6 @@ class CloneClass():
         for nd in self.node_differences:
             if not nd.to_extract:
                 continue
-
             if str(nd) in nodes_to_name_dict.keys():
                 generated_name = nodes_to_name_dict[str(nd)]
                 nd.previously_extracted = True
@@ -187,6 +174,7 @@ class CloneClass():
             self.replace_nodes(nd, generated_name)
             extracted_cnt += 1
 
+        
 
     def replace_nodes(self, nd, generated_name):
 
@@ -204,8 +192,7 @@ class CloneClass():
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
         If so, NodeDifference.to_extract is set to False, meaning that the AST node will not be extracted and replaced with a new name.
 
-        TODO: Check whether assignment is conditonal (May not be reached if inside if/loop). If not certain to be reached, extract anyway?
-        For now, we assume it is unconditional.
+        For now, we assume definition of local variables is unconditional.
         """
         nodes_to_local_lineno_definition : dict = {}
         #str representation of list of nodes -> earliest local definition (or None)
@@ -232,6 +219,7 @@ class CloneClass():
         """For each parametrize decorator, check if each parameter name is in a NodeDifferences object. 
         If so, adds to bool list node_differences_in_parametrize, which says whether the node_difference at each index is in parametrize decorator."""
 
+
         for nd in self.node_differences:
             in_parametrize = False
             if not nd.to_extract:
@@ -240,7 +228,7 @@ class CloneClass():
             if type(nd) == NameNodeDifference:
                 #check if name in pre-existing parametrize decorator
                 for i in range(len(self.clones)):
-                    if self.clones[i].parametrized_values != None and nd[i].id in self.clones[i].parametrized_values[0]: #if 
+                    if self.clones[i].parametrized_args != [] and nd[i].id in self.clones[i].parametrized_args[0]: #if 
                         in_parametrize = True            
             self.node_differences_in_parametrize.append(in_parametrize)
 
