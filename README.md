@@ -50,7 +50,8 @@ def test_init_transform_is_gotten_from_keyword(parse_field_line, transform):
 
 @pytest.mark.parametrize("boolean", [True, False])
 def test_forward_init_is_gotten_from_keyword(parse_field_line, boolean):
-    field = parse_field_line(
+    if ():
+        field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:{boolean}"
     )
     assert field.forward_init == boolean
@@ -96,6 +97,7 @@ def test_parametrized(constant):
 #How much precaution of things defined outside scope should we take?
 ```
 
+get_attr(obj, "a")
 
 - Parse the xml file (if we keep nicad)
 
@@ -128,6 +130,8 @@ def test_(name): #what to call the refactored test? keep one of the old names? g
     assert name == "aaa"
 
 ```
+
+new annotation?? 
 
 - Parsing and unparsing from AST gives lots of formatting problems:
     - All pre-existing whitespace and formatting is removed in whole file
