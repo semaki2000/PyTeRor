@@ -59,49 +59,6 @@ class CloneClass():
         print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
-    #TODO: remove
-    def get_ast_node_for_pytest_decorator(self):
-        """Creates and returns a @pytest.mark.parametrize AST decorator-node 
-        using info from ParametrizedArg objects.
-        https://docs.pytest.org/en/7.3.x/how-to/parametrize.html 
-        Doesn't yet take into account preexisting parametrization, 
-        adding preexisting f_params to the f_params list, 
-        or combining the tuples of a_params with preexisting ones.
-
-        Returns:
-            An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
-        """
-
-        tuple_count = len(self.target.new_parametrized_args[0].values)
-
-        f_params = []
-        a_params = [[] for x in range(tuple_count)]
-        for pdarg in self.target.new_parametrized_args:
-            
-            f_params.append(pdarg.argname)
-            for ind in range(tuple_count):
-                a_params[ind].append(pdarg.values[ind])
-        args = []
-        args.append(ast.Constant(value=", ".join(f_params)))
-        
-        list_tuples = []
-        for tup in a_params:
-            if len(tup) == 1:
-                list_tuples.append(tup[0])
-            else:
-                list_tuples.append(ast.Tuple(elts = list(tup)))
-        args.append(ast.List(elts=list_tuples))
-        pytest_node = ast.Call(
-            func=ast.Attribute(
-                value = ast.Attribute(
-                    value = ast.Name(id="pytest"), 
-                    attr = "mark"),
-                attr = "parametrize"), 
-            args = args,
-            keywords = [])
-                
-        return pytest_node
-
 
     def get_clone_differences(self):
         """Travels recursively down through the AST, looking for nodes that are different.
@@ -338,6 +295,9 @@ class CloneClass():
             self.replace_names_with_values()
             decorator = self.param_decorator.get_decorator()
 
+            for param in self.target.param_decorator.argnames:
+                self.target.remove_parameter_from_func_def(param)
+                
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
             self.target.rename_target()
@@ -346,5 +306,4 @@ class CloneClass():
             self.remove_redundant_clones()
 
         #self.print_post_info()
-        self.param_decorator.print_vals()
         

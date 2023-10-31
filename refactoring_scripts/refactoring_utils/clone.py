@@ -34,9 +34,17 @@ class Clone():
         Returns:
             None    
         """
-
         for name in param_names:
             self.ast_node.args.args.append(ast.arg(arg = name))
+
+
+    def remove_parameter_from_func_def(self, param_name):
+        for ind in range(len(self.ast_node.args.args)):
+            node = self.ast_node.args.args[ind]
+            if node.arg == param_name:
+                self.ast_node.args.args.remove(node)
+                return
+            
 
     #only used by target
     def rename_target(self):

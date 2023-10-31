@@ -49,8 +49,6 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         Returns:
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
         """
-        print()
-        print("creatin node")
         args = []
         args.append(ast.Constant(value=", ".join(self.argnames)))
         
