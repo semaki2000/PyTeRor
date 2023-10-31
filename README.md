@@ -8,12 +8,6 @@ Runs with python 3.10 <=
 TODO:
 
 
-- fix bug with name appearing in .parametrize args, instead of values:
-```python
-@pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('OUTPUT_TRANSFORM:', transform), ('INIT_TRANSFORM:', transform), ('FORWARD_INIT:', boolean)])
-```
-
-
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
 - How to handle this?

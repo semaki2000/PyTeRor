@@ -2,12 +2,11 @@
 from .name_generator import NameGenerator;
 from .clone_ast_utilities import CloneASTUtilities
 from .clone import Clone
-from .target_clone import TargetClone
 from .node_difference import NodeDifference
 from .constant_node_difference import ConstantNodeDifference
 from .name_node_difference import NameNodeDifference
 from .parametrized_arg import ParametrizedArg
-from .parametrize_decorator import ParametrizeDecorator
+from .target_parametrize_decorator import TargetParametrizeDecorator
 
 
 import ast
@@ -35,11 +34,10 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         self.process_clones()
-        self.param_decorator = ParametrizeDecorator(n_clones=len(self.clones))
+        self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones))
+        self.target = self.clones[0]
         #self.print_pre_info()
         #set target clone
-        self.clones[0] = self.target = TargetClone(clone_to_copy=self.clones[0])
-
 
     def process_clones(self):
         """Processes the given clones by 
@@ -61,7 +59,7 @@ class CloneClass():
         print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
-    
+    #TODO: remove
     def get_ast_node_for_pytest_decorator(self):
         """Creates and returns a @pytest.mark.parametrize AST decorator-node 
         using info from ParametrizedArg objects.
@@ -193,8 +191,8 @@ class CloneClass():
             names = self.node_differences[ind]
             values = [None for x in range(len(self.clones))]
             for arg in self.clones[ind].param_decorator.argnames:
-                for ind in range(len(names)):
-                    if arg== names[ind].id:
+                for i in range(len(names)):
+                    if arg == names[i].id:
                         #use name as a key in dict
                         print(arg)
                         
@@ -288,6 +286,33 @@ class CloneClass():
             print(f"    Parametrized {x} {y}.")
 
 
+    def replace_names_with_values(self):
+        """Function to replace previously parametrized names with their values. Example:
+        ```python
+#clone, pre-refactoring:
+@pytest.mark.parametrize('old_name', [('a'), ('b'), ('c')])
+#during refactoring may become:
+@pytest.mark.parametrize('parametrized_name_0', [old_name, ...])
+#after applying this function, it is turned into:
+@pytest.mark.parametrize('parametrized_name_0', [('a', ...), ('b', ...), ('c', ...)])
+"""
+        argnames = []
+        values = []
+        for clone in self.clones:
+            argnames += clone.param_decorator.argnames
+            for argname in clone.param_decorator.argnames:
+                values += clone.param_decorator.get_values(argname)
+        print("argnames", argnames)
+        print("values", values)
+        names = []
+        for argname in argnames:
+            names.append(ast.Name(argname))
+        new_argname = "parametrized_name_0"
+        self.param_decorator.remove_value_list(new_argname, names)
+        for ind in range(len(values)):
+            self.param_decorator.add_values_to_index(ind, new_argname, values[ind])
+
+
     def refactor_clones(self):
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
@@ -305,12 +330,13 @@ class CloneClass():
         self.find_local_variables()
         self.match_parametrize_decorator()
         self.extract_clone_differences()
+        
         if len(self.node_differences) > 0:
 
             #create pytest decorator
             self.set_differences_as_paramd_args()
-                
-            decorator = self.get_ast_node_for_pytest_decorator()
+            self.replace_names_with_values()
+            decorator = self.param_decorator.get_decorator()
 
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)

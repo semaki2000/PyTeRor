@@ -16,8 +16,36 @@ class Clone():
         self.parent_node = parent_node
         self.lineno = lineno
         self.funcname = ast_node.name
-        
         self.parse_decorator_list()
+
+        #only used by target
+        self.new_funcname = self.funcname + "_parametrized"
+        self.new_parametrized_args = []
+        
+
+    #only used by target
+    def add_parameters_to_func_def(self, param_names: list):
+        """Adds given parameter names to the function definition, 
+        putting them behind the pre-existing parameters.
+
+        Parameters: 
+            - param_names - list of strings to add as parameters to function definition
+
+        Returns:
+            None    
+        """
+
+        for name in param_names:
+            self.ast_node.args.args.append(ast.arg(arg = name))
+
+    #only used by target
+    def rename_target(self):
+        self.ast_node.name = self.new_funcname
+
+    #only used by target
+    def add_decorator(self, decorator):
+        self.ast_node.decorator_list.insert(0, decorator)
+        
     
     def parse_decorator_list(self):
         """'Parses' decorator list of this function to see if function is a fixture or is parameterized.
