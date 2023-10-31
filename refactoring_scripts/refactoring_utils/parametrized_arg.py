@@ -12,9 +12,9 @@ class ParametrizedArg:
     def __init__(self, argname : str):
         self.argname = argname
         self.values = []
-        print("created obj with argname:", self.argname)
+        
 
     def add_value(self, value):
         self.values.append(value)
-        print("added value:", value, "to argname:", self.argname)
+        
 

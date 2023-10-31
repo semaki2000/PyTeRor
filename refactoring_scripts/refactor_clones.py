@@ -76,7 +76,7 @@ def get_clones():
     #return [{Path("../test_files/ert/test_analysis_config.py").resolve(): [169, 180]},
             #{Path("../test_files/ert/test_analysis_config.py").resolve(): [191, 210]},
             #{Path("../test_files/ert/test_analysis_config.py").resolve(): [198, 217]}]
-    return [{Path("../test_files/ert/test_field.py").resolve(): [137, 145, 164]}]
+    return [{Path("../test_files/ert/test_field.py").resolve(): [14, 22, 30]}]
 
 
 

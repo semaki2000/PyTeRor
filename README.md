@@ -8,9 +8,9 @@ Runs with python 3.10 <=
 TODO:
 
 
-- fix bug with same name appearing multiple times in .parametrize args, if used multiple times in test:
+- fix bug with name appearing in .parametrize args, instead of values:
 ```python
-@pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('', transform, transform), ('', transform, transform), ('', boolean, boolean)])
+@pytest.mark.parametrize('parametrized_constant_0, parametrized_name_0', [('OUTPUT_TRANSFORM:', transform), ('INIT_TRANSFORM:', transform), ('FORWARD_INIT:', boolean)])
 ```
 
 

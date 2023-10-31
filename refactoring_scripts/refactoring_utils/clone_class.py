@@ -7,6 +7,8 @@ from .node_difference import NodeDifference
 from .constant_node_difference import ConstantNodeDifference
 from .name_node_difference import NameNodeDifference
 from .parametrized_arg import ParametrizedArg
+from .parametrize_decorator import ParametrizeDecorator
+
 
 import ast
 import sys
@@ -33,6 +35,7 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         self.process_clones()
+        self.param_decorator = ParametrizeDecorator(n_clones=len(self.clones))
         #self.print_pre_info()
         #set target clone
         self.clones[0] = self.target = TargetClone(clone_to_copy=self.clones[0])
@@ -46,7 +49,7 @@ class CloneClass():
         for clone in self.clones:  
             if clone.is_fixture:
                 remove_on_index.insert(0, clone)
-            print("paramvals:", clone.parametrized_args)
+            
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
@@ -72,10 +75,11 @@ class CloneClass():
         """
 
         tuple_count = len(self.target.new_parametrized_args[0].values)
-        
+
         f_params = []
         a_params = [[] for x in range(tuple_count)]
         for pdarg in self.target.new_parametrized_args:
+            
             f_params.append(pdarg.argname)
             for ind in range(tuple_count):
                 a_params[ind].append(pdarg.values[ind])
@@ -184,10 +188,17 @@ class CloneClass():
     def replace_nodes(self, nd, generated_name):
 
         ind = self.node_differences.index(nd)
-        if self.node_differences_in_parametrize[ind]:
+        if False or self.node_differences_in_parametrize[ind]:
             #replace name in .parametrize decorator with new generated name
-            pass
-
+            names = self.node_differences[ind]
+            values = [None for x in range(len(self.clones))]
+            for arg in self.clones[ind].param_decorator.argnames:
+                for ind in range(len(names)):
+                    if arg== names[ind].id:
+                        #use name as a key in dict
+                        print(arg)
+                        
+                        continue
 
         nd.replace_nodes(generated_name)
 
@@ -233,8 +244,8 @@ class CloneClass():
             if type(nd) == NameNodeDifference:
                 #check if name in pre-existing parametrize decorator
                 for i in range(len(self.clones)):
-                    if self.clones[i].parametrized_args != [] and any(nd[i].id == x.argname for x in self.clones[i].parametrized_args):
-                        in_parametrize = True            
+                    if not self.clones[i].param_decorator.is_empty() and any(nd[i].id == argname for argname in self.clones[i].param_decorator.argnames):
+                        in_parametrize = True
             self.node_differences_in_parametrize.append(in_parametrize)
 
 
@@ -259,10 +270,11 @@ class CloneClass():
         for nd in self.node_differences:
             if nd.previously_extracted or not nd.to_extract:
                 continue
+            self.param_decorator.add_argname(nd.new_name)
             paramd_arg = ParametrizedArg(nd.new_name)
             for clone_ind in range(len(self.clones)):
                 paramd_arg.add_value(nd[clone_ind]) 
-        
+            self.param_decorator.add_value_list(nd.new_name, nd.nodes)
             self.target.new_parametrized_args.append(paramd_arg)
         
     
@@ -308,5 +320,5 @@ class CloneClass():
             self.remove_redundant_clones()
 
         #self.print_post_info()
-        
+        self.param_decorator.print_vals()
         
