@@ -4,8 +4,27 @@
 Runs with python 3.10 <=
 
 
-
 TODO:
+1. add 'import pytest' to refactored source file if not there already
+
+2. Add function to split off a clone class from another
+    Could be useful if f.ex. 3 tests, where two are in one test class, and one is in another. (the two tests are parametrized, last is ignored)
+    Or if two tests have the same attribute, while another one is different. (first two parametrized, last ignored)
+
+3. Add functionality to CloneASTUtilities to find nodes that are in a class (in function find_clone_node_in_AST). 
+    Currently, only finds top-level nodes (looks through body of AST base)
+    Finding tests that are children nodes of nodes that aren't classes is probably not necessary.
+
+4. Add functionality to stop refactoring of a clone class if there is a difference in attribute.
+    F.ex. CloneClass.get_clone_differences could return a boolean whether the refactoring should continue.
+
+5. Pre-existing decorators, non-pytest.
+    If all clones have the same decorator, no problem
+    Otherwise, split off clones with the same decorator into new clone class.
+
+6. (Maybe) Create NodeDifference subclass for Attribute differences. Not used for refactoring, but useful for splitting classes (as mentioned above, 2)
+
+
 
 
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
@@ -18,93 +37,7 @@ from a import TRANSFORM_FUNCTIONS #tuple defined elsewhere
 def test_...():
 ```
 
-- Parametrize attributes? (Probably not a good idea, but can potentially be done using get_attr)
 
-- 'import pytest' into source code if not imported in source already (only if changes are made to file)
-
-- Problems with pre-existing decorators in clones...
-    - If there is a .parametrize decorator in all clones, put in target... Else:
-    - Give a warning that the refactoring could be wrong when dealing with decorators/annotations? (except .parametrize)
-Example of above problem (from ERT-repo):
-```python
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
-def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
-    field = parse_field_line(
-        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:{transform}"
-    )
-    assert field.output_transformation == transform
-
-
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS)
-def test_init_transform_is_gotten_from_keyword(parse_field_line, transform):
-    field = parse_field_line(
-        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:{transform}"
-    )
-    assert field.input_transformation == transform
-
-@pytest.mark.parametrize("boolean", [True, False])
-def test_forward_init_is_gotten_from_keyword(parse_field_line, boolean):
-    if ():
-        field = parse_field_line(
-        f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:{boolean}"
-    )
-    assert field.forward_init == boolean
-```
-
-
-- Figure out when names need to be extracted, and when they dont. Idea: if it appears on left side of assign during the test, it won't have to be extracted? Only the case if it isn't potentially unreached code. Eventually, extract all names anyway. Example:
-```python
-
-#names can safely be ignored here, 
-def test_name1():
-    var_name = "aaa"
-    assert var_name == "aaa"
-
-def test_name2():
-    different_var_name = "bbb"
-    assert different_var_name == "bbb"
-
-#refactored into ->
-@pytest.mark.parametrize("constant", [("aaa"), ("bbb")])
-def test_parametrized(constant):
-    var_name = constant
-    assert var_name == constant
-
-
-#######################################
-
-#names could be defined outside scope of test here, 
-# therefore have to be extracted into parametrize decorator
-
-def test_name1():
-    assert var_name == "aaa"
-
-def test_name2():
-    assert different_var_name == "bbb"
-
-#refactored into -> 
-@pytest.mark.parametrize("name, constant", [(var_name, "aaa"), (different_var_name, "bbb")])
-def test_parametrized(constant):
-    name = constant
-    assert name == constant
-
-#How much precaution of things defined outside scope should we take?
-```
-
-get_attr(obj, "a")
-
-- Parse the xml file (if we keep nicad)
-
-- Handle tests in classes. Also clone classes where some tests are in different test classes (clone class must be split). Example, where two clones are in different test classes should not be parametrized:
-
-```python
-class A:
-    def test_name1():
-        assert name1 == "aaa"
-class B:
-    def test_name2():
-        assert name2 == "bbb"
-```
 - How to name new generated test? User input? Related to:
 - Problem with name of test being lost when parametrizing. Maybe try using markers when parametrizing functions in order to keep info on old function names? For example:
 ```python
@@ -133,9 +66,6 @@ new annotation??
     - Potential solutions: 
         - use a formatter (black, yapf). Problem again: different formatting than original file
         - Only use ast.unparse() for the clones. keep original file as much as possible, just remove lines with clones and replace with ast.unparse() output
-
-- Find out what to do with clones between files (probably best to ignore).
-
 
 
 
