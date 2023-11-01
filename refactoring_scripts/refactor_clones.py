@@ -48,8 +48,9 @@ def main():
 
 
     target_location = Path("../refactored_files").resolve()
-    for ast_base in asts_dict.values():
-        ASTParser.parse_AST_to_file(ast_base, target_location / (Path(sys.argv[1]).stem + "_refactored.py"))
+    for key in asts_dict.keys():
+        print("refactored file:", key)
+        ASTParser.parse_AST_to_file(asts_dict[key], target_location / (Path(sys.argv[1]).stem + "_refactored.py"))
 
 
 

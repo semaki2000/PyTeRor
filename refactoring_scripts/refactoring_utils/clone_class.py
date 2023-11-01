@@ -30,7 +30,6 @@ class CloneClass():
         self.cnt += 1
         self.redundant_clones = []
         self.node_differences = []
-        self.node_differences_in_parametrize = [] #boolean list #TODO: change variable name(s)
         self.name_gen = NameGenerator()
         self.clones = clones
         self.process_clones()
@@ -135,27 +134,8 @@ class CloneClass():
                 nd.new_name = generated_name
                 nodes_to_name_dict[str(nd)] = generated_name
 
-            self.replace_nodes(nd, generated_name)
+            nd.replace_nodes(generated_name)
             extracted_cnt += 1
-
-        
-
-    def replace_nodes(self, nd, generated_name):
-
-        ind = self.node_differences.index(nd)
-        if False or self.node_differences_in_parametrize[ind]:
-            #replace name in .parametrize decorator with new generated name
-            names = self.node_differences[ind]
-            values = [None for x in range(len(self.clones))]
-            for arg in self.clones[ind].param_decorator.argnames:
-                for i in range(len(names)):
-                    if arg == names[i].id:
-                        #use name as a key in dict
-                        print(arg)
-                        
-                        continue
-
-        nd.replace_nodes(generated_name)
 
 
 
@@ -184,24 +164,6 @@ class CloneClass():
             if nd.stringtype == "name":
                 if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
                     nd.to_extract = False
-
-
-    def match_parametrize_decorator(self):
-        """For each parametrize decorator, check if each parameter name is in a NodeDifferences object. 
-        If so, adds to bool list node_differences_in_parametrize, which says whether the node_difference at each index is in parametrize decorator."""
-
-
-        for nd in self.node_differences:
-            in_parametrize = False
-            if not nd.to_extract:
-                continue
-
-            if type(nd) == NameNodeDifference:
-                #check if name in pre-existing parametrize decorator
-                for i in range(len(self.clones)):
-                    if not self.clones[i].param_decorator.is_empty() and any(nd[i].id == argname for argname in self.clones[i].param_decorator.argnames):
-                        in_parametrize = True
-            self.node_differences_in_parametrize.append(in_parametrize)
 
 
     def handle_different_nodes(self, nodes):
@@ -259,8 +221,7 @@ class CloneClass():
             argnames += clone.param_decorator.argnames
             for argname in clone.param_decorator.argnames:
                 values += clone.param_decorator.get_values(argname)
-        print("argnames", argnames)
-        print("values", values)
+
         names = []
         for argname in argnames:
             names.append(ast.Name(argname))
@@ -285,7 +246,6 @@ class CloneClass():
         self.get_clone_differences()
 
         self.find_local_variables()
-        self.match_parametrize_decorator()
         self.extract_clone_differences()
         
         if len(self.node_differences) > 0:

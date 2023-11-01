@@ -19,7 +19,6 @@ class ParametrizeDecorator:
 
     def add_argname(self, argname:str):
         self.argnames.append(argname)
-        print("adding argname to param dec:", argname)
         for clone_dict in self.argvals:
             clone_dict[argname] = []
 
@@ -49,7 +48,6 @@ class ParametrizeDecorator:
 
             elif type(args) == ast.Constant:
                 self.add_value(0, param_names[0], args) #we can assume there is only one param_name
-        self.print_vals()
 
     def print_vals(self):
         print("printing param decorator:")
