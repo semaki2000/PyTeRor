@@ -10,7 +10,7 @@ TODO:
 
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
-- How to handle this?
+- How to handle this? Anwer: probably don't, edge case
 ```python
 from a import TRANSFORM_FUNCTIONS #tuple defined elsewhere
 
