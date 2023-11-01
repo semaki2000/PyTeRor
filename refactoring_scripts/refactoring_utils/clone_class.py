@@ -179,20 +179,19 @@ class CloneClass():
             clone.detach()
 
 
-    def set_differences_as_paramd_args(self):
-        """Goes ("transposed") through the nodes that are marked as different, extracting the name or value that is different from each, 
-        creating a list of tuples, where each tuple has actual parameters for the formal parameters given in pytest.mark.parametrize().
-        
+    def add_differences_to_param_decorator(self):
+        """Adds nodes that are marked as different between clones to the clone classes TargetParametrizeDecorator,
+        which holds value for the pytest.mark.parametrize decorator that will be created
+        Does not add nodes that are: 
+        - marked as previously extracted ('previously extracted' is decided in extract_clone_differences)
+        - not marked as to_extract (decided in find_local_variables)
         """
         for nd in self.node_differences:
             if nd.previously_extracted or not nd.to_extract:
                 continue
-            self.param_decorator.add_argname(nd.new_name)
-            paramd_arg = ParametrizedArg(nd.new_name)
-            for clone_ind in range(len(self.clones)):
-                paramd_arg.add_value(nd[clone_ind]) 
+            self.param_decorator.add_argname(nd.new_name) 
             self.param_decorator.add_value_list(nd.new_name, nd.nodes)
-            self.target.new_parametrized_args.append(paramd_arg)
+            
         
     
 
@@ -251,7 +250,7 @@ class CloneClass():
         if len(self.node_differences) > 0:
 
             #create pytest decorator
-            self.set_differences_as_paramd_args()
+            self.add_differences_to_param_decorator()
             self.replace_names_with_values()
             decorator = self.param_decorator.get_decorator()
 
