@@ -5,8 +5,7 @@ from pathlib import Path
 
 class RunCloneDetector:    
 
-    def run():
-        path = RunCloneDetector.get_path_obj()
+    def run(path):
         orig_path = path
 
         orig_dir_name = str(path.name)
@@ -20,10 +19,13 @@ class RunCloneDetector:
         #run nicad clone detector on tmp filestructure to find clones in test files
         os.system("nicad6 functions py " + str(path) + "/ type2")
 
-
-        clones_xml_file = "repo_search_results/" + orig_dir_name +"_test_clones.xml"
+        target_xml_path = ""
+        clones_xml_file = target_xml_path + "/" + orig_dir_name +"_test_clones.xml"
         os.system("cp " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml " + clones_xml_file)
-        RunCloneDetector.remove_tmp_filestructure(path)
+        #RunCloneDetector.remove_tmp_filestructure(path)
+
+        print(clones_xml_file)
+        return (clones_xml_file, orig_path, path)
 
     def remove_tmp_filestructure(path):
         """WIP, currently uses a ./cleanall script found in the nicad install location. Script has to be installed"""
@@ -61,19 +63,3 @@ class RunCloneDetector:
                 
                 ignore_files.append(file)
         return ignore_files
-
-
-    #TODO: move/repurpose to appropriate place
-    def get_path_obj():
-        if len(sys.argv) != 2:
-            print("Usage: python script.py path_to_repository")
-            sys.exit()
-        stringPath = sys.argv[1]
-        pathObj = Path(stringPath)
-        if not pathObj.exists():
-            print("Given path does not exist: \n" + stringPath)
-            sys.exit()
-        elif not pathObj.is_dir():
-            print("Given path does not point to a directory: \n" + stringPath)
-            sys.exit()
-        return pathObj

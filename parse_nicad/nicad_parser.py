@@ -10,8 +10,8 @@ class NicadParser():
     DICT: from path to int, (absolute, not relative) filepath object to a list of linenumbers specifying start of clone
     """
 
-    def __init__(self, xml_file: str | Path, orig_filepath:str, tmp_filepath:str) -> None:
-        self.xml_file = xml_file
+    def __init__(self, xml_file: str | Path, orig_filepath: str | Path, tmp_filepath: str | Path) -> None:
+        self.xml_file = Path(xml_file)
         self.orig_filepath = Path(orig_filepath)
         self.tmp_filepath = Path(tmp_filepath)
     
@@ -24,11 +24,11 @@ class NicadParser():
         each clone class represented by a dict from path to int: 
         (absolute) filepath object to a list of linenumbers specifying start of clone
  """
-        path = Path(self.xml_file).resolve() 
+        path = self.xml_file.resolve()
 
-        assert path.exists(), "File does not exist"
-        assert path.is_file(), "Path does not lead to a file"
-        assert path.suffix == ".xml", "File not specified as XML file"
+        assert path.exists(), "File does not exist: " + str(path)
+        assert path.is_file(), "Path does not lead to a file: " + str(path)
+        assert path.suffix == ".xml", "File not specified as XML file: " + str(path)
 
 
         clone_classes_list = []
