@@ -52,13 +52,14 @@ class ParametrizeDecorator:
     def print_vals(self):
         print("printing param decorator:")
         for clone in self.argvals:
+            print("clone", self.argvals.index(clone))
             for key in clone.keys():
                 print("key:",key)
                 for val in clone[key]:
                     if type(val) == ast.Constant:
-                        print("\t", val.value)
+                        print("\tval:", val.value)
                     elif type(val) == ast.Name:
-                        print("\t", val.id)
+                        print("\tval:", val.id)
             print()
         print("----")
         

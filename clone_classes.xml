@@ -1,7 +1,7 @@
 <clones>
 <systeminfo processor="nicad6" system="test_clone_detection_and_refactoring_temp_filestructure" granularity="functions-blind" threshold="0%" minlines="1" maxlines="2500"/>
 <cloneinfo npcs="10" npairs="24"/>
-<runinfo ncompares="24" cputime="31250"/>
+<runinfo ncompares="24" cputime="15625"/>
 <classinfo nclasses="2"/>
 
 <class classid="1" nclones="3" nlines="4" similarity="100">

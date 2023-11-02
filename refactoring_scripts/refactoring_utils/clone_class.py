@@ -204,6 +204,7 @@ class CloneClass():
             print(f"    Parametrized {x} {y}.")
 
 
+    #TODO: find out what to do if only a subset of the clones are parametrized
     def replace_names_with_values(self):
         """Function to replace previously parametrized names with their values. Example:
         ```python
@@ -221,12 +222,16 @@ class CloneClass():
             for argname in clone.param_decorator.argnames:
                 values += clone.param_decorator.get_values(argname)
 
-        names = []
-        for argname in argnames:
-            names.append(ast.Name(argname))
-        new_argname = "parametrized_name_0"
+        if len(argnames) == 0:
+            return
+        #find under what argname previously parametrized names are stored
+        new_argname = self.param_decorator.get_argname_for_preparametrized_names(argnames)
+        names = [ast.Name(argname) for argname in argnames]
+
+        #remove them from argname values
         self.param_decorator.remove_value_list(new_argname, names)
         for ind in range(len(values)):
+            #add the actual values to argname
             self.param_decorator.add_values_to_index(ind, new_argname, values[ind])
 
 

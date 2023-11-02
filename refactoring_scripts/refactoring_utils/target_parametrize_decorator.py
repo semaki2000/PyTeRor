@@ -18,6 +18,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
     def remove_value_list(self, argname:str, vals_list):
         """Takes an argname a list of values for that argname, removing the value at each index from the clone dict at each index.
         Throws an error if the value doesn't exist in the dict."""
+
         assert argname in self.argnames, "Error: trying to remove a value from an unrecognized argument name in the parametrize decorator: " + argname
         assert len(self.argvals) == len(vals_list), "Error: amount of values supplied does not correspond to the amount of clones"
         
@@ -38,7 +39,27 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         """Takes an index, an argname and a list of values, adding each of these values to the list in self.argvals[index][argname].
         """
         self.argvals[index][argname].extend(values)
-    
+
+    def get_argname_for_preparametrized_names(self, values):
+        """Given a list of ast.Name values, containing names which were parametrized pre-refactoring, 
+        finds the corresponding argname where these are stored and returns it."""
+        #TODO: make more general, or more specific.
+        if len(values) != len(self.argvals):
+            return False
+
+        for argname in self.argnames:
+            correct = True
+            for ind in range(len(self.argvals)):
+                node = self.argvals[ind][argname][0] #only need first node
+                if not isinstance(node, ast.Name):
+                    continue
+                if node.id != values[ind].id:
+                    correct = False
+            if correct:
+                return argname
+        return False
+
+
     def get_decorator(self):
         """Creates and returns a @pytest.mark.parametrize AST decorator-node 
         using info from ParametrizedArg objects.

@@ -24,7 +24,7 @@ TODO:
 
 6. (Maybe) Create NodeDifference subclass for Attribute differences. Not used for refactoring, but useful for splitting classes (as mentioned above, 2)
 
-
+7. Implement argparse in main method, makes parsing arguments and adding flags easier.
 
 
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)

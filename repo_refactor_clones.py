@@ -18,13 +18,10 @@ def main():
     #filepaths = get_filepaths(sys.argv[1:])
     path = get_path_obj()
     parser_args = RunCloneDetector.run(path)
-    print("original path", parser_args[1])
-    print("tmp path", parser_args[2])
 
 
     xml_parser = NicadParser(*parser_args)
     clones = xml_parser.parse()
-    print(clones)
     asts_dict = {} # filepath -> ast_base (for said filepath)
     clone_classes = []
     #for each clone class
@@ -53,10 +50,10 @@ def main():
     target_location = Path("refactored_files/repo_test/").resolve()
     for key in asts_dict.keys():
         print("refactored file:", key)
-        ASTParser.parse_AST_to_file(asts_dict[key], target_location / (Path(sys.argv[1]).stem + "_refactored.py"))
+        ASTParser.parse_AST_to_file(asts_dict[key], target_location / Path(key.stem + "_refactored.py"))
 
 
-
+#TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg
 def get_filepaths(args):
     filepaths = []
     flags = [] #TODO: fill in flags here
@@ -71,19 +68,6 @@ def get_filepaths(args):
 
     return filepaths
 
-def get_clones():
-    """Returns clones in this format
-    list of clone classes (matching clones), each clone class is a dict
-    DICT: from path to int, (absolute, not relative) filepath object to a list of linenumbers specifying start of clone
-    """
-    #TODO: actually implement. need info from clone detector
-    #return [{Path("../test_files/calculator/calculator_type2.py").resolve(): [5, 16]}]
-    #return [{Path("../test_files/funcname_test.py").resolve(): [2, 6, 11, 16]}]
-    #return [{Path("../test_files/test_lark_parser.py").resolve(): [164, 264, 279, 200, 295, 327, 311]}]
-    #return [{Path("../test_files/ert/test_analysis_config.py").resolve(): [169, 180]},
-            #{Path("../test_files/ert/test_analysis_config.py").resolve(): [191, 210]},
-            #{Path("../test_files/ert/test_analysis_config.py").resolve(): [198, 217]}]
-    return [{Path("../test_files/ert/test_field.py").resolve(): [14, 22, 30]}]
 
 def get_path_obj():
         if len(sys.argv) != 2:
