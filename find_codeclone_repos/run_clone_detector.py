@@ -9,22 +9,19 @@ class RunCloneDetector:
         orig_path = path
 
         orig_dir_name = str(path.name)
-        
-        print(os.getcwd())
-        
+
         path = RunCloneDetector.create_tmp_filestructure(path)
-        
-        print(str(path))
         
         #run nicad clone detector on tmp filestructure to find clones in test files
         os.system("nicad6 functions py " + str(path) + "/ type2")
 
         target_xml_path = ""
-        clones_xml_file = target_xml_path + "/" + orig_dir_name +"_test_clones.xml"
+        #clones_xml_file = target_xml_path + "/" + orig_dir_name +"_test_clones.xml"
+        clones_xml_file = "clone_classes.xml"
         os.system("cp " + str(path) + "_functions-blind-clones/" + orig_dir_name + "_temp_filestructure_functions-blind-clones-0.00-classes.xml " + clones_xml_file)
+        
         #RunCloneDetector.remove_tmp_filestructure(path)
 
-        print(clones_xml_file)
         return (clones_xml_file, orig_path, path)
 
     def remove_tmp_filestructure(path):

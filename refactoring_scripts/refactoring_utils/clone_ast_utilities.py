@@ -26,7 +26,6 @@ class CloneASTUtilities():
             if isinstance(node, ast.FunctionDef) and node.lineno == clone_lineno:
                 return Clone(node, ast_base, node.lineno)
 
-
     def detach_redundant_clones(ast_base, redundant_clones: list):
         """Detaches given nodes from the AST.
 

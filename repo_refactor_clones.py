@@ -24,7 +24,7 @@ def main():
 
     xml_parser = NicadParser(*parser_args)
     clones = xml_parser.parse()
-
+    print(clones)
     asts_dict = {} # filepath -> ast_base (for said filepath)
     clone_classes = []
     #for each clone class
@@ -34,15 +34,14 @@ def main():
         #for filepath in clone class
         for filepath in clone_class.keys():
             #get ast_base
-            if key not in asts_dict:
+            if filepath not in asts_dict:
                 asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
-            ast_base = asts_dict[key]
 
-            for lineno in clone_class[key]:
+            ast_base = asts_dict[filepath]
+            for lineno in clone_class[filepath]:
 
                 #add clone on lineno in filepath to list of clone objects
-                ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=lineno))
-
+                ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno)))
         clone_classes.append(CloneClass(ast_clone_nodes))
 
         
@@ -51,7 +50,7 @@ def main():
         clone_class.refactor_clones()
 
     
-    target_location = Path("../refactored_files/repo_test/").resolve()
+    target_location = Path("refactored_files/repo_test/").resolve()
     for key in asts_dict.keys():
         print("refactored file:", key)
         ASTParser.parse_AST_to_file(asts_dict[key], target_location / (Path(sys.argv[1]).stem + "_refactored.py"))

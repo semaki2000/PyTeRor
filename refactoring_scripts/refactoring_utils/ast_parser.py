@@ -47,7 +47,7 @@ class ASTParser():
 
         target_sc = Unparser._unparse(ast_base) 
         #target_sc = ASTParser.format_parametrize_decorator(target_sc)
-        with open(path, "w") as file:
+        with open(path, "w+") as file:
             file.write(f'{target_sc}')
 
 
