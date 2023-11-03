@@ -26,8 +26,13 @@ TODO:
 
 7. Implement argparse in main method, makes parsing arguments and adding flags easier.
 
+8. Only unparse test, keep original file. Format refactored code?
+
+10. flag for overwriting/making new file
+
 
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
+
 
 - How to handle this? Anwer: probably don't, edge case
 ```python

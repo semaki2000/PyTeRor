@@ -17,6 +17,7 @@ def main():
 
     #filepaths = get_filepaths(sys.argv[1:])
     path = get_path_obj()
+    #TODO: add option to use xml file without using nicad
     parser_args = RunCloneDetector.run(path)
 
 
@@ -29,18 +30,18 @@ def main():
 
         ast_clone_nodes = [] 
         #for filepath in clone class
-        for filepath in clone_class.keys():
+        for filepath, linenumbers in clone_class.itemss():
             #get ast_base
             if filepath not in asts_dict:
                 asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
 
             ast_base = asts_dict[filepath]
-            for lineno in clone_class[filepath]:
+            for lineno in linenumbers:
 
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno)))
         clone_classes.append(CloneClass(ast_clone_nodes))
-
+    #yield
         
 
     for clone_class in clone_classes:
