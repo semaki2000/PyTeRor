@@ -5,6 +5,7 @@ from .clone import Clone
 from .node_difference import NodeDifference
 from .constant_node_difference import ConstantNodeDifference
 from .name_node_difference import NameNodeDifference
+from .attribute_node_difference import AttributeNodeDifference
 from .parametrized_arg import ParametrizedArg
 from .target_parametrize_decorator import TargetParametrizeDecorator
 
@@ -35,6 +36,7 @@ class CloneClass():
         self.process_clones()
         self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones))
         self.target = self.clones[0]
+        self.attribute_difference = False
         #self.print_pre_info()
         #set target clone
 
@@ -95,15 +97,11 @@ class CloneClass():
                         continue
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
-                    elif type(child_nodes[0] == ast.Attribute and any(child.attr != child_nodes[0].attr for child in child_nodes)):
+                    elif False and type(child_nodes[0]) == ast.Attribute and any(child.attr != child_nodes[0].attr for child in child_nodes):
                         
-
-                        #do nothing, maybe add this in as option later                    
-                        if False:
-                            self.node_differences.append(NodeDifference(child_nodes))
-                            continue
-                            replace_node = ast.Name(self.name_gen.new_name("attr"))
-                            CloneASTUtilities.replace_node(child_nodes[0], parent_nodes[0], replace_node)
+                        self.node_differences.append(AttributeNodeDifference(child_nodes, parent_nodes))
+                        self.attribute_difference = True
+                        continue
 
                     get_differences_recursive(child_nodes)
                 except StopIteration:
@@ -137,6 +135,45 @@ class CloneClass():
             nd.replace_nodes(generated_name)
             extracted_cnt += 1
 
+
+    def split_on_attributes(self):
+        """Goes through list of nodeDifferences and looks for AttributeNodeDifference objects.
+        If an AttributeDifference is found, 
+        splits the clone class into as many classes as there are variants within the AttributeNodeDifference's nodes."""
+        #TODO: check all attributes before splitting. 
+        # Currently only splits on first AttributeNodeDifference (but will recursively split if more differences are found)
+        attributes = [[] for _ in range(len(self.clones))]
+        nds = []
+        for nd in self.node_differences:
+            nds.append(nd)
+            if isinstance(nd, AttributeNodeDifference):
+                variants = nd.get_variants_dict()
+                for attr, inds in variants.items():
+                    for ind in inds:
+                        attributes[ind].append(attr)
+        
+
+        attr_dict = {}
+        for ind in range(len(attributes)):
+            strvals = str(attributes[ind])
+            if strvals in attr_dict.keys():
+                attr_dict[strvals].append(ind)
+            else:
+                attr_dict[strvals] = [ind]
+        
+        print(attr_dict)
+        self.split_clone_class(attr_dict.values())
+
+    def split_clone_class(self, classes):
+        """Splits a clone class into n based on parameter classes which has n elements. 
+        Each element is a list of indices."""
+        print(classes)
+        for cl in classes:
+            clones = []
+            for ind in cl:
+                clones.append(self.clones[ind])
+
+            CloneClass(clones).refactor_clones()
 
 
     def find_local_variables(self):
@@ -239,7 +276,7 @@ class CloneClass():
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
-            print("Error in clone class {id}: Cannot parametrize one or fewer tests.")
+            print(f"Error in clone class {id}: Cannot parametrize one or fewer tests.")
             return
     
         
@@ -248,6 +285,13 @@ class CloneClass():
             clone_nodes.append(clone.ast_node)
 
         self.get_clone_differences()
+
+        if False and self.attribute_difference:
+            #difference in attributes,
+            #split class and return
+            self.split_on_attributes()
+            return
+        
 
         self.find_local_variables()
         self.extract_clone_differences()

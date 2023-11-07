@@ -17,6 +17,7 @@ class ConstantNodeDifference(NodeDifference):
         return str(ret)
     
     def in_fstring(self):
+        #TODO: could be further down in an fstring
         if type(self.parent_nodes[0]) == ast.JoinedStr:
             return True
         return False

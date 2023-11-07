@@ -78,6 +78,8 @@ def parseargs():
     parser = argparse.ArgumentParser()
     
     parser.add_argument("paths", action="append", help="path(s) to check for code clones")
+    #TODO: add new flag for overwriting file vs creating refactored version. which is default?
+
 
     args = parser.parse_args()
     return args
