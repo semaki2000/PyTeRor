@@ -145,11 +145,14 @@ class CloneClass():
             #check if values are same
             same_decorator = True
             for argname in self.clones[0].param_decorator.argnames:
-                if not all(clone.param_decorator.get_values(argname) == self.clones[0].param_decorator.get_values(argname) for clone in self.clones):
-                    #not all values are the same
-                    same_decorator = False
-                else:
-                    print("test_field???")
+
+                vals = self.clones[0].param_decorator.get_values_on_ind(argname, 0)
+                for clone in self.clones:
+                    vals_compare = clone.param_decorator.get_values_on_ind(argname, 0)
+                    for i in range(len(vals)):
+                            #not all values are the same
+                            same_decorator = False
+                
             if same_decorator:
                 self.clones[0].ast_node.decorator_list.append(self.clones[0].param_dec_node)
 

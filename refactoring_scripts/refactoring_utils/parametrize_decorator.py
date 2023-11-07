@@ -17,6 +17,12 @@ class ParametrizeDecorator:
             values.append(clone_dict[argname])
         return values
 
+    def get_values_on_ind(self, argname:str, ind:int):
+        """Returns a list with lists of values for the given argname and index."""
+
+        return self.argvals[ind][argname]
+        
+
     def add_argname(self, argname:str):
         self.argnames.append(argname)
         for clone_dict in self.argvals:
