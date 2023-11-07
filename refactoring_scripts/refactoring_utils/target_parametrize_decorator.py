@@ -18,7 +18,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
     def remove_value_list(self, argname:str, vals_list):
         """Takes an argname a list of values for that argname, removing the value at each index from the clone dict at each index.
         Throws an error if the value doesn't exist in the dict."""
-
+        
         assert argname in self.argnames, "Error: trying to remove a value from an unrecognized argument name in the parametrize decorator: " + argname
         assert len(self.argvals) == len(vals_list), "Error: amount of values supplied does not correspond to the amount of clones"
         
@@ -55,8 +55,9 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         """Given a list of ast.Name values, containing names which were parametrized pre-refactoring, 
         finds the corresponding argname where these are stored and returns it."""
         #TODO: make more general, or more specific.
-        if len(values) != len(self.argvals):
-            return False
+        
+        assert len(values) == len(self.argvals), "Error: amount of values supplied does not correspond to the amount of clones"
+        
 
         for argname in self.argnames:
             correct = True
@@ -67,10 +68,11 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                     continue
                 if node.id != values[ind].id:
                     correct = False
-            
+                    continue
             if correct:
+                
                 return argname
-
+            
         return False
 
 

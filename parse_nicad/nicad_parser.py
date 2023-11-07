@@ -12,8 +12,12 @@ class NicadParser():
 
     def __init__(self, xml_file: str | Path, orig_filepath: str | Path = None, tmp_filepath: str | Path = None) -> None:
         self.xml_file = Path(xml_file)
-        self.orig_filepath = Path(orig_filepath)
-        self.tmp_filepath = Path(tmp_filepath)
+        self.tmp_filepath = None
+        self.orig_filepath = None
+        if orig_filepath != None:
+            self.orig_filepath = Path(orig_filepath)
+        if tmp_filepath != None:
+            self.tmp_filepath = Path(tmp_filepath)
     
 
     def parse(self):

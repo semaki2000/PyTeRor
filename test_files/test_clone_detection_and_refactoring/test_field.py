@@ -31,6 +31,6 @@ def test_forward_init_is_gotten_from_keyword(parse_field_line, boolean):
     field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl FORWARD_INIT:{boolean}"
     )
-    assert field.output_transformation == boolean
+    assert field.forward_init == boolean
 
 

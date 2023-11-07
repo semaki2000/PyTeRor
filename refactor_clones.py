@@ -27,11 +27,12 @@ def main():
             clones.extend(xml_parser.parse())
         else:
             #xml file
-            NicadParser(path)
+            xml_parser = NicadParser(path)
+            clones.extend(xml_parser.parse())
     
     clone_classes = clone_class_generator(clones)
 
-    print(clone_classes)
+    
     for clone_class in clone_classes:
         clone_class.refactor_clones()
 

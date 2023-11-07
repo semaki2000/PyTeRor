@@ -9,6 +9,7 @@ class Clone():
     def __init__(self, ast_node, parent_node, lineno) -> None:
         self.parametrized_args = [] #list of parametrizedArg object
         self.param_decorator = ParametrizeDecorator(1)
+        self.param_dec_node = None
         
         self.is_fixture : bool = False
         self.unknown_decorator = False
@@ -20,7 +21,7 @@ class Clone():
 
         #only used by target
         self.new_funcname = self.funcname + "_parametrized"
-        self.new_parametrized_args = []
+        
         
 
     #only used by target
@@ -77,23 +78,9 @@ class Clone():
                     sys.exit()
                 else:
                     self.param_decorator.parse_decorator(decorator)
-                    param_names = param_names.split(",")
-                    self.parametrized_args = []
-                    
-                    for name in param_names:
-                        self.parametrized_args.append(ParametrizedArg(argname=name))
-                    for args in decorator.args[1].elts:
-                        if type(args) == ast.Tuple:
-                            [self.parametrized_args[args.index(x)].add_value(x) for x in args]
-
-                        elif type(args) == ast.Constant:        
-                            #should only be one ParametrizedArg object
-                            self.parametrized_args[0].add_value(args)
-                            
-
-                self.ast_node.decorator_list.remove(decorator) #remove decorator for parametrize (added again later)
+                    self.param_dec_node = decorator
+                    self.ast_node.decorator_list.remove(self.param_dec_node)
                 return
-
 
             elif CAU.is_fixture_decorator(decorator):
                 self.is_fixture = True
@@ -103,6 +90,8 @@ class Clone():
                 print("unknown decorator")
                 print(ast.unparse(decorator))
                 self.unknown_decorator = True                
+        
+
 
     def get_ast_node(self):
         return self.ast_node

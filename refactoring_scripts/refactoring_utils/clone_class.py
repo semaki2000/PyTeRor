@@ -37,7 +37,7 @@ class CloneClass():
         self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones))
         self.target = self.clones[0]
         self.attribute_difference = False
-        #self.print_pre_info()
+        self.print_pre_info()
         #set target clone
 
     def process_clones(self):
@@ -97,7 +97,7 @@ class CloneClass():
                         continue
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
-                    elif False and type(child_nodes[0]) == ast.Attribute and any(child.attr != child_nodes[0].attr for child in child_nodes):
+                    elif type(child_nodes[0]) == ast.Attribute and any(child.attr != child_nodes[0].attr for child in child_nodes):
                         
                         self.node_differences.append(AttributeNodeDifference(child_nodes, parent_nodes))
                         self.attribute_difference = True
@@ -135,6 +135,32 @@ class CloneClass():
             nd.replace_nodes(generated_name)
             extracted_cnt += 1
 
+    def compare_decorators(self):
+        """Looks through the decorator of each clone (if it has one).
+        If all clones have the same decorator, it is added to the targets decorator list, without being changed."""
+
+        #if all have the same argnames
+        if self.clones[0].param_decorator.argnames != [] and all(clone.param_decorator.argnames == self.clones[0].param_decorator.argnames for clone in self.clones):
+            
+            #check if values are same
+            same_decorator = True
+            for argname in self.clones[0].param_decorator.argnames:
+                if not all(clone.param_decorator.get_values(argname) == self.clones[0].param_decorator.get_values(argname) for clone in self.clones):
+                    #not all values are the same
+                    same_decorator = False
+                else:
+                    print("test_field???")
+            if same_decorator:
+                self.clones[0].ast_node.decorator_list.append(self.clones[0].param_dec_node)
+
+            else:
+                #add argnames to parametrized names. Will be replaced with values later
+                for argname in self.clones[0].param_decorator.argnames:
+                    self.param_decorator.add_argname(argname)
+                    for ind in range(len(self.clones)):
+                        self.param_decorator.add_value(ind, argname, ast.Name(argname))
+
+        #different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object
 
     def split_on_attributes(self):
         """Goes through list of nodeDifferences and looks for AttributeNodeDifference objects.
@@ -168,13 +194,14 @@ class CloneClass():
         """Splits a clone class into n based on parameter classes which has n elements. 
         Each element is a list of indices."""
         print(classes)
+        print("Splitting clone class into", len(classes), "classes")
         for cl in classes:
             clones = []
             for ind in cl:
                 clones.append(self.clones[ind])
 
             CloneClass(clones).refactor_clones()
-
+        print("split and refactored")
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -204,8 +231,11 @@ class CloneClass():
 
 
     def handle_different_nodes(self, nodes):
-        print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
+
         print(nodes)
+        for node in nodes:
+           print(ast.unparse(node))
+        print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
         sys.exit()
 
 
@@ -245,13 +275,13 @@ class CloneClass():
     def replace_names_with_values(self):
         """Function to replace previously parametrized names with their values. Example:
         ```python
-#clone, pre-refactoring:
-@pytest.mark.parametrize('old_name', [('a'), ('b'), ('c')])
-#during refactoring may become:
-@pytest.mark.parametrize('parametrized_name_0', [old_name, ...])
-#after applying this function, it is turned into:
-@pytest.mark.parametrize('parametrized_name_0', [('a', ...), ('b', ...), ('c', ...)])
-"""
+        #clone, pre-refactoring:
+        @pytest.mark.parametrize('old_name', [('a'), ('b'), ('c')])
+        #during refactoring may become:
+        @pytest.mark.parametrize('parametrized_name_0', [old_name, ...])
+        #after applying this function, it is turned into:
+        @pytest.mark.parametrize('parametrized_name_0', [('a', ...), ('b', ...), ('c', ...)])
+        """
         argnames = []
         values = []
         for clone in self.clones:
@@ -263,8 +293,10 @@ class CloneClass():
             return
         #find under what argname previously parametrized names are stored
         names = [ast.Name(argname) for argname in argnames]
+        print("calling get_argname_for_ppnames", argnames)
         new_argname = self.param_decorator.get_argname_for_preparametrized_names(names)
-
+        if not new_argname:
+            return
         #remove them from argname values
         self.param_decorator.remove_value_list(new_argname, names)
         for ind in range(len(values)):
@@ -277,6 +309,9 @@ class CloneClass():
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
             print(f"Error in clone class {id}: Cannot parametrize one or fewer tests.")
+            for clone in self.clones:
+                if clone.param_dec_node != None:
+                    clone.ast_node.decorator_list.append(clone.param_dec_node)
             return
     
         
@@ -284,28 +319,40 @@ class CloneClass():
         for clone in self.clones:
             clone_nodes.append(clone.ast_node)
 
+        print("getting differences")
         self.get_clone_differences()
 
-        if False and self.attribute_difference:
+        print("checking whether attribute differences")
+
+        if self.attribute_difference:
             #difference in attributes,
             #split class and return
             self.split_on_attributes()
             return
         
-
+        self.compare_decorators()
+        print("finding local variables")
         self.find_local_variables()
+        print("extracting differences")
         self.extract_clone_differences()
         
         if len(self.node_differences) > 0:
 
             #create pytest decorator
+            print("adding diffs to pd")
+
             self.add_differences_to_param_decorator()
+            print("replacing names with values")
             self.replace_names_with_values()
+
             decorator = self.param_decorator.get_decorator()
 
+            #for now, dont remove paramter from func def
+            """
             for param in self.target.param_decorator.argnames:
                 self.target.remove_parameter_from_func_def(param)
-                
+            """   
+
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
             self.target.rename_target()
