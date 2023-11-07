@@ -22,16 +22,27 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         assert argname in self.argnames, "Error: trying to remove a value from an unrecognized argument name in the parametrize decorator: " + argname
         assert len(self.argvals) == len(vals_list), "Error: amount of values supplied does not correspond to the amount of clones"
         
+        print("in here yeah")
+        self.print_vals()
+        print("check again")
         for i in range(len(vals_list)):
             values = self.argvals[i][argname]
+            
+            for val in values:
+                print(ast.unparse(val))
+
             for j in range(len(values)):
                 value = values[j]
                 if type(vals_list[i]) == type(value):
                     if type(value) == ast.Name:
                         if vals_list[i].id == value.id:
+                            print("removing...")
+                            print(vals_list[i].id)
                             values.pop(j)
                     elif type(value) == ast.Constant:
                         if vals_list[i].value == value.value:
+                            print("removing...")
+                            print(vals_list[i].value)
                             values.pop(j)
     
 
@@ -52,11 +63,14 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             for ind in range(len(self.argvals)):
                 node = self.argvals[ind][argname][0] #only need first node
                 if not isinstance(node, ast.Name):
+                    correct = False
                     continue
                 if node.id != values[ind].id:
                     correct = False
+            
             if correct:
                 return argname
+
         return False
 
 

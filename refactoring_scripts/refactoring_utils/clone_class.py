@@ -262,8 +262,8 @@ class CloneClass():
         if len(argnames) == 0:
             return
         #find under what argname previously parametrized names are stored
-        new_argname = self.param_decorator.get_argname_for_preparametrized_names(argnames)
         names = [ast.Name(argname) for argname in argnames]
+        new_argname = self.param_decorator.get_argname_for_preparametrized_names(names)
 
         #remove them from argname values
         self.param_decorator.remove_value_list(new_argname, names)
