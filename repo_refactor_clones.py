@@ -9,6 +9,9 @@ from parse_nicad.nicad_parser import NicadParser
 
 
 
+
+asts_dict = {} # filepath -> ast_base (for said filepath)
+
 def main():
     if len(sys.argv) == 1:
         print("Usage: python refactor_clones.py filepath [filepaths...]")
@@ -23,14 +26,25 @@ def main():
 
     xml_parser = NicadParser(*parser_args)
     clones = xml_parser.parse()
-    asts_dict = {} # filepath -> ast_base (for said filepath)
-    clone_classes = []
-    #for each clone class
+    clone_classes = clone_class_generator(clones)
+
+    print(clone_classes)
+    for clone_class in clone_classes:
+        clone_class.refactor_clones()
+
+    
+    target_location = Path("refactored_files/repo_test/").resolve()
+    for key in asts_dict.keys():
+        ASTParser.parse_AST_to_file(asts_dict[key], target_location / Path(key.stem + "_refactored.py"))
+        print("refactored file:", key)
+        print("\t-> " + str(target_location / Path(key.stem + "_refactored.py")))
+
+def clone_class_generator(clones):
     for clone_class in clones:
 
         ast_clone_nodes = [] 
         #for filepath in clone class
-        for filepath, linenumbers in clone_class.itemss():
+        for filepath, linenumbers in clone_class.items():
             #get ast_base
             if filepath not in asts_dict:
                 asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
@@ -40,19 +54,7 @@ def main():
 
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno)))
-        clone_classes.append(CloneClass(ast_clone_nodes))
-    #yield
-        
-
-    for clone_class in clone_classes:
-        clone_class.refactor_clones()
-
-    
-    target_location = Path("refactored_files/repo_test/").resolve()
-    for key in asts_dict.keys():
-        print("refactored file:", key)
-        ASTParser.parse_AST_to_file(asts_dict[key], target_location / Path(key.stem + "_refactored.py"))
-
+        yield CloneClass(ast_clone_nodes)
 
 #TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg
 def get_filepaths(args):
