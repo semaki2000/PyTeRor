@@ -7,41 +7,32 @@ Runs with python 3.10 <=
 TODO:
 1. add 'import pytest' to refactored source file if not there already
 
-2. Add function to split off a clone class from another
-    Could be useful if f.ex. 3 tests, where two are in one test class, and one is in another. (the two tests are parametrized, last is ignored)
-    Or if two tests have the same attribute, while another one is different. (first two parametrized, last ignored)
-
-3. Add functionality to CloneASTUtilities to find nodes that are in a class (in function find_clone_node_in_AST). 
+2. Add functionality to CloneASTUtilities to find nodes that are in a class (in function find_clone_node_in_AST). 
     Currently, only finds top-level nodes (looks through body of AST base)
     Finding tests that are children nodes of nodes that aren't classes is probably not necessary.
 
-4. Add functionality to stop refactoring of a clone class if there is a difference in attribute.
-    F.ex. CloneClass.get_clone_differences could return a boolean whether the refactoring should continue.
-
-5. Pre-existing decorators, non-pytest.
+3. Pre-existing decorators, non-pytest.
     If all clones have the same decorator, no problem
     Otherwise, split off clones with the same decorator into new clone class.
 
-6. (Maybe) Create NodeDifference subclass for Attribute differences. Not used for refactoring, but useful for splitting classes (as mentioned above, 2)
+4. Only unparse test, keep original file. Format refactored code?
 
-7. Implement argparse in main method, makes parsing arguments and adding flags easier.
+5. flag for overwriting/making new file
 
-8. Only unparse test, keep original file. Format refactored code?
-
-10. flag for overwriting/making new file
-
-11. requirements.txt
+6. requirements.txt
 
 - Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
 
 
 - How to handle this? Anwer: probably don't, edge case
 ```python
-from a import TRANSFORM_FUNCTIONS #tuple defined elsewhere
+from a import TRANSFORM_FUNCTIONS #list of tuples defined elsewhere
 
 @pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS) #then used in annotation
 def test_...():
 ```
+Potential theoretical answer to above could be with tuple unpacking of some sort
+But gets a bit complicated
 
 
 - How to name new generated test? User input? Related to:
