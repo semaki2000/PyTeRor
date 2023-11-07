@@ -1,5 +1,6 @@
 import ast
 import sys
+import argparse
 from pathlib import Path
 from refactoring_scripts.refactoring_utils.ast_parser import ASTParser
 from refactoring_scripts.refactoring_utils.clone_ast_utilities import CloneASTUtilities as CAU
@@ -13,19 +14,21 @@ from parse_nicad.nicad_parser import NicadParser
 asts_dict = {} # filepath -> ast_base (for said filepath)
 
 def main():
-    if len(sys.argv) == 1:
-        print("Usage: python refactor_clones.py filepath [filepaths...]")
-        sys.exit()
-
 
     #filepaths = get_filepaths(sys.argv[1:])
-    path = get_path_obj()
+    paths = get_path_obj()
     #TODO: add option to use xml file without using nicad
-    parser_args = RunCloneDetector.run(path)
 
-
-    xml_parser = NicadParser(*parser_args)
-    clones = xml_parser.parse()
+    clones = []
+    for path in paths:
+        if path.is_dir():
+            parser_args = RunCloneDetector.run(path)
+            xml_parser = NicadParser(*parser_args)
+            clones.extend(xml_parser.parse())
+        else:
+            #xml file
+            NicadParser(path)
+    
     clone_classes = clone_class_generator(clones)
 
     print(clone_classes)
@@ -71,19 +74,30 @@ def get_filepaths(args):
 
     return filepaths
 
+def parseargs():
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument("paths", action="append", help="path(s) to check for code clones")
+
+    args = parser.parse_args()
+    return args
 
 def get_path_obj():
-        if len(sys.argv) != 2:
-            print("Usage: python script.py path_to_repository")
+    
+    args = parseargs()
+
+    ret = []
+    paths = args.paths
+    for p in paths:
+        path = Path(p)
+        if not path.exists():
+            print("Given path does not exist: \n" + str(path))
             sys.exit()
-        stringPath = sys.argv[1]
-        pathObj = Path(stringPath)
-        if not pathObj.exists():
-            print("Given path does not exist: \n" + stringPath)
+        elif not (path.is_dir() or path.suffix == ".xml"):
+            print("Given path does not point to a directory or XML file: \n" + str(path))
             sys.exit()
-        elif not pathObj.is_dir():
-            print("Given path does not point to a directory: \n" + stringPath)
-            sys.exit()
-        return pathObj
+        ret.append(path)
+    
+    return ret
 
 main()

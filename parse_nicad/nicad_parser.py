@@ -10,7 +10,7 @@ class NicadParser():
     DICT: from path to int, (absolute, not relative) filepath object to a list of linenumbers specifying start of clone
     """
 
-    def __init__(self, xml_file: str | Path, orig_filepath: str | Path, tmp_filepath: str | Path) -> None:
+    def __init__(self, xml_file: str | Path, orig_filepath: str | Path = None, tmp_filepath: str | Path = None) -> None:
         self.xml_file = Path(xml_file)
         self.orig_filepath = Path(orig_filepath)
         self.tmp_filepath = Path(tmp_filepath)
@@ -52,4 +52,6 @@ class NicadParser():
 
     def convert_path(self, path):
         """Takes a path in the temporary filepath, and replaces it with a path to the same file in the original directory"""
-        return Path(str(path).replace(str(self.tmp_filepath), str(self.orig_filepath)))
+        if not self.tmp_filepath is None:
+            return Path(str(path).replace(str(self.tmp_filepath), str(self.orig_filepath)))
+        return path
