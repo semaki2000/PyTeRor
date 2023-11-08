@@ -14,4 +14,4 @@ def test_b():
 #    pytest.param("B", marks=pytest.mark.example_mark, id="test_b"),
 #])
 #def test_a_parametrized(new_var):
-    assert new_var
+#    assert new_var

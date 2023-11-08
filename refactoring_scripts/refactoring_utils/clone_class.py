@@ -34,7 +34,7 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         self.process_clones()
-        self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones))
+        self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones), funcnames=[clone.funcname for clone in self.clones])
         self.target = self.clones[0]
         self.attribute_difference = False
         self.print_pre_info()

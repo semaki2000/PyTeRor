@@ -7,40 +7,17 @@ Runs with python 3.10 <=
 TODO:
 1. add 'import pytest' to refactored source file if not there already
 
-2. using copytree to copy directory structure and test files should create a temporary directory instead of a permanent one
-
-3. Pre-existing decorators, non-pytest.
+2. Pre-existing decorators, non-pytest.
     If all clones have the same decorator, no problem
     Otherwise, split off clones with the same decorator into new clone class.
 
-4. Only unparse test, keep original file. Format refactored code?
+3. Only unparse test, keep original file. Format refactored code?
 
-5. flag for overwriting/making new file
+4. flag for overwriting/making new file
 
-6. requirements.txt
+5. requirements.txt
 
-7. Preserve name of test through 'id' keyword of pytest.param:
-
-```python
-#two clones, where one has a mark
-
-def test_a():
-    assert "A"
-
-
-def test_b():
-    assert "B"
-
-#should become for the refactored version
-@pytest.mark.parametrize("new_var", [
-    pytest.param("A", id="test_a"),
-    pytest.param("B", id="test_b"),
-])
-def test_a_parametrized(new_var):
-    assert new_var
-
-```
-8. Use same strategy as above, but with 'mark' keyword to preserve marks? Or perhaps create new mark for every test being parametrized. E.g:
+6. Preserve mark of test through 'marks' keyword of pytest.param. E.g:
 ```python
 @pytest.mark.parametrize("new_var", [
     pytest.param("A", marks=pytest.mark.test_a, id="test_a"),
@@ -48,8 +25,12 @@ def test_a_parametrized(new_var):
 ])
 def test_a_parametrized(new_var):
     assert new_var
-
 ```
+7. Perhaps create new mark for every test being parametrized? 
+This could imitate functionality of 'pytest -k test_name'
+It would instead be 'pytest -m test_name
+
+-------------------------------------------------------------------------------------------
 
 
 - How to handle this? Anwer: probably don't, edge case

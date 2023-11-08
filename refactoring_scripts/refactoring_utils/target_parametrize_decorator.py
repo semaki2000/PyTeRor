@@ -5,6 +5,10 @@ from .parametrize_decorator import ParametrizeDecorator
 class TargetParametrizeDecorator(ParametrizeDecorator):
     """Subclass of ParametrizeDecorator which has functionality specifically for the target of the refactoring."""
 
+    def __init__(self, n_clones: int, funcnames: list) -> None:
+        super().__init__(n_clones)
+        self.funcnames = funcnames
+
     def add_value_list(self, argname:str, vals_list):
         """Takes an argname and a list of values for that argname, adding the value at each index to the clone dict at each index.
         """
@@ -83,15 +87,32 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         args.append(ast.Constant(value=", ".join(self.argnames)))
         
         a_params = []
-        for clone_dict in self.argvals:
+        for ind in range(len(self.argvals)):
+            clone_dict = self.argvals[ind]
+            clone_name = self.funcnames[ind]
             all_vals = []
             for key in clone_dict.keys():
                 all_vals.append(clone_dict[key])
-            a_params.extend(list(itertools.product(*all_vals)))
+            a_params.append(tuple([clone_name, list(itertools.product(*all_vals))]))
+
+
 
         list_tuples = []
         for tup in a_params:
-            list_tuples.append(ast.Tuple(elts = list(tup)))
+            for param_set in tup[1]:
+                list_tuples.append(
+                    ast.Call(
+                        func=ast.Attribute(
+                            value=ast.Name(id = "pytest", ctx = ast.Load),
+                            attr="param"),
+                        args= list(param_set),
+                        keywords = [ast.keyword(
+                            arg="id", 
+                            value=ast.Constant(value=tup[0]))]
+                    )
+                )
+#        for tup in a_params:
+#            list_tuples.append(ast.Tuple(elts = list(tup)))
         args.append(ast.List(elts=list_tuples))
         
         pytest_node = ast.Call(

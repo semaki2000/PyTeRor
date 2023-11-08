@@ -1,5 +1,7 @@
 import pytest
 
-@pytest.mark.parametrize('parametrized_constant_0', [('A',), ('B',)])
+@pytest.mark.parametrize('parametrized_constant_0', [
+    pytest.param('A', id='test_a'), 
+    pytest.param('B', id='test_b')])
 def test_a_parametrized(parametrized_constant_0):
     assert parametrized_constant_0
