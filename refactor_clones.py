@@ -1,6 +1,7 @@
-import ast
+
 import sys
 import argparse
+import tempfile
 from pathlib import Path
 from refactoring_scripts.refactoring_utils.ast_parser import ASTParser
 from refactoring_scripts.refactoring_utils.clone_ast_utilities import CloneASTUtilities as CAU
@@ -22,9 +23,13 @@ def main():
     clones = []
     for path in paths:
         if path.is_dir():
-            parser_args = RunCloneDetector.run(path)
-            xml_parser = NicadParser(*parser_args)
-            clones.extend(xml_parser.parse())
+            #tmp directory, for copying test files into and running clone detector
+            #will be deleted automatically after 'with' is done
+            with tempfile.TemporaryDirectory() as tmp_path:
+                
+                parser_args = RunCloneDetector.run(path, tmp_path)
+                xml_parser = NicadParser(*parser_args)
+                clones.extend(xml_parser.parse())
         else:
             #xml file
             xml_parser = NicadParser(path)
