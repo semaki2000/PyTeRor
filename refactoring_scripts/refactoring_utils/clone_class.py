@@ -54,12 +54,26 @@ class CloneClass():
             self.clones.remove(remove_clone)
 
 
-
     def print_pre_info(self):
         """Print info before refactoring. On object creation."""
         print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
+    def check_parent_nodes(self):
+        """Checks the parent nodes of each clone, and splitting the clone class if:
+            1. 1 or more clones are in the global scope, whilst 1 or more clones are inside a class.
+            2. There are clones in different classes."""
+        split_groups = {} #dict from ast_node, where each value is a list which has indices of clones that belong in the same class
+        for ind in range(len(self.clones)):
+            clone = self.clones[ind]
+            if isinstance(clone.parent_node, ast.ClassDef):
+                #if not in dict, sets value to [], else appends ind to value list
+                split_groups.setdefault(clone.parent_node, []).append(ind)
+            else:
+                #if in "global" scope, not in class
+                split_groups.setdefault("global", []).append(ind)
+
+        return split_groups.values()
 
     def get_clone_differences(self):
         """Travels recursively down through the AST, looking for nodes that are different.
@@ -317,10 +331,13 @@ class CloneClass():
                     clone.ast_node.decorator_list.append(clone.param_dec_node)
             return
     
-        
-        clone_nodes = []
-        for clone in self.clones:
-            clone_nodes.append(clone.ast_node)
+        #check parent nodes of clones, split if different:
+        split_groups = self.check_parent_nodes()
+        if len(split_groups) > 1:
+            #groups are split and refactored
+            self.split_clone_class(split_groups)
+            return
+
 
         print("getting differences")
         self.get_clone_differences()

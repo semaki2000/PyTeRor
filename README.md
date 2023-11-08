@@ -7,9 +7,7 @@ Runs with python 3.10 <=
 TODO:
 1. add 'import pytest' to refactored source file if not there already
 
-2. Add functionality to CloneASTUtilities to find nodes that are in a class (in function find_clone_node_in_AST). 
-    Currently, only finds top-level nodes (looks through body of AST base)
-    Finding tests that are children nodes of nodes that aren't classes is probably not necessary.
+2. using copytree to copy directory structure and test files should create a temporary directory instead of a permanent one
 
 3. Pre-existing decorators, non-pytest.
     If all clones have the same decorator, no problem
@@ -21,7 +19,37 @@ TODO:
 
 6. requirements.txt
 
-- Given that we refactor names: NodeDifference class should have a boolean whether the node is unconditional or conditional. (control flow)
+7. Preserve name of test through 'id' keyword of pytest.param:
+
+```python
+#two clones, where one has a mark
+
+def test_a():
+    assert "A"
+
+
+def test_b():
+    assert "B"
+
+#should become for the refactored version
+@pytest.mark.parametrize("new_var", [
+    pytest.param("A", id="test_a"),
+    pytest.param("B", id="test_b"),
+])
+def test_a_parametrized(new_var):
+    assert new_var
+
+```
+8. Use same strategy as above, but with 'mark' keyword to preserve marks? Or perhaps create new mark for every test being parametrized. E.g:
+```python
+@pytest.mark.parametrize("new_var", [
+    pytest.param("A", marks=pytest.mark.test_a, id="test_a"),
+    pytest.param("B", marks=pytest.mark.test_b, id="test_b"),
+])
+def test_a_parametrized(new_var):
+    assert new_var
+
+```
 
 
 - How to handle this? Anwer: probably don't, edge case
