@@ -18,13 +18,7 @@ class NicadParser():
             self.orig_filepath = Path(orig_filepath)
         if tmp_filepath != None:
             self.tmp_filepath = Path(tmp_filepath)
-        print("creating nicad parser")
-        print(xml_file)
-        print("from")
-        print(tmp_filepath)
-        print("to")
-        print(orig_filepath)
-
+        
     def parse(self):
         """Parses the xml file provided in the construction of the object.
         Returns:

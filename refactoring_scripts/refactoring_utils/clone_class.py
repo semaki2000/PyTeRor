@@ -34,7 +34,10 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         self.process_clones()
-        self.param_decorator = TargetParametrizeDecorator(n_clones=len(self.clones), funcnames=[clone.funcname for clone in self.clones])
+        self.param_decorator = TargetParametrizeDecorator(
+            n_clones=len(self.clones), 
+            funcnames=[clone.funcname for clone in self.clones],
+            marks=[clone.marks for clone in self.clones])
         self.target = self.clones[0]
         self.attribute_difference = False
         self.print_pre_info()
@@ -204,13 +207,11 @@ class CloneClass():
             else:
                 attr_dict[strvals] = [ind]
         
-        print(attr_dict)
         self.split_clone_class(attr_dict.values())
 
     def split_clone_class(self, classes):
         """Splits a clone class into n based on parameter classes which has n elements. 
         Each element is a list of indices."""
-        print(classes)
         print("Splitting clone class into", len(classes), "classes")
         for cl in classes:
             clones = []
@@ -218,7 +219,6 @@ class CloneClass():
                 clones.append(self.clones[ind])
 
             CloneClass(clones).refactor_clones()
-        print("split and refactored")
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -310,7 +310,6 @@ class CloneClass():
             return
         #find under what argname previously parametrized names are stored
         names = [ast.Name(argname) for argname in argnames]
-        print("calling get_argname_for_ppnames", argnames)
         new_argname = self.param_decorator.get_argname_for_preparametrized_names(names)
         if not new_argname:
             return
@@ -339,10 +338,10 @@ class CloneClass():
             return
 
 
-        print("getting differences")
+        #print("getting differences")
         self.get_clone_differences()
 
-        print("checking whether attribute differences")
+        #print("checking whether attribute differences")
 
         if self.attribute_difference:
             #difference in attributes,
@@ -351,18 +350,18 @@ class CloneClass():
             return
         
         self.compare_decorators()
-        print("finding local variables")
+        #print("finding local variables")
         self.find_local_variables()
-        print("extracting differences")
+        #print("extracting differences")
         self.extract_clone_differences()
         
         if len(self.node_differences) > 0:
 
             #create pytest decorator
-            print("adding diffs to pd")
+            #print("adding diffs to param decorator")
 
             self.add_differences_to_param_decorator()
-            print("replacing names with values")
+            #print("replacing names with values")
             self.replace_names_with_values()
 
             decorator = self.param_decorator.get_decorator()

@@ -1,15 +1,15 @@
 import ast
 import sys
-from .clone_ast_utilities import CloneASTUtilities as CAU
+from .decorator_checker import DecoratorChecker
 from .parametrized_arg import ParametrizedArg
 from .parametrize_decorator import ParametrizeDecorator
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
     def __init__(self, ast_node, parent_node, lineno) -> None:
-        self.parametrized_args = [] #list of parametrizedArg object
         self.param_decorator = ParametrizeDecorator(1)
         self.param_dec_node = None
+        self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
         
         self.is_fixture : bool = False
         self.unknown_decorator = False
@@ -18,6 +18,7 @@ class Clone():
         self.lineno = lineno
         self.funcname = ast_node.name
         self.parse_decorator_list()
+
 
         #only used by target
         self.new_funcname = self.funcname + "_parametrized"
@@ -67,7 +68,7 @@ class Clone():
 
         for decorator in self.ast_node.decorator_list:
             
-            if CAU.is_parametrize_decorator(decorator):
+            if DecoratorChecker.is_parametrize_decorator(decorator):
                 #get contents of p.m.parametrize as actual literals
                 #assuming param_names is string
                 param_names = decorator.args[0].value
@@ -82,15 +83,21 @@ class Clone():
                     self.ast_node.decorator_list.remove(self.param_dec_node)
                 return
 
-            elif CAU.is_fixture_decorator(decorator):
+            elif DecoratorChecker.is_fixture_decorator(decorator):
                 self.is_fixture = True
             
+            elif DecoratorChecker.is_mark_decorator(decorator):
+                self.marks.append(decorator)
+                
+
+            elif DecoratorChecker.is_any_pytest_decorator(decorator):
+                pass
+
             else:
                 #TODO: find out what to do here
                 print("unknown decorator")
                 print(ast.unparse(decorator))
-                self.unknown_decorator = True                
-        
+                self.unknown_decorator = True
 
 
     def get_ast_node(self):

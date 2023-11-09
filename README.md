@@ -17,7 +17,9 @@ TODO:
 
 5. requirements.txt
 
-6. Preserve mark of test through 'marks' keyword of pytest.param. E.g:
+6. Perhaps create new mark for every test being parametrized? 
+This could imitate functionality of 'pytest -k test_name'
+It would instead be 'pytest -m test_name:
 ```python
 @pytest.mark.parametrize("new_var", [
     pytest.param("A", marks=pytest.mark.test_a, id="test_a"),
@@ -26,10 +28,8 @@ TODO:
 def test_a_parametrized(new_var):
     assert new_var
 ```
-7. Perhaps create new mark for every test being parametrized? 
-This could imitate functionality of 'pytest -k test_name'
-It would instead be 'pytest -m test_name
 
+7. Change os.system to subprocess module
 -------------------------------------------------------------------------------------------
 
 
