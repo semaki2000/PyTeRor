@@ -6,7 +6,7 @@ import ast
 class CloneASTUtilities:
     """Includes a set of static functions to find clones and compare clones"""
 
-    def find_clone_node_in_AST(ast_base, clone_lineno: int):
+    def find_clone_node_in_AST(ast_base, clone_lineno: int, filehandler):
         """For a single clone, finds AST-node of clone based on line number of function definition.
 
 
@@ -24,11 +24,11 @@ class CloneASTUtilities:
         # only for one file
         for node in ast_base.body:
             if isinstance(node, ast.FunctionDef) and node.lineno == clone_lineno:
-                return Clone(node, parent_node=ast_base, lineno=node.lineno)
+                return Clone(node, parent_node=ast_base, lineno=node.lineno, filehandler=filehandler)
             elif isinstance(node, ast.ClassDef):
                 for class_node in node.body:
                     if (isinstance(class_node, ast.FunctionDef) and class_node.lineno == clone_lineno):
-                        return Clone(class_node, parent_node=node, lineno=class_node.lineno)
+                        return Clone(class_node, parent_node=node, lineno=class_node.lineno, filehandler=filehandler)
 
     def detach_redundant_clones(ast_base, redundant_clones: list):
         """Detaches given nodes from the AST.
@@ -69,6 +69,21 @@ class CloneASTUtilities:
                 if getattr(parent, attribute) == child:
                     setattr(parent, attribute, new_child)
 
+
+    def get_all_descendants(node):
+        for child in ast.iter_child_nodes(node):
+            yield child
+            yield from CloneASTUtilities.get_all_descendants(child)
+
+    def has_import_statement(ast_base):
+        for stmt in ast_base.body:
+            if type(stmt) == ast.Import:
+                if len(stmt.names) == 1 and stmt.names[0].name == "pytest":
+                    return True
+        return False
+                        
+    def get_import_statement():
+        return ast.Import(names=[ast.alias(name="pytest")])
 
     def get_eval_call_node(arg):
         func_name = ast.Name(id="eval")

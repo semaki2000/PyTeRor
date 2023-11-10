@@ -4,9 +4,6 @@ from .node_difference import NodeDifference
 class AttributeNodeDifference(NodeDifference):
     def __init__(self, nodes, parent_nodes):
         super().__init__(nodes, parent_nodes)
-        print("Created attribute node with")
-        for node in nodes:
-            print(ast.unparse(node))
 
     
     def get_variants_dict(self):

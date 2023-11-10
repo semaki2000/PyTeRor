@@ -3,7 +3,6 @@ import pytest
 
 def test_a_twice():
     assert "A"
-
 @pytest.mark.example_mark
 @pytest.mark.mark2
 def test_b_twice():

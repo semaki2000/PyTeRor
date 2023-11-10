@@ -1,8 +1,11 @@
 import pytest
 #two clones, where one has a mark
 
+
 def test_a_simple():
-    assert "A"
+    assert """A"""
+
+
 
 @pytest.mark.example_mark
 def test_b_simple():

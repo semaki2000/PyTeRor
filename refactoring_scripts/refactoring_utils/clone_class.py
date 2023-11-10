@@ -27,8 +27,11 @@ class CloneClass():
             - clones - list of Clone objects
 
         """
-        self.id = self.cnt
-        self.cnt += 1
+        #set id
+        self.id = CloneClass.cnt
+        CloneClass.cnt += 1
+
+
         self.redundant_clones = []
         self.node_differences = []
         self.name_gen = NameGenerator()
@@ -38,10 +41,11 @@ class CloneClass():
             n_clones=len(self.clones), 
             funcnames=[clone.funcname for clone in self.clones],
             marks=[clone.marks for clone in self.clones])
-        self.target = self.clones[0]
         self.attribute_difference = False
         self.print_pre_info()
         #set target clone
+        self.target = self.clones[0]
+        self.target.target = True
 
     def process_clones(self):
         """Processes the given clones by 
@@ -59,6 +63,7 @@ class CloneClass():
 
     def print_pre_info(self):
         """Print info before refactoring. On object creation."""
+        print() 
         print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
@@ -213,6 +218,10 @@ class CloneClass():
         """Splits a clone class into n based on parameter classes which has n elements. 
         Each element is a list of indices."""
         print("Splitting clone class into", len(classes), "classes")
+
+        #make sure target no longer is target
+        self.target.target = False
+
         for cl in classes:
             clones = []
             for ind in cl:
@@ -324,8 +333,9 @@ class CloneClass():
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
-            print(f"Error in clone class {id}: Cannot parametrize one or fewer tests.")
+            print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             for clone in self.clones:
+                clone.target = False
                 if clone.param_dec_node != None:
                     clone.ast_node.decorator_list.append(clone.param_dec_node)
             return

@@ -1,14 +1,23 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="4" npairs="6"/>
-<runinfo ncompares="6" cputime="15625"/>
-<classinfo nclasses="1"/>
+<cloneinfo npcs="10" npairs="24"/>
+<runinfo ncompares="24" cputime="15625"/>
+<classinfo nclasses="2"/>
 
-<class classid="1" nclones="4" nlines="2" similarity="100">
-<source file="/tmp/tmpbz1iuhbg/tmp_subfolder/test_marked_simple.py" startline="4" endline="6" pcid="1"></source>
-<source file="/tmp/tmpbz1iuhbg/tmp_subfolder/test_marked_simple.py" startline="8" endline="11" pcid="2"></source>
-<source file="/tmp/tmpbz1iuhbg/tmp_subfolder/test_marked_twice.py" startline="4" endline="6" pcid="3"></source>
-<source file="/tmp/tmpbz1iuhbg/tmp_subfolder/test_marked_twice.py" startline="9" endline="12" pcid="4"></source>
+<class classid="1" nclones="3" nlines="4" similarity="100">
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_field.py" startline="14" endline="20" pcid="1"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_field.py" startline="22" endline="28" pcid="2"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_field.py" startline="30" endline="36" pcid="3"></source>
+</class>
+
+<class classid="2" nclones="7" nlines="8" similarity="100">
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="15" endline="30" pcid="4"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="112" endline="124" pcid="10"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="80" endline="94" pcid="8"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="49" endline="62" pcid="6"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="96" endline="110" pcid="9"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="32" endline="47" pcid="5"></source>
+<source file="/tmp/tmpw6vfjxo3/tmp_subfolder/test_lark_parser.py" startline="64" endline="78" pcid="7"></source>
 </class>
 
 </clones>

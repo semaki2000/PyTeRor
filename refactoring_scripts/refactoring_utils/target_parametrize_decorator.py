@@ -31,8 +31,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         for i in range(len(vals_list)):
             values = self.argvals[i][argname]
             
-            for val in values:
-                print(ast.unparse(val))
+
 
             for j in range(len(values)):
                 value = values[j]

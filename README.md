@@ -5,19 +5,15 @@ Runs with python 3.10 <=
 
 
 TODO:
-1. add 'import pytest' to refactored source file if not there already
-
-2. Pre-existing decorators, non-pytest.
+1. Pre-existing decorators, non-pytest.
     If all clones have the same decorator, no problem
     Otherwise, split off clones with the same decorator into new clone class.
 
-3. Only unparse test, keep original file. Format refactored code?
+2. flag for overwriting/making new file
 
-4. flag for overwriting/making new file
+3. requirements.txt
 
-5. requirements.txt
-
-6. Perhaps create new mark for every test being parametrized? 
+4. Perhaps create new mark for every test being parametrized? 
 This could imitate functionality of 'pytest -k test_name'
 It would instead be 'pytest -m test_name:
 ```python
@@ -29,7 +25,24 @@ def test_a_parametrized(new_var):
     assert new_var
 ```
 
-7. Change os.system to subprocess module
+5. Change os.system to subprocess module
+
+6. FIX THIS: currently, different these aren't clones:
+```python
+
+@pytest.mark.test
+@pytest.mark.usefixtures("a")
+def test_this():
+    pass
+
+
+
+@pytest.mark.usefixtures("a")
+def test_that():
+    pass    
+
+```
+Test in test_files/test_clone_detection_and_refactoring/test_lark_parser.py
 -------------------------------------------------------------------------------------------
 
 

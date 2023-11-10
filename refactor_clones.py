@@ -8,6 +8,7 @@ from refactoring_scripts.refactoring_utils.clone_ast_utilities import CloneASTUt
 from refactoring_scripts.refactoring_utils.clone_class import CloneClass
 from find_codeclone_repos.run_clone_detector import RunCloneDetector
 from parse_nicad.nicad_parser import NicadParser
+from refactoring_scripts.refactoring_utils.file_handler import FileHandler
 
 
 
@@ -20,7 +21,7 @@ def main():
     paths = get_path_obj()
     #TODO: add option to use xml file without using nicad
 
-    clones = []
+    list_of_clone_class_dicts = []
     for path in paths:
         if path.is_dir():
             #tmp directory, for copying test files into and running clone detector
@@ -29,26 +30,26 @@ def main():
                 
                 parser_args = RunCloneDetector.run(path, tmp_path)
                 xml_parser = NicadParser(*parser_args)
-                clones.extend(xml_parser.parse())
+                list_of_clone_class_dicts.extend(xml_parser.parse())
         else:
             #xml file
             xml_parser = NicadParser(path)
-            clones.extend(xml_parser.parse())
+            list_of_clone_class_dicts.extend(xml_parser.parse())
     
-    clone_classes = clone_class_generator(clones)
+    file_handlers = []
+    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers)
 
-    
     for clone_class in clone_classes:
         clone_class.refactor_clones()
-
-    
+        
     target_location = Path("refactored_files/repo_test/").resolve()
-    for key in asts_dict.keys():
-        ASTParser.parse_AST_to_file(asts_dict[key], target_location / Path(key.stem + "_refactored.py"))
-        print("refactored file:", key)
-        print("\t-> " + str(target_location / Path(key.stem + "_refactored.py")))
+    print()
+    for file in file_handlers:
+        file.refactor_file(target_location / Path(file.filepath.stem + "_refactored.py"))
+        print("refactored file:", file.filepath)
+        print("\t-> " + str(target_location / Path(file.filepath.stem + "_refactored.py")))
 
-def clone_class_generator(clones):
+def clone_class_generator(clones, file_handlers):
     for clone_class in clones:
 
         ast_clone_nodes = [] 
@@ -59,10 +60,13 @@ def clone_class_generator(clones):
                 asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
 
             ast_base = asts_dict[filepath]
+            filehandler=FileHandler(filepath, ast_base)
+            file_handlers.append(filehandler)
+            
             for lineno in linenumbers:
 
                 #add clone on lineno in filepath to list of clone objects
-                ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno)))
+                ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno), filehandler=filehandler))
         yield CloneClass(ast_clone_nodes)
 
 #TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg

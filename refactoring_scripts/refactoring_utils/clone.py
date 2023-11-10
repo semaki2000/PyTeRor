@@ -6,23 +6,28 @@ from .parametrize_decorator import ParametrizeDecorator
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
-    def __init__(self, ast_node, parent_node, lineno) -> None:
-        self.param_decorator = ParametrizeDecorator(1)
-        self.param_dec_node = None
-        self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
-        
-        self.is_fixture : bool = False
-        self.unknown_decorator = False
+    def __init__(self, ast_node, parent_node, lineno, filehandler) -> None:
         self.ast_node = ast_node
         self.parent_node = parent_node
         self.lineno = lineno
         self.funcname = ast_node.name
-        self.parse_decorator_list()
+        self.filehandler = filehandler
 
+        self.is_fixture : bool = False
+        self.unknown_decorator = False
+        self.param_decorator = ParametrizeDecorator(1)
+        self.param_dec_node = None
+        self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
+        
 
+        self.target = False
+        self.detached = False
+        self.filehandler.add_clone(self)
         #only used by target
         self.new_funcname = self.funcname + "_parametrized"
         
+        
+        self.parse_decorator_list()
         
 
     #only used by target
@@ -105,5 +110,5 @@ class Clone():
     
     def detach(self):
         """Detach this clone's node from the AST."""
-        
+        self.detached = True
         self.parent_node.body.remove(self.ast_node)
