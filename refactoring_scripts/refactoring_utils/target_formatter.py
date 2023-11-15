@@ -4,7 +4,7 @@ from .unparser import Unparser
 
 class TargetFormatter():
 
-    def __init__(self, ast_node, lineno, formatter="black") -> None:
+    def __init__(self, ast_node, lineno, indent = False, formatter="black") -> None:
         self.ast_node = ast_node
         self.lineno = lineno
         self.formatter = formatter

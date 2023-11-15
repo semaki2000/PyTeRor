@@ -15,6 +15,8 @@ class Clone():
 
         self.is_fixture : bool = False
         self.unknown_decorator = False
+        self.unknown_decorators_list = []
+
         self.param_decorator = ParametrizeDecorator(1)
         self.param_dec_node = None
         self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
@@ -22,6 +24,7 @@ class Clone():
 
         self.target = False
         self.detached = False
+        self.refactored = False
         self.filehandler.add_clone(self)
         #only used by target
         self.new_funcname = self.funcname + "_parametrized"
@@ -41,8 +44,10 @@ class Clone():
         Returns:
             None    
         """
+        #get ind after last positional argument (not keywords)
+        ind = len(self.ast_node.args.posonlyargs)
         for name in param_names:
-            self.ast_node.args.args.append(ast.arg(arg = name))
+            self.ast_node.args.args.insert(ind, ast.arg(arg = name))
 
 
     def remove_parameter_from_func_def(self, param_name):
@@ -75,13 +80,22 @@ class Clone():
             
             if DecoratorChecker.is_parametrize_decorator(decorator):
                 #get contents of p.m.parametrize as actual literals
+                
                 #assuming param_names is string
+                #TODO: dont assume param_names is string, people are stupid
                 param_names = decorator.args[0].value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
                 if type(decorator.args[1]) == ast.Name: 
-                    print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
-                    sys.exit()
+                    #print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
+                    #sys.exit()
+                    
+                    #set to unknown decorator, this clone will be ignored
+                    self.unknown_decorator = True
+                elif type(decorator.args[1]) == ast.Call:
+                    #same as above
+                    self.unknown_decorator = True
+
                 else:
                     self.param_decorator.parse_decorator(decorator)
                     self.param_dec_node = decorator
@@ -99,10 +113,10 @@ class Clone():
                 pass
 
             else:
-                #TODO: find out what to do here
-                print("unknown decorator")
-                print(ast.unparse(decorator))
+
                 self.unknown_decorator = True
+                self.unknown_decorators_list.append(ast.unparse(decorator))
+
 
 
     def get_ast_node(self):
@@ -112,3 +126,6 @@ class Clone():
         """Detach this clone's node from the AST."""
         self.detached = True
         self.parent_node.body.remove(self.ast_node)
+
+    def parent_is_class(self):
+        return isinstance(self.parent_node, ast.ClassDef)

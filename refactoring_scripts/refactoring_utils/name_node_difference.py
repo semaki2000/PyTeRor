@@ -1,8 +1,6 @@
 from .node_difference import NodeDifference
 import ast
 
-#TODO: use ast.Name.ctx!!! instead of self.left_side_assign
-#ctx can be Load/Store/Del
 class NameNodeDifference(NodeDifference):
 
     def __init__(self, nodes, parent_nodes):

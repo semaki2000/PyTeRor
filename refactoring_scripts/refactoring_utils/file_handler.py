@@ -15,8 +15,11 @@ class FileHandler:
         self.clones.append(clone)
         self.get_linenumber_info(clone)
 
-    def refactor_file(self, dest_filepath):
+    def refactor_file(self, dest_filepath, verbose = False):
         """Aims to refactor the file by keeping as much of the original file as possible"""
+        if verbose:
+            print(f"Refactoring file: {self.filepath}")
+        
         with open(self.filepath, "r") as file:
             lines = file.readlines()
         
@@ -26,9 +29,12 @@ class FileHandler:
         remove_ind_list = []
 
         for ind in range(len(self.clones)):
-            
+            if not self.clones[ind].refactored:
+                continue
+        
             (startline, endline) = self.lineno_info[ind]
-            
+            if verbose:
+                print(f"removing clone starting at line {startline}")
             for line_ind in range(startline-1, endline):
                 remove_ind_list.append(line_ind)
 
@@ -37,13 +43,18 @@ class FileHandler:
         for ind in remove_ind_list:
             lines.pop(ind)
             if ind in self.lineno_to_target_clone.keys():
+                if verbose:
+                    print("formatting target clone")
                 clone = self.lineno_to_target_clone[ind]
+
                 #format
-                tf = TargetFormatter(clone.ast_node, clone.lineno)
+                tf = TargetFormatter(clone.ast_node, clone.lineno, clone.parent_is_class)
                 for line in reversed(tf.format_target()):
                     lines.insert(ind, line)
 
         if has_target_clone and not self.pytest_import:
+            if verbose:
+                print("adding 'import pytest")
             lines.insert(0, "import pytest\n")
 
         with open(dest_filepath, "w+") as dest_file:

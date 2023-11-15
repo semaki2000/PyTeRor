@@ -19,7 +19,7 @@ class CloneClass():
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
     cnt = 0
-    def __init__(self, clones : list) -> None:
+    def __init__(self, clones : list, split_off = None, split_off_ind = None) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
     
@@ -28,10 +28,15 @@ class CloneClass():
 
         """
         #set id
-        self.id = CloneClass.cnt
-        CloneClass.cnt += 1
+        if split_off:
+            self.id = split_off.id+"."+str(split_off_ind)
+
+        else:
+            self.id = str(CloneClass.cnt)
+            CloneClass.cnt += 1
 
 
+        self.split_off = split_off
         self.redundant_clones = []
         self.node_differences = []
         self.name_gen = NameGenerator()
@@ -44,21 +49,27 @@ class CloneClass():
         self.attribute_difference = False
         self.print_pre_info()
         #set target clone
-        self.target = self.clones[0]
-        self.target.target = True
+        if len(self.clones) > 0:
+            self.target = self.clones[0]
+            self.target.target = True
 
     def process_clones(self):
         """Processes the given clones by 
             1. excluding clones which are fixtures (parametrising fixtures will unintentionally parametrize the tests using those fixtures)
         """
         remove_on_index = []
-        for clone in self.clones:  
-            if clone.is_fixture:
+        for clone in self.clones:
+            #clone can be none, if defined inside another function. 
+            #we remove this clone here, rather than before creating clone class, this is because we want CloneClass.id to correspond to id in xml file
+            if clone is None:
+                remove_on_index.insert(0, clone)
+            elif clone.is_fixture:
                 remove_on_index.insert(0, clone)
             
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
+
 
 
     def print_pre_info(self):
@@ -67,6 +78,19 @@ class CloneClass():
         print(f"Created clone class {self.id} with contents:")
         [print(f"   Function {x.funcname}") for x in self.clones]
 
+    def check_unknown_decorators(self):
+        """Checks each clones unknown_decorators_list, 
+        splitting the clone class if 2 or more clones have differences between their unknown decorators"""
+        split_groups = {}
+        for ind in range(len(self.clones)):
+            clone = self.clones[ind]
+            clone.unknown_decorators_list.sort()
+            split_groups.setdefault(str(clone.unknown_decorators_list), []).append(ind)
+
+        print(split_groups)
+        return split_groups.values()
+
+
     def check_parent_nodes(self):
         """Checks the parent nodes of each clone, and splitting the clone class if:
             1. 1 or more clones are in the global scope, whilst 1 or more clones are inside a class.
@@ -74,7 +98,7 @@ class CloneClass():
         split_groups = {} #dict from ast_node, where each value is a list which has indices of clones that belong in the same class
         for ind in range(len(self.clones)):
             clone = self.clones[ind]
-            if isinstance(clone.parent_node, ast.ClassDef):
+            if clone.parent_is_class():
                 #if not in dict, sets value to [], else appends ind to value list
                 split_groups.setdefault(clone.parent_node, []).append(ind)
             else:
@@ -212,22 +236,25 @@ class CloneClass():
             else:
                 attr_dict[strvals] = [ind]
         
-        self.split_clone_class(attr_dict.values())
+        self.split_clone_class(attr_dict.values(), reason = " because of a difference in attributes.")
 
-    def split_clone_class(self, classes):
+    def split_clone_class(self, classes, reason = "."):
         """Splits a clone class into n based on parameter classes which has n elements. 
         Each element is a list of indices."""
-        print("Splitting clone class into", len(classes), "classes")
+        
+        print("Splitting clone class into", len(classes), "classes" + reason)
 
         #make sure target no longer is target
         self.target.target = False
 
+        classes_split = 0
         for cl in classes:
+            classes_split += 1
             clones = []
             for ind in cl:
                 clones.append(self.clones[ind])
 
-            CloneClass(clones).refactor_clones()
+            CloneClass(clones, self, classes_split).refactor_clones()
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -292,7 +319,7 @@ class CloneClass():
         """Print info after refactoring."""
         print(f"Refactored clone class {self.id}")
         [print(f"   Function {x.funcname}") for x in self.clones]
-        print("into " + self.target.new_funcname)
+        print("into " + self.target.new_funcname + " in file: " + str(self.target.filehandler.filepath))
         for x, y in [(self.name_gen.constants_cnt, "constants"), (self.name_gen.names_cnt, "names"), (self.name_gen.other_cnt, "other nodes")]:
             print(f"    Parametrized {x} {y}.")
 
@@ -344,9 +371,15 @@ class CloneClass():
         split_groups = self.check_parent_nodes()
         if len(split_groups) > 1:
             #groups are split and refactored
-            self.split_clone_class(split_groups)
+            self.split_clone_class(split_groups, reason = " because of a difference in scope (class vs global).")
             return
 
+        #check unknown decorators of clones, split if different:
+        split_groups = self.check_unknown_decorators()
+        if len(split_groups) > 1:
+            #groups are split and refactored
+            self.split_clone_class(split_groups, reason = " because of a difference in decorators.")
+            return
 
         #print("getting differences")
         self.get_clone_differences()
@@ -385,9 +418,11 @@ class CloneClass():
             self.target.add_parameters_to_func_def(self.name_gen.names)
             self.target.add_decorator(decorator)
             self.target.rename_target()
-
+            
+            for clone in self.clones:
+                clone.refactored = True
             self.redundant_clones = self.clones[1:]
             self.remove_redundant_clones()
 
-        #self.print_post_info()
+        self.print_post_info()
         

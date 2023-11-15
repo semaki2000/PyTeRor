@@ -42,7 +42,7 @@ def main():
     for clone_class in clone_classes:
         clone_class.refactor_clones()
         
-    target_location = Path("refactored_files/repo_test/").resolve()
+    target_location = Path("refactored_files/check_repo/").resolve()
     print()
     for file in file_handlers:
         file.refactor_file(target_location / Path(file.filepath.stem + "_refactored.py"))
@@ -60,8 +60,16 @@ def clone_class_generator(clones, file_handlers):
                 asts_dict[filepath] = ASTParser.parse_file_to_AST(filepath)
 
             ast_base = asts_dict[filepath]
-            filehandler=FileHandler(filepath, ast_base)
-            file_handlers.append(filehandler)
+            
+            for handler in file_handlers:
+                if handler.filepath == filepath:
+                    filehandler= handler
+                    break
+            else:
+                #if break not executed in for        
+                filehandler=FileHandler(filepath, ast_base)
+                file_handlers.append(filehandler)
+
             
             for lineno in linenumbers:
 
@@ -87,8 +95,17 @@ def get_filepaths(args):
 def parseargs():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument("paths", action="append", help="path(s) to check for code clones")
-    #TODO: add new flag for overwriting file vs creating refactored version. which is default?
+    parser.add_argument("paths", 
+        action="append", 
+        help="path(s) to check for code clones")
+    
+    parser.add_argument("-i", "--inplace", 
+                        action='store_true', 
+                        help="write new files inplace, rather than in refactoring_results dir")
+    parser.add_argument("-w", "--overwrite", 
+                        action='store_true', 
+                        help="overwrite the files that are being parametrized, rather than creating a new file with _parametrized added to filename")
+
 
 
     args = parser.parse_args()
