@@ -3,12 +3,12 @@ import sys
 import argparse
 import tempfile
 from pathlib import Path
-from refactoring_scripts.refactoring_utils.ast_parser import ASTParser
-from refactoring_scripts.refactoring_utils.clone_ast_utilities import CloneASTUtilities as CAU
-from refactoring_scripts.refactoring_utils.clone_class import CloneClass
-from find_codeclone_repos.run_clone_detector import RunCloneDetector
-from parse_nicad.nicad_parser import NicadParser
-from refactoring_scripts.refactoring_utils.file_handler import FileHandler
+from src.refactoring.ast_parser import ASTParser
+from src.refactoring.clone_ast_utilities import CloneASTUtilities as CAU
+from src.refactoring.clone_class import CloneClass
+from src.detect_clones.run_clone_detector import RunCloneDetector
+from src.parse_clone_detection_output.parse_nicad.nicad_parser import NicadParser
+from src.refactoring.file_handler import FileHandler
 
 
 

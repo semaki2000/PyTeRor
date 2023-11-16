@@ -87,7 +87,7 @@ class CloneClass():
             clone.unknown_decorators_list.sort()
             split_groups.setdefault(str(clone.unknown_decorators_list), []).append(ind)
 
-        print(split_groups)
+        
         return split_groups.values()
 
 
