@@ -5,6 +5,8 @@ Runs with python 3.10 <=
 
 
 TODO:
+0. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
+
 1. flag for overwriting/making new file
 
 2. requirements.txt
@@ -39,6 +41,9 @@ def test_that():
 
 ```
 Test in test_files/test_clone_detection_and_refactoring/test_lark_parser.py
+
+
+6. Find out what to do with """ comment in top of test
 -------------------------------------------------------------------------------------------
 
 
@@ -49,7 +54,7 @@ from a import TRANSFORM_FUNCTIONS #list of tuples defined elsewhere
 @pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS) #then used in annotation
 def test_...():
 ```
-Potential theoretical answer to above could be with tuple unpacking of some sort
+Potential answer to above could be with tuple unpacking of some sort
 But gets a bit complicated
 
 
@@ -60,3 +65,32 @@ BUGS:
 POTENTIAL BUGS
 
 - When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)  
+
+
+
+OTHER INTERESTING STUFF:
+
+```python
+@pytest.mark.parametrize(
+    "parametrized_name_0, parametrized_constant_0",
+    [
+        pytest.param(
+            str,
+            """+--+
+| ||
+|-+|
+| ||
+|-+|
+|-+|
+| ||
++--+
+""",
+            id="test_str",
+        ),
+        pytest.param(repr, "Box(...)", id="test_repr"),
+    ],
+)
+def test_str_parametrized(parametrized_constant_0, parametrized_name_0):
+    assert parametrized_name_0(ASCII) == parametrized_constant_0
+```
+Unintentionally extracts function name, when parameters are the same

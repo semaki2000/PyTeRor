@@ -48,7 +48,7 @@ class Clone():
         ind = len(self.ast_node.args.posonlyargs)
         for name in param_names:
             self.ast_node.args.args.insert(ind, ast.arg(arg = name))
-
+            ind += 1
 
     def remove_parameter_from_func_def(self, param_name):
         for ind in range(len(self.ast_node.args.args)):

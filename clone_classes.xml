@@ -1,588 +1,77 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="1261" npairs="778"/>
-<runinfo ncompares="51012" cputime="15625"/>
-<classinfo nclasses="92"/>
+<cloneinfo npcs="155" npairs="14"/>
+<runinfo ncompares="1236" cputime="15625"/>
+<classinfo nclasses="14"/>
 
-<class classid="1" nclones="4" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="145" endline="147" pcid="13"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="169" endline="171" pcid="18"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="270" endline="272" pcid="36"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="241" endline="243" pcid="31"></source>
+<class classid="1" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_box.py" startline="7" endline="10" pcid="12"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_box.py" startline="11" endline="14" pcid="13"></source>
 </class>
 
-<class classid="2" nclones="19" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="148" endline="150" pcid="14"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="355" endline="357" pcid="54"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="305" endline="307" pcid="42"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="273" endline="275" pcid="37"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="175" endline="177" pcid="20"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="228" endline="230" pcid="29"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="276" endline="278" pcid="38"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="348" endline="350" pcid="52"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="221" endline="223" pcid="27"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="172" endline="174" pcid="19"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="371" endline="373" pcid="57"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="333" endline="335" pcid="49"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="378" endline="380" pcid="59"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="178" endline="180" pcid="21"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="244" endline="246" pcid="32"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="151" endline="153" pcid="15"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="326" endline="328" pcid="47"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="154" endline="156" pcid="16"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="251" endline="253" pcid="34"></source>
+<class classid="2" nclones="2" nlines="3" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_cells.py" startline="5" endline="11" pcid="18"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_cells.py" startline="12" endline="18" pcid="19"></source>
 </class>
 
-<class classid="3" nclones="5" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="181" endline="183" pcid="22"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="231" endline="234" pcid="30"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="279" endline="281" pcid="39"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="254" endline="257" pcid="35"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="282" endline="285" pcid="40"></source>
+<class classid="3" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_color.py" startline="16" endline="19" pcid="25"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_color.py" startline="20" endline="23" pcid="26"></source>
 </class>
 
-<class classid="4" nclones="4" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="201" endline="204" pcid="24"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="570" endline="573" pcid="1207"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="575" endline="579" pcid="1208"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="581" endline="585" pcid="1209"></source>
+<class classid="4" nclones="2" nlines="3" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_color_triplet.py" startline="4" endline="8" pcid="42"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_color_triplet.py" startline="9" endline="13" pcid="43"></source>
 </class>
 
-<class classid="5" nclones="10" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="224" endline="227" pcid="28"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="374" endline="377" pcid="58"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="336" endline="340" pcid="50"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="247" endline="250" pcid="33"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="329" endline="332" pcid="48"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="315" endline="319" pcid="45"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="358" endline="362" pcid="55"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="381" endline="383" pcid="60"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="351" endline="354" pcid="53"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_balance_metrics.py" startline="308" endline="311" pcid="43"></source>
+<class classid="5" nclones="2" nlines="4" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_control.py" startline="10" endline="15" pcid="51"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_control.py" startline="16" endline="21" pcid="52"></source>
 </class>
 
-<class classid="6" nclones="2" nlines="19" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="141" endline="160" pcid="65"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="162" endline="181" pcid="66"></source>
+<class classid="6" nclones="2" nlines="8" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_file_proxy.py" startline="20" endline="29" pcid="66"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_file_proxy.py" startline="30" endline="37" pcid="67"></source>
 </class>
 
-<class classid="7" nclones="5" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="216" endline="221" pcid="69"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="222" endline="227" pcid="70"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="277" endline="282" pcid="75"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="283" endline="288" pcid="76"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="467" endline="472" pcid="88"></source>
+<class classid="7" nclones="2" nlines="6" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_highlighter.py" startline="160" endline="168" pcid="74"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_highlighter.py" startline="456" endline="462" pcid="79"></source>
 </class>
 
-<class classid="8" nclones="3" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="228" endline="233" pcid="71"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="473" endline="478" pcid="89"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="234" endline="239" pcid="72"></source>
+<class classid="8" nclones="2" nlines="6" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_highlighter.py" startline="186" endline="193" pcid="76"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_highlighter.py" startline="194" endline="201" pcid="77"></source>
 </class>
 
-<class classid="9" nclones="2" nlines="12" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="289" endline="302" pcid="77"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="303" endline="316" pcid="78"></source>
+<class classid="9" nclones="2" nlines="7" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_jupyter.py" startline="11" endline="22" pcid="82"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_jupyter.py" startline="23" endline="32" pcid="83"></source>
 </class>
 
-<class classid="10" nclones="2" nlines="13" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="388" endline="402" pcid="83"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="403" endline="417" pcid="84"></source>
+<class classid="10" nclones="2" nlines="4" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_live_render.py" startline="19" endline="24" pcid="86"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_live_render.py" startline="25" endline="30" pcid="87"></source>
 </class>
 
-<class classid="11" nclones="3" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="454" endline="460" pcid="86"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="685" endline="691" pcid="103"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="588" endline="594" pcid="98"></source>
+<class classid="11" nclones="2" nlines="13" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_prompt.py" startline="55" endline="69" pcid="104"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_prompt.py" startline="70" endline="84" pcid="105"></source>
 </class>
 
-<class classid="12" nclones="3" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="540" endline="548" pcid="95"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="549" endline="557" pcid="96"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="779" endline="787" pcid="111"></source>
+<class classid="12" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_style.py" startline="88" endline="91" pcid="115"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_style.py" startline="92" endline="95" pcid="116"></source>
 </class>
 
-<class classid="13" nclones="2" nlines="9" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="607" endline="616" pcid="100"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="617" endline="626" pcid="101"></source>
+<class classid="13" nclones="2" nlines="7" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_tools.py" startline="5" endline="13" pcid="139"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_tools.py" startline="14" endline="22" pcid="140"></source>
 </class>
 
-<class classid="14" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="700" endline="705" pcid="105"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="714" endline="719" pcid="107"></source>
-</class>
-
-<class classid="15" nclones="2" nlines="13" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="819" endline="835" pcid="115"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="890" endline="906" pcid="126"></source>
-</class>
-
-<class classid="16" nclones="6" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="836" endline="841" pcid="118"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="859" endline="864" pcid="122"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="842" endline="847" pcid="119"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="871" endline="876" pcid="124"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="865" endline="870" pcid="123"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="848" endline="853" pcid="120"></source>
-</class>
-
-<class classid="17" nclones="6" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="907" endline="912" pcid="129"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="930" endline="935" pcid="133"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="919" endline="924" pcid="131"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="913" endline="918" pcid="130"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="936" endline="941" pcid="134"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="942" endline="947" pcid="135"></source>
-</class>
-
-<class classid="18" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1050" endline="1057" pcid="147"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1058" endline="1065" pcid="148"></source>
-</class>
-
-<class classid="19" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1080" endline="1088" pcid="151"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1089" endline="1098" pcid="152"></source>
-</class>
-
-<class classid="20" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1229" endline="1234" pcid="159"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_coaltime_distribution.py" startline="1236" endline="1242" pcid="160"></source>
-</class>
-
-<class classid="21" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="896" endline="901" pcid="221"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="902" endline="907" pcid="222"></source>
-</class>
-
-<class classid="22" nclones="2" nlines="13" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="980" endline="993" pcid="227"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="994" endline="1008" pcid="228"></source>
-</class>
-
-<class classid="23" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="1384" endline="1387" pcid="260"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_combinatorics.py" startline="1388" endline="1391" pcid="261"></source>
-</class>
-
-<class classid="24" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_extend_edges.py" startline="588" endline="595" pcid="300"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_extend_edges.py" startline="603" endline="622" pcid="302"></source>
-</class>
-
-<class classid="25" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_fileobj.py" startline="54" endline="59" pcid="307"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_fileobj.py" startline="69" endline="74" pcid="309"></source>
-</class>
-
-<class classid="26" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="65" endline="69" pcid="340"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="80" endline="84" pcid="342"></source>
-</class>
-
-<class classid="27" nclones="3" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="220" endline="223" pcid="353"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="53" endline="56" pcid="870"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1204" endline="1207" pcid="668"></source>
-</class>
-
-<class classid="28" nclones="3" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="224" endline="227" pcid="354"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="57" endline="59" pcid="871"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1208" endline="1210" pcid="669"></source>
-</class>
-
-<class classid="29" nclones="4" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="277" endline="281" pcid="358"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="287" endline="291" pcid="360"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="292" endline="297" pcid="361"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="282" endline="286" pcid="359"></source>
-</class>
-
-<class classid="30" nclones="4" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="356" endline="360" pcid="367"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="361" endline="365" pcid="368"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="371" endline="375" pcid="370"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="366" endline="370" pcid="369"></source>
-</class>
-
-<class classid="31" nclones="7" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="380" endline="382" pcid="372"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="400" endline="402" pcid="376"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="403" endline="405" pcid="377"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="406" endline="408" pcid="378"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="409" endline="411" pcid="379"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="416" endline="418" pcid="381"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="383" endline="385" pcid="373"></source>
-</class>
-
-<class classid="32" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="386" endline="392" pcid="374"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="393" endline="399" pcid="375"></source>
-</class>
-
-<class classid="33" nclones="15" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="412" endline="415" pcid="380"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="782" endline="784" pcid="398"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="776" endline="778" pcid="396"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="785" endline="787" pcid="399"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="779" endline="781" pcid="397"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="788" endline="790" pcid="400"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="803" endline="805" pcid="405"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="791" endline="793" pcid="401"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="800" endline="802" pcid="404"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="806" endline="808" pcid="406"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="996" endline="998" pcid="421"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="794" endline="796" pcid="402"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="809" endline="811" pcid="407"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="797" endline="799" pcid="403"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="812" endline="815" pcid="408"></source>
-</class>
-
-<class classid="34" nclones="2" nlines="13" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="836" endline="850" pcid="410"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="851" endline="865" pcid="411"></source>
-</class>
-
-<class classid="35" nclones="2" nlines="9" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="1215" endline="1225" pcid="439"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_file_format.py" startline="1270" endline="1280" pcid="444"></source>
-</class>
-
-<class classid="36" nclones="2" nlines="13" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="416" endline="429" pcid="465"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="492" endline="505" pcid="471"></source>
-</class>
-
-<class classid="37" nclones="2" nlines="14" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="703" endline="718" pcid="485"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="732" endline="747" pcid="487"></source>
-</class>
-
-<class classid="38" nclones="5" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="813" endline="817" pcid="492"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="818" endline="822" pcid="493"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="839" endline="894" pcid="497"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="828" endline="832" pcid="495"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_haplotype_matching.py" startline="823" endline="827" pcid="494"></source>
-</class>
-
-<class classid="39" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="126" endline="131" pcid="521"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="133" endline="138" pcid="522"></source>
-</class>
-
-<class classid="40" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="337" endline="347" pcid="549"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="348" endline="358" pcid="550"></source>
-</class>
-
-<class classid="41" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="402" endline="405" pcid="556"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="406" endline="409" pcid="557"></source>
-</class>
-
-<class classid="42" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="645" endline="651" pcid="581"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="652" endline="658" pcid="582"></source>
-</class>
-
-<class classid="43" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="700" endline="707" pcid="586"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="786" endline="796" pcid="594"></source>
-</class>
-
-<class classid="44" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="731" endline="741" pcid="589"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_intervals.py" startline="753" endline="762" pcid="591"></source>
-</class>
-
-<class classid="45" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="288" endline="295" pcid="616"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="303" endline="310" pcid="618"></source>
-</class>
-
-<class classid="46" nclones="2" nlines="11" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1334" endline="1346" pcid="678"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1347" endline="1359" pcid="679"></source>
-</class>
-
-<class classid="47" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1536" endline="1539" pcid="690"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3609" endline="3612" pcid="831"></source>
-</class>
-
-<class classid="48" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1636" endline="1642" pcid="695"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1643" endline="1649" pcid="696"></source>
-</class>
-
-<class classid="49" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1650" endline="1653" pcid="697"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1654" endline="1657" pcid="698"></source>
-</class>
-
-<class classid="50" nclones="15" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1974" endline="1978" pcid="720"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2432" endline="2436" pcid="758"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1984" endline="1988" pcid="721"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2396" endline="2400" pcid="752"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="1994" endline="1998" pcid="722"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2024" endline="2028" pcid="725"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2420" endline="2424" pcid="756"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2402" endline="2406" pcid="753"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2004" endline="2008" pcid="723"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2034" endline="2037" pcid="726"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2414" endline="2418" pcid="755"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2390" endline="2394" pcid="751"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2408" endline="2412" pcid="754"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2426" endline="2430" pcid="757"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2014" endline="2018" pcid="724"></source>
-</class>
-
-<class classid="51" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2138" endline="2140" pcid="734"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2290" endline="2292" pcid="745"></source>
-</class>
-
-<class classid="52" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2553" endline="2557" pcid="768"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="2745" endline="2749" pcid="779"></source>
-</class>
-
-<class classid="53" nclones="5" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3045" endline="3050" pcid="798"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3069" endline="3074" pcid="802"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3063" endline="3068" pcid="801"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3057" endline="3062" pcid="800"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3051" endline="3056" pcid="799"></source>
-</class>
-
-<class classid="54" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3925" endline="3932" pcid="853"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3934" endline="3941" pcid="854"></source>
-</class>
-
-<class classid="55" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3949" endline="3954" pcid="856"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3956" endline="3962" pcid="857"></source>
-</class>
-
-<class classid="56" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="3996" endline="4003" pcid="861"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="4005" endline="4013" pcid="862"></source>
-</class>
-
-<class classid="57" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="4015" endline="4023" pcid="863"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="4025" endline="4034" pcid="864"></source>
-</class>
-
-<class classid="58" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="4040" endline="4043" pcid="865"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_lowlevel.py" startline="4044" endline="4047" pcid="866"></source>
-</class>
-
-<class classid="59" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="205" endline="220" pcid="879"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="221" endline="236" pcid="880"></source>
-</class>
-
-<class classid="60" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="237" endline="251" pcid="881"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="252" endline="266" pcid="882"></source>
-</class>
-
-<class classid="61" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="490" endline="492" pcid="896"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="493" endline="495" pcid="897"></source>
-</class>
-
-<class classid="62" nclones="3" nlines="14" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="1528" endline="1544" pcid="935"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="1545" endline="1561" pcid="936"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_metadata.py" startline="1562" endline="1578" pcid="937"></source>
-</class>
-
-<class classid="63" nclones="4" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="160" endline="165" pcid="953"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="271" endline="276" pcid="960"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="329" endline="334" pcid="964"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="215" endline="220" pcid="956"></source>
-</class>
-
-<class classid="64" nclones="4" nlines="10" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="166" endline="177" pcid="954"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="277" endline="288" pcid="961"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="221" endline="232" pcid="957"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="335" endline="344" pcid="965"></source>
-</class>
-
-<class classid="65" nclones="2" nlines="24" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="246" endline="270" pcid="959"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_ms.py" startline="304" endline="328" pcid="963"></source>
-</class>
-
-<class classid="66" nclones="2" nlines="9" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="94" endline="103" pcid="991"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="104" endline="113" pcid="992"></source>
-</class>
-
-<class classid="67" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="229" endline="235" pcid="1002"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="237" endline="243" pcid="1003"></source>
-</class>
-
-<class classid="68" nclones="3" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="250" endline="256" pcid="1005"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="257" endline="263" pcid="1006"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_reference_sequence.py" startline="264" endline="272" pcid="1007"></source>
-</class>
-
-<class classid="69" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="237" endline="241" pcid="1032"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="252" endline="256" pcid="1035"></source>
-</class>
-
-<class classid="70" nclones="8" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="259" endline="261" pcid="1036"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="274" endline="276" pcid="1041"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="262" endline="264" pcid="1037"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="271" endline="273" pcid="1040"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="268" endline="270" pcid="1039"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="280" endline="281" pcid="1043"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="265" endline="267" pcid="1038"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_threads.py" startline="277" endline="279" pcid="1042"></source>
-</class>
-
-<class classid="71" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="93" endline="96" pcid="1049"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="153" endline="157" pcid="1052"></source>
-</class>
-
-<class classid="72" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="281" endline="289" pcid="1056"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="290" endline="298" pcid="1057"></source>
-</class>
-
-<class classid="73" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="299" endline="306" pcid="1058"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="307" endline="314" pcid="1059"></source>
-</class>
-
-<class classid="74" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="340" endline="342" pcid="1062"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="426" endline="428" pcid="1074"></source>
-</class>
-
-<class classid="75" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="362" endline="370" pcid="1065"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="393" endline="401" pcid="1069"></source>
-</class>
-
-<class classid="76" nclones="14" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="372" endline="375" pcid="1066"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="579" endline="582" pcid="1096"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="558" endline="561" pcid="1093"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="541" endline="544" pcid="1091"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="403" endline="406" pcid="1070"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="574" endline="577" pcid="1095"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="415" endline="418" pcid="1072"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="420" endline="424" pcid="1073"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="464" endline="467" pcid="1079"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="469" endline="472" pcid="1080"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="484" endline="487" pcid="1082"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="489" endline="492" pcid="1083"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="504" endline="507" pcid="1085"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="509" endline="513" pcid="1086"></source>
-</class>
-
-<class classid="77" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="376" endline="382" pcid="1067"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="407" endline="413" pcid="1071"></source>
-</class>
-
-<class classid="78" nclones="3" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="516" endline="519" pcid="1087"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="526" endline="530" pcid="1089"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="521" endline="524" pcid="1088"></source>
-</class>
-
-<class classid="79" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="583" endline="585" pcid="1097"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="586" endline="589" pcid="1098"></source>
-</class>
-
-<class classid="80" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="592" endline="594" pcid="1099"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="596" endline="598" pcid="1100"></source>
-</class>
-
-<class classid="81" nclones="4" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="600" endline="603" pcid="1101"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="625" endline="627" pcid="1106"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="620" endline="623" pcid="1105"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_tree_positioning.py" startline="610" endline="613" pcid="1103"></source>
-</class>
-
-<class classid="82" nclones="2" nlines="7" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="258" endline="265" pcid="1120"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="293" endline="300" pcid="1125"></source>
-</class>
-
-<class classid="83" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="279" endline="283" pcid="1123"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="310" endline="314" pcid="1127"></source>
-</class>
-
-<class classid="84" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="564" endline="567" pcid="1147"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_util.py" startline="569" endline="571" pcid="1148"></source>
-</class>
-
-<class classid="85" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_utilities.py" startline="45" endline="50" pcid="1150"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_utilities.py" startline="51" endline="56" pcid="1151"></source>
-</class>
-
-<class classid="86" nclones="3" nlines="3" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_utilities.py" startline="84" endline="87" pcid="1154"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_utilities.py" startline="92" endline="95" pcid="1156"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_utilities.py" startline="88" endline="91" pcid="1155"></source>
-</class>
-
-<class classid="87" nclones="2" nlines="14" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="241" endline="255" pcid="1181"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="267" endline="281" pcid="1183"></source>
-</class>
-
-<class classid="88" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="586" endline="595" pcid="1210"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="755" endline="762" pcid="1225"></source>
-</class>
-
-<class classid="89" nclones="4" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="606" endline="615" pcid="1212"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="643" endline="653" pcid="1216"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="636" endline="642" pcid="1215"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="626" endline="635" pcid="1214"></source>
-</class>
-
-<class classid="90" nclones="4" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="658" endline="668" pcid="1217"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="700" endline="710" pcid="1220"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="672" endline="682" pcid="1218"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="686" endline="696" pcid="1219"></source>
-</class>
-
-<class classid="91" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="763" endline="770" pcid="1226"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="771" endline="778" pcid="1227"></source>
-</class>
-
-<class classid="92" nclones="2" nlines="5" similarity="100">
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="861" endline="871" pcid="1235"></source>
-<source file="/tmp/tmpz48diwd7/tmp_subfolder/python/tests/test_vcf.py" startline="872" endline="882" pcid="1236"></source>
+<class classid="14" nclones="2" nlines="4" similarity="100">
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_windows_renderer.py" startline="112" endline="119" pcid="152"></source>
+<source file="/tmp/tmp2v4gkeu5/tmp_subfolder/tests/test_windows_renderer.py" startline="120" endline="127" pcid="153"></source>
 </class>
 
 </clones>
