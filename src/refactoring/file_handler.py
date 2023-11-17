@@ -17,6 +17,9 @@ class FileHandler:
 
     def refactor_file(self, dest_filepath, verbose = False):
         """Aims to refactor the file by keeping as much of the original file as possible"""
+        if all(not clone.refactored for clone in self.clones):
+            return False
+
         if verbose:
             print(f"Refactoring file: {self.filepath}")
         
@@ -59,6 +62,7 @@ class FileHandler:
 
         with open(dest_filepath, "w+") as dest_file:
             dest_file.writelines(lines)
+        return True
 
 
     def check_target_clones(self):

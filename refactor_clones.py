@@ -45,9 +45,10 @@ def main():
     target_location = Path("refactored_files/check_repo/").resolve()
     print()
     for file in file_handlers:
-        file.refactor_file(target_location / Path(file.filepath.stem + "_refactored.py"))
-        print("refactored file:", file.filepath)
-        print("\t-> " + str(target_location / Path(file.filepath.stem + "_refactored.py")))
+        refactored = file.refactor_file(target_location / Path(file.filepath.stem + "_refactored.py"))
+        if refactored:
+            print("refactored file:", file.filepath)
+            print("\t-> " + str(target_location / Path(file.filepath.stem + "_refactored.py")))
 
 def clone_class_generator(clones, file_handlers):
     for clone_class in clones:
