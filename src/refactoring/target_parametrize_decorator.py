@@ -1,14 +1,19 @@
 import ast
 import itertools
 
+from .clone_ast_utilities import CloneASTUtilities as CAU
 from .parametrize_decorator import ParametrizeDecorator
 class TargetParametrizeDecorator(ParametrizeDecorator):
     """Subclass of ParametrizeDecorator which has functionality specifically for the target of the refactoring."""
 
-    def __init__(self, n_clones: int, funcnames: list, marks) -> None:
+    def __init__(self, n_clones: int, funcnames: list, marks: list, add_custom_mark: bool) -> None:
         super().__init__(n_clones)
         self.funcnames = funcnames
         self.clone_marks = marks
+        if add_custom_mark:
+            for il in marks:
+                il.append(CAU.get_mark_decorator())
+        
         
 
     def add_value_list(self, argname:str, vals_list):

@@ -19,12 +19,14 @@ class CloneClass():
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
     cnt = 0
-    def __init__(self, clones : list, split_off = None, split_off_ind = None) -> None:
+    
+    def __init__(self, clones : list, custom_mark: bool, split_off = None, split_off_ind = None, verbose = False) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
     
         Parameters: 
             - clones - list of Clone objects
+            TODO: add rest
 
         """
         #set id
@@ -34,20 +36,27 @@ class CloneClass():
         else:
             self.id = str(CloneClass.cnt)
             CloneClass.cnt += 1
-
-
+        
+        self.verbose = verbose
+        self.custom_mark = custom_mark
         self.split_off = split_off
         self.redundant_clones = []
         self.node_differences = []
         self.name_gen = NameGenerator()
         self.clones = clones
+
         self.process_clones()
+
+        self.len_clones = len(clones)
         self.param_decorator = TargetParametrizeDecorator(
             n_clones=len(self.clones), 
             funcnames=[clone.funcname for clone in self.clones],
-            marks=[clone.marks for clone in self.clones])
+            marks=[clone.marks for clone in self.clones],
+            add_custom_mark=custom_mark)
         self.attribute_difference = False
-        self.print_pre_info()
+        
+        if (self.verbose):
+            self.print_pre_info()
         #set target clone
         if len(self.clones) > 0:
             self.target = self.clones[0]
@@ -242,7 +251,8 @@ class CloneClass():
         """Splits a clone class into n based on parameter classes which has n elements. 
         Each element is a list of indices."""
         
-        print("Splitting clone class into", len(classes), "classes" + reason)
+        if (self.verbose):
+            print("Splitting clone class into", len(classes), "classes" + reason)
 
         #make sure target no longer is target
         self.target.target = False
@@ -254,7 +264,7 @@ class CloneClass():
             for ind in cl:
                 clones.append(self.clones[ind])
 
-            CloneClass(clones, self, classes_split).refactor_clones()
+            CloneClass(clones, self.custom_mark, self, classes_split).refactor_clones()
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -360,7 +370,8 @@ class CloneClass():
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
-            print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
+            if (self.verbose):
+                print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             for clone in self.clones:
                 clone.target = False
                 if clone.param_dec_node != None:
@@ -424,5 +435,6 @@ class CloneClass():
             self.redundant_clones = self.clones[1:]
             self.remove_redundant_clones()
 
-        self.print_post_info()
+        if (self.verbose):
+            self.print_post_info()
         

@@ -18,7 +18,13 @@ asts_dict = {} # filepath -> ast_base (for said filepath)
 def main():
 
     #filepaths = get_filepaths(sys.argv[1:])
-    paths = get_path_obj()
+    args = parseargs()
+    paths = get_path_obj(args)
+    if args.output_dir:
+        print("implement output-dir")
+    elif args.overwrite:
+        print("implement overwrite")
+    
     #TODO: add option to use xml file without using nicad
 
     list_of_clone_class_dicts = []
@@ -37,7 +43,7 @@ def main():
             list_of_clone_class_dicts.extend(xml_parser.parse())
     
     file_handlers = []
-    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers)
+    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers, args.mark)
 
     for clone_class in clone_classes:
         clone_class.refactor_clones()
@@ -50,7 +56,7 @@ def main():
             print("refactored file:", file.filepath)
             print("\t-> " + str(target_location / Path(file.filepath.stem + "_refactored.py")))
 
-def clone_class_generator(clones, file_handlers):
+def clone_class_generator(clones, file_handlers, add_mark):
     for clone_class in clones:
 
         ast_clone_nodes = [] 
@@ -76,7 +82,7 @@ def clone_class_generator(clones, file_handlers):
 
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno), filehandler=filehandler))
-        yield CloneClass(ast_clone_nodes)
+        yield CloneClass(ast_clone_nodes, add_mark)
 
 #TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg
 def get_filepaths(args):
@@ -100,21 +106,21 @@ def parseargs():
         action="append", 
         help="path(s) to check for code clones")
     
-    parser.add_argument("-i", "--inplace", 
-                        action='store_true', 
-                        help="write new files inplace, rather than in refactoring_results dir")
-    parser.add_argument("-w", "--overwrite", 
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-o", "--output-dir",
+                        help="write new files to given directory, rather than in the directories of the old files")
+    group.add_argument("-w", "--overwrite", 
                         action='store_true', 
                         help="overwrite the files that are being parametrized, rather than creating a new file with _parametrized added to filename")
-
+    parser.add_argument("-m", "--mark",
+                        action='store_true', 
+                        help="add refactored_parametrized mark to each test that has been refactored, for easy testing whether refactoring was successful")
 
 
     args = parser.parse_args()
     return args
 
-def get_path_obj():
-    
-    args = parseargs()
+def get_path_obj(args):
 
     ret = []
     paths = args.paths

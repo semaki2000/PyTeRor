@@ -13,6 +13,7 @@ class CloneASTUtilities:
         Parameters:
             - ast_base - base of an AST from 'ast' module
             - clone_lineno - list of lists of clone pairs in AST, identified by function names
+            TODO: add rest
 
         Returns:
             A single Clone object, representing the clone found at given line number.
@@ -84,6 +85,15 @@ class CloneASTUtilities:
                         
     def get_import_statement():
         return ast.Import(names=[ast.alias(name="pytest")])
+
+    def get_mark_decorator(mark_name="parametrize_refactored"):
+        return ast.Attribute(
+            value=ast.Attribute(
+                value=ast.Name(
+                    id="pytest"
+                ),
+                attr="mark"),
+            attr=mark_name)
 
     def get_eval_call_node(arg):
         func_name = ast.Name(id="eval")
