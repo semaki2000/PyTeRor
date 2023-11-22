@@ -20,8 +20,11 @@ def main():
     #filepaths = get_filepaths(sys.argv[1:])
     args = parseargs()
     paths = get_path_obj(args)
+    out_path = False
     if args.output_dir:
-        print("implement output-dir")
+        out_path = Path(args.output_dir)
+        assert out_path.exists(), "Output path does not exist"
+        assert out_path.is_dir(), "Output path does not point to a directory"
     elif args.overwrite:
         print("implement overwrite")
     
@@ -49,12 +52,25 @@ def main():
         clone_class.refactor_clones()
         
     target_location = Path("refactored_files/check_repo/").resolve()
-    print()
+    
     for file in file_handlers:
-        refactored = file.refactor_file(target_location / Path(file.filepath.stem + "_refactored.py"))
-        if refactored:
-            print("refactored file:", file.filepath)
-            print("\t-> " + str(target_location / Path(file.filepath.stem + "_refactored.py")))
+        if (args.overwrite):
+            refactored = file.refactor_file(file.filepath)
+            if refactored:
+                print("refactored file:", file.filepath)
+                print("\t-> " + str(file.filepath))
+        elif (out_path):
+            new_path = out_path / Path(file.filepath.stem + "_refactored.py")
+            refactored = file.refactor_file(new_path)
+            if refactored:
+                print("refactored file:", file.filepath)
+                print("\t-> " + str(new_path))
+        else:
+            renamed_path = file.filepath.parent / Path(file.filepath.stem + "_refactored.py")
+            refactored = file.refactor_file(renamed_path)
+            if refactored:
+                print("refactored file:", file.filepath)
+                print("\t-> " + str(renamed_path))
 
 def clone_class_generator(clones, file_handlers, add_mark):
     for clone_class in clones:
