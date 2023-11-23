@@ -12,9 +12,11 @@ class ParametrizeDecorator:
     
     def get_values(self, argname:str):
         """Returns a list with lists of values for the given argname. One inner list per clone."""
+        
         values = []
         for clone_dict in self.argvals:
             values.append(clone_dict[argname])
+        
         return values
 
     def get_values_on_ind(self, argname:str, ind:int):
@@ -45,15 +47,28 @@ class ParametrizeDecorator:
         
 
         param_names = ast_node.args[0].value.split(",")
+        param_names = [name.strip() for name in param_names]
         for name in param_names:
             self.add_argname(name)
 
         for args in ast_node.args[1].elts:
-            if type(args) == ast.Tuple:
-                [self.add_value(0, param_names[args.index(val)], val) for val in args]
-
-            elif type(args) == ast.Constant:
+            if (
+                type(args) == ast.Constant 
+                or  (type(args) == ast.Tuple and len(param_names) == 1)
+                or (type(args) == ast.List and len(param_names) == 1)
+            ):
+                #special case for tuples, lists which are supplied as arguments to single-param_name decorators
+                #TODO: find out whether there are more special cases here.
                 self.add_value(0, param_names[0], args) #we can assume there is only one param_name
+            
+            elif type(args) == ast.Tuple:
+                print()
+                for val in args.elts:
+                    ind = args.elts.index(val)
+                    self.add_value(0, param_names[ind], val)
+                #[self.add_value(0, param_names[args.elts.index(val)], val) for val in args.elts]
+
+            
 
     def print_vals(self):
         print("printing param decorator:")

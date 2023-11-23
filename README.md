@@ -4,24 +4,14 @@
 Runs with python 3.10 <=
 
 
-TODO:
-0. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
+Do we have to handle a case where two clones: one parametrized, one not? What would this case look like
 
-1. flag for overwriting/making new file
+TODO:
+1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
 
 2. requirements.txt
 
-3. Perhaps create new mark for every test being parametrized? 
-This could imitate functionality of 'pytest -k test_name'
-It would instead be 'pytest -m test_name:
-```python
-@pytest.mark.parametrize("new_var", [
-    pytest.param("A", marks=pytest.mark.test_a, id="test_a"),
-    pytest.param("B", marks=pytest.mark.test_b, id="test_b"),
-])
-def test_a_parametrized(new_var):
-    assert new_var
-```
+3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?)
 
 4. Change os.system to subprocess module
 
@@ -70,27 +60,18 @@ POTENTIAL BUGS
 
 OTHER INTERESTING STUFF:
 
+Haven't dealt with this:
 ```python
-@pytest.mark.parametrize(
-    "parametrized_name_0, parametrized_constant_0",
-    [
-        pytest.param(
-            str,
-            """+--+
-| ||
-|-+|
-| ||
-|-+|
-|-+|
-| ||
-+--+
-""",
-            id="test_str",
-        ),
-        pytest.param(repr, "Box(...)", id="test_repr"),
-    ],
-)
-def test_str_parametrized(parametrized_constant_0, parametrized_name_0):
-    assert parametrized_name_0(ASCII) == parametrized_constant_0
+import pytest
+
+#this line parametrizes every test in the module (file)
+pytestmark = pytest.mark.parametrize("n,expected", [(1, 2), (3, 4)])
+
+class TestClass:
+    def test_simple_case(self, n, expected):
+        assert n + 1 == expected
+
+    def test_weird_simple_case(self, n, expected):
+        assert (n * 1) + 1 == expected
+
 ```
-Unintentionally extracts function name, when parameters are the same

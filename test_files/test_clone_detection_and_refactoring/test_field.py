@@ -10,7 +10,7 @@ from ert.config.parsing import init_user_config_schema, lark_parse
 from ert.field_utils import Shape, read_field
 
 #1, STRING, transform
-@pytest.mark.parametrize("transform", ["INIT_TRANSFORM", "OUTPUT_TRANSFORM"])
+@pytest.mark.parametrize("transform, arg2", [("INIT_TRANSFORM", 1), ("OUTPUT_TRANSFORM", 2)])
 def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
     field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl OUTPUT_TRANSFORM:{transform}"
@@ -18,7 +18,7 @@ def test_output_transform_is_gotten_from_keyword(parse_field_line, transform):
     assert field.output_transformation == transform
 
 #2, STRING, transform
-@pytest.mark.parametrize("transform", ["INIT_TRANSFORM", "OUTPUT_TRANSFORM"])
+@pytest.mark.parametrize("transform, arg2", [("INIT_TRANSFORM", 3), ("OUTPUT_TRANSFORM", 4)])
 def test_init_transform_is_gotten_from_keyword(parse_field_line, transform):
     field = parse_field_line(
         f"FIELD f PARAMETER f.roff INIT_FILES:f%d.grdecl INIT_TRANSFORM:{transform}"

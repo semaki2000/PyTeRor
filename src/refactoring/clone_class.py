@@ -59,7 +59,8 @@ class CloneClass():
             self.print_pre_info()
         #set target clone
         if len(self.clones) > 0:
-            self.target = self.clones[0]
+            self.target_ind = 0
+            self.target = self.clones[self.target_ind]
             self.target.target = True
 
     def process_clones(self):
@@ -72,7 +73,7 @@ class CloneClass():
             #we remove this clone here, rather than before creating clone class, this is because we want CloneClass.id to correspond to id in xml file
             if clone is None:
                 remove_on_index.insert(0, clone)
-            elif clone.is_fixture:
+            elif clone.is_fixture or clone.bad_parametrize_decorator:
                 remove_on_index.insert(0, clone)
             
 
@@ -209,7 +210,8 @@ class CloneClass():
                             same_decorator = False
                 
             if same_decorator:
-                self.clones[0].ast_node.decorator_list.append(self.clones[0].param_dec_node)
+                #all have same decorator
+                self.target.ast_node.decorator_list.append(self.target.param_dec_node)
 
             else:
                 #add argnames to parametrized names. Will be replaced with values later
@@ -345,26 +347,55 @@ class CloneClass():
         #after applying this function, it is turned into:
         @pytest.mark.parametrize('parametrized_name_0', [('a', ...), ('b', ...), ('c', ...)])
         """
+        
         argnames = []
         values = []
+        
         for clone in self.clones:
+            
             argnames += clone.param_decorator.argnames
+            
             for argname in clone.param_decorator.argnames:
                 values += clone.param_decorator.get_values(argname)
-
+        print("DONE ARGNAME LIST:")
+        print(argnames)
         if len(argnames) == 0:
             return
         #find under what argname previously parametrized names are stored
         names = [ast.Name(argname) for argname in argnames]
+        print("ERROR HAPPENS")
+        
         new_argname = self.param_decorator.get_argname_for_preparametrized_names(names)
         if not new_argname:
             return
         #remove them from argname values
         self.param_decorator.remove_value_list(new_argname, names)
-        for ind in range(len(values)):
+        for ind in range(self.len_clones):
             #add the actual values to argname
             self.param_decorator.add_values_to_index(ind, new_argname, values[ind])
 
+    def replace_names_with_values2(self):
+        removed_param_names = []
+        
+        for ind in range(self.len_clones):
+            clone = self.clones[ind]
+            if clone.param_decorator.is_empty():
+                continue
+            
+            #with old argname, get new name for same arg:
+            
+            for parameter_name in clone.param_decorator.argnames:
+                #get new argname. Old name in param_decorator removes itself in called function
+                new_argname = self.param_decorator.get_newname_for_parameter(parameter_name)
+                if not new_argname:
+                    #NOT SURE why this would be false. Think more about it
+                    #should probably throw an error.
+                    continue
+
+                removed_param_names.append(parameter_name)
+                values = clone.param_decorator.get_values(parameter_name)[0]
+                self.param_decorator.add_values_to_index(ind, new_argname, values)
+        return removed_param_names                
 
     def refactor_clones(self):
         """Function to refactor clones."""
@@ -416,17 +447,16 @@ class CloneClass():
 
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
-            self.replace_names_with_values()
+            removed_param_names = self.replace_names_with_values2()
 
             decorator = self.param_decorator.get_decorator()
 
-            #for now, dont remove paramter from func def
-            """
-            for param in self.target.param_decorator.argnames:
+            
+            for param in removed_param_names:
                 self.target.remove_parameter_from_func_def(param)
-            """   
+               
 
-            self.target.add_parameters_to_func_def(self.name_gen.names)
+            self.target.add_parameters_to_func_def(self.param_decorator.argnames)
             self.target.add_decorator(decorator)
             self.target.rename_target()
             

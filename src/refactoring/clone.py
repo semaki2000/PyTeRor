@@ -13,6 +13,7 @@ class Clone():
         self.funcname = ast_node.name
         self.filehandler = filehandler
 
+        self.bad_parametrize_decorator = False #True if a decorator has a func call or name instead of values.
         self.is_fixture : bool = False
         self.unknown_decorator = False
         self.unknown_decorators_list = []

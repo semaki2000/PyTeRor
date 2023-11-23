@@ -10,11 +10,15 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         super().__init__(n_clones)
         self.funcnames = funcnames
         self.clone_marks = marks
+        self.pre_parametrized = {}
         if add_custom_mark:
             for il in marks:
                 il.append(CAU.get_mark_decorator())
         
-        
+
+    def add_argname(self, argname:str):
+        super().add_argname(argname)
+        self.pre_parametrized[argname] = False
 
     def add_value_list(self, argname:str, vals_list):
         """Takes an argname and a list of values for that argname, adding the value at each index to the clone dict at each index.
@@ -24,7 +28,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         
         for ind in range(len(vals_list)):
             self.argvals[ind][argname].append(vals_list[ind])
-
+        
 
     def remove_value_list(self, argname:str, vals_list):
         """Takes an argname a list of values for that argname, removing the value at each index from the clone dict at each index.
@@ -53,17 +57,46 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         """Takes an index, an argname and a list of values, adding each of these values to the list in self.argvals[index][argname].
         """
         self.argvals[index][argname].extend(values)
+        print("adding values")
+        print(self.argvals[index][argname])
 
+    def get_newname_for_parameter(self, parameter_name: str):
+        """Given a string parameter_name, finds corresponding ast.Name object in argvals, and returns the key it is stored under.
+        
+        
+        If found, also removes the ast.Name object from the list.
+        
+        If parameter_name is not found, returns False.
+        
+        Also sets self.pre_parametrized[argname] to True. This is used later when returning the decorator,
+        to ensure that the correct amount of pytest.params calls are created in the decorators AST."""
+        
+        for ind in range(len(self.argvals)):
+            for argname in self.argnames:
+                node = self.argvals[ind][argname][0] #only need first node
+                if not isinstance(node, ast.Name):
+                    continue
+                if node.id == parameter_name:
+                    assert len(self.argvals[ind][argname]) == 1 and type(self.argvals[ind][argname][0]) == ast.Name, "Error: resetting non-name values in the target parametrize decorator. Should not happen"
+                    self.argvals[ind][argname] = [] #reset
+                    self.pre_parametrized[argname] = True
+                    return argname
+            
+        return False
+    
+ 
     def get_argname_for_preparametrized_names(self, values):
         """Given a list of ast.Name values, containing names which were parametrized pre-refactoring, 
         finds the corresponding argname where these are stored and returns it."""
         #TODO: make more general, or more specific.
-        
+        for name in values:
+            print(name.id)
+        self.print_vals()
         assert len(values) == len(self.argvals), "Error: amount of values supplied does not correspond to the amount of clones"
         
 
         for argname in self.argnames:
-            correct = True
+            correct = True #initialize as True
             for ind in range(len(self.argvals)):
                 node = self.argvals[ind][argname][0] #only need first node
                 if not isinstance(node, ast.Name):
@@ -73,10 +106,27 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                     correct = False
                     continue
             if correct:
-                
+
                 return argname
             
         return False
+
+
+    def pre_paramd(self, ind):
+        #TODO: does this assume either none or all clones have this decorator? is that correct?
+
+        #if pre_parametrized args exist in this decorator
+        vals = []
+        if self.pre_parametrized[self.argnames[0]]:
+            #loop over indexes
+            for i in range(len(self.argvals[ind][self.argnames[0]])):
+                vals_at_i = []
+                for argname in self.argnames:
+                    if self.pre_parametrized[argname]:
+                        val = self.argvals[ind][argname][i]
+                        vals_at_i.append(val)
+                vals.append(vals_at_i)
+        return vals
 
 
     def get_decorator(self):
@@ -95,11 +145,35 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         a_params = []
         for ind in range(len(self.argvals)):
             clone_dict = self.argvals[ind]
-            all_vals = []
-            for key in clone_dict.keys():
-                all_vals.append(clone_dict[key])
-            a_params.append(tuple([ind, list(itertools.product(*all_vals))]))
+            param_sets = []
+            #line underneath asserts that all non-preparametrized argnames are of equal length
+            #we check against index -1, as the last element will never be pre_parametrized (they appear first)
+            assert all(self.pre_parametrized[argname] or len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]) for argname in self.argnames)
+            params_for_single_call = []
+            
+            pre_paramd_values = self.pre_paramd(ind)
+            for i2 in range(len(clone_dict[self.argnames[-1]])):
+                for argname in self.argnames:
+                    if not self.pre_parametrized[argname]:
+                        params_for_single_call.append(clone_dict[argname][i2])
+                    
 
+
+                param_sets.append(params_for_single_call)
+                params_for_single_call = []
+            
+            if not pre_paramd_values == []:
+                param_sets = [tuple(a + b) for a, b in itertools.product(pre_paramd_values, param_sets)]
+
+
+            a_params.append(tuple([ind, param_sets])) 
+
+            #all_vals = []
+            #for key in clone_dict.keys():
+            #    all_vals.append(clone_dict[key])            
+
+            #a_params.append(tuple([ind, list(itertools.product(*all_vals))])) #itertools used for cartesian product. This is WRONG.
+            #what is correct: we want each index to match up. Each tuple is a set of values for a call
 
 
         list_tuples = []
