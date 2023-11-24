@@ -51,9 +51,14 @@ class FileHandler:
                 clone = self.lineno_to_target_clone[ind]
 
                 #format
+                #if global test function:
+                
                 tf = TargetFormatter(clone.ast_node, clone.lineno, clone.parent_is_class)
-                for line in reversed(tf.format_target()):
+                formatted = tf.format_target()
+
+                for line in reversed(formatted):
                     lines.insert(ind, line)
+
 
         if has_target_clone and not self.pytest_import:
             if verbose:
