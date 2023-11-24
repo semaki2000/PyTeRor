@@ -223,6 +223,30 @@ class CloneClass():
 
         #different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object
 
+    def find_common_marks(self):
+        #handle mark decorators:
+        common_marks = []
+        for clone in self.clones:
+            for this_mark in clone.marks:
+                in_all = True
+                str_mark = ast.unparse(this_mark)
+                if any(str_mark == ast.unparse(mark) for mark in common_marks):
+                    continue
+                for clone2 in self.clones:
+                    if clone == clone2: continue
+                    if not any(str_mark == ast.unparse(mark) for mark in clone2.marks):
+                        in_all = False
+                        break
+                if in_all:
+                    common_marks.append(this_mark)
+        for common_mark in common_marks:
+            for clone in self.clones:
+                for mark in clone.marks:
+                    if ast.unparse(common_mark) == ast.unparse(mark):
+                        clone.marks.remove(mark)
+        self.target.set_common_marks(common_marks)
+
+
     def split_on_attributes(self):
         """Goes through list of nodeDifferences and looks for AttributeNodeDifference objects.
         If an AttributeDifference is found, 
@@ -436,6 +460,7 @@ class CloneClass():
             return
         
         self.compare_decorators()
+        self.find_common_marks()
         #print("finding local variables")
         self.find_local_variables()
         #print("extracting differences")
@@ -459,6 +484,7 @@ class CloneClass():
 
             self.target.add_parameters_to_func_def(self.param_decorator.argnames)
             self.target.add_decorator(decorator)
+            self.target.add_marks()
             self.target.rename_target()
             
             for clone in self.clones:

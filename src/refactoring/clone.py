@@ -22,17 +22,17 @@ class Clone():
         self.param_dec_node = None
         self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
         
-
+        
         self.target = False
         self.detached = False
         self.refactored = False
         self.filehandler.add_clone(self)
+
         #only used by target
+        self.target_marks = []
         self.new_funcname = self.funcname + "_parametrized"
         
-        
         self.parse_decorator_list()
-        
 
     #only used by target
     def add_parameters_to_func_def(self, param_names: list):
@@ -57,7 +57,17 @@ class Clone():
             if node.arg == param_name:
                 self.ast_node.args.args.remove(node)
                 return
-            
+
+
+    #only used by target
+    def add_marks(self):
+        for mark in self.target_marks:
+            self.ast_node.decorator_list.append(mark)
+
+    #only used by target
+    def set_common_marks(self, target_marks):
+        self.target_marks = target_marks
+
 
     #only used by target
     def rename_target(self):
@@ -66,8 +76,9 @@ class Clone():
     #only used by target
     def add_decorator(self, decorator):
         self.ast_node.decorator_list.insert(0, decorator)
+
         
-    
+
     def parse_decorator_list(self):
         """'Parses' decorator list of this function to see if function is a fixture or is parameterized.
         Sets value of self.is_fixture, a boolean telling whether this clone is a fixture (fixtures can be disregarded).
@@ -76,9 +87,8 @@ class Clone():
             if pytest.mark.parametrization decorator exists, a tuple of [0] constants (names of parameters) and [1] tuples of values
         """
         
-
+        to_remove = []
         for decorator in self.ast_node.decorator_list:
-            
             if DecoratorChecker.is_parametrize_decorator(decorator):
                 #get contents of p.m.parametrize as actual literals
                 
@@ -100,15 +110,16 @@ class Clone():
                 else:
                     self.param_decorator.parse_decorator(decorator)
                     self.param_dec_node = decorator
-                    self.ast_node.decorator_list.remove(self.param_dec_node)
-                return
+                    to_remove.append(self.param_dec_node)
 
             elif DecoratorChecker.is_fixture_decorator(decorator):
                 self.is_fixture = True
             
             elif DecoratorChecker.is_mark_decorator(decorator):
                 self.marks.append(decorator)
-                
+                print("found a mark!: ")
+                print(decorator.attr if isinstance(decorator, ast.Attribute) else decorator.func.attr)
+                to_remove.append(decorator)                                
 
             elif DecoratorChecker.is_any_pytest_decorator(decorator):
                 pass
@@ -117,7 +128,10 @@ class Clone():
 
                 self.unknown_decorator = True
                 self.unknown_decorators_list.append(ast.unparse(decorator))
-
+        
+        for decorator in to_remove:
+            self.ast_node.decorator_list.remove(decorator)
+                
 
 
     def get_ast_node(self):

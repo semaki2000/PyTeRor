@@ -8,7 +8,7 @@ from ert.config.parsing import (
     init_user_config_schema,
     lark_parse,
 )
-
+@pytest.mark.test
 @pytest.mark.usefixtures("use_tmpdir")
 def test_that_giving_incorrect_queue_name_in_queue_option_fails():
     test_config_file_name = "test.ert"

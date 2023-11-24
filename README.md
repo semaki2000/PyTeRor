@@ -13,42 +13,13 @@ TODO:
 
 3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-4. FIX THIS: currently, these aren't clones:
-```python
+4. Find out what to do with """ comment in top of test
 
-@pytest.mark.test
-@pytest.mark.usefixtures("a")
-def test_this():
-    pass
+5. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
+Doesnt sound right.
 
-
-
-@pytest.mark.usefixtures("a")
-def test_that():
-    pass    
-
-```
-Test in test_files/test_clone_detection_and_refactoring/test_lark_parser.py
-
-
-5. Find out what to do with """ comment in top of test
 -------------------------------------------------------------------------------------------
 
-
-- How to handle this? Anwer: probably don't, edge case
-```python
-from a import TRANSFORM_FUNCTIONS #list of tuples defined elsewhere
-
-@pytest.mark.parametrize("transform", TRANSFORM_FUNCTIONS) #then used in annotation
-def test_...():
-```
-Potential answer to above could be with tuple unpacking of some sort
-But gets a bit complicated
-
-
-BUGS:
-
-- Tests in classes aren't indented as they should be
 
 POTENTIAL BUGS
 
