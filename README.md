@@ -4,18 +4,16 @@
 Runs with python 3.10 <=
 
 
-Do we have to handle a case where two clones: one parametrized, one not? What would this case look like
+Do we have to handle a case with two clones: one parametrized, one not? What would this case look like
 
 TODO:
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
 
 2. requirements.txt
 
-3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?)
+3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-4. Change os.system to subprocess module
-
-5. FIX THIS: currently, different these aren't clones:
+4. FIX THIS: currently, these aren't clones:
 ```python
 
 @pytest.mark.test
@@ -33,7 +31,7 @@ def test_that():
 Test in test_files/test_clone_detection_and_refactoring/test_lark_parser.py
 
 
-6. Find out what to do with """ comment in top of test
+5. Find out what to do with """ comment in top of test
 -------------------------------------------------------------------------------------------
 
 

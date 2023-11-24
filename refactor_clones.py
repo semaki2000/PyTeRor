@@ -37,7 +37,7 @@ def main():
             #will be deleted automatically after 'with' is done
             with tempfile.TemporaryDirectory() as tmp_path:
                 
-                parser_args = RunCloneDetector.run(path, tmp_path)
+                parser_args = RunCloneDetector.run(path, tmp_path, args.log_clone_detection)
                 xml_parser = NicadParser(*parser_args)
                 list_of_clone_class_dicts.extend(xml_parser.parse())
         else:
@@ -135,6 +135,10 @@ def parseargs():
     parser.add_argument("-v", "--verbose",
                         action='store_true', 
                         help="Give more detailed output on what is happening.")
+
+    parser.add_argument("-lc", "--log-clone-detection",
+                        action='store_true', 
+                        help="Log clone detector.")
 
 
     args = parser.parse_args()

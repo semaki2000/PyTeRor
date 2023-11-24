@@ -1,0 +1,37 @@
+
+NiCad Clone Detector v6.2 (13.11.20)
+
+config=/usr/local/lib/nicad6/config/type2.cfg
+system=/tmp/tmpdibhx8_p/tmp_subfolder
+threshold=0.00
+granularity=functions
+language=py
+transform=none
+rename=blind
+filter=none
+abstract=none
+normalize=none
+cluster=yes
+report=no
+include=
+exclude=
+
+Fri Nov 24 12:10:42 CET 2023
+
+Extracting functions from py files in /tmp/tmpdibhx8_p/tmp_subfolder
+
+Extracted 0 functions
+
+Applying blind renaming to extracted functions from py files in /tmp/tmpdibhx8_p/tmp_subfolder
+
+*** ERROR: Renaming failed, code 99
+Detailed log in /tmp/tmpdibhx8_p/tmp_subfolder_functions-clones-2023-11-24-12:10:42.log
+
+
+real	0m0.058s
+user	0m0.000s
+sys	0m0.078s
+
+real	0m0.010s
+user	0m0.000s
+sys	0m0.000s

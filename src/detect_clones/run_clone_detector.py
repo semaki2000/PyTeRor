@@ -1,12 +1,20 @@
 import sys
 import os
+import subprocess
+import datetime
+
 import shutil
 
 from pathlib import Path
 
+#remove files which aren't test_*py or *_test.py 
+# run nicad on remaining files to see if code clones in tests of repo
+# TODO: also check potential pytest.ini file(or hidden .pytest.ini) 
+#   for filepaths that could include tests other than tests/)
+
 class RunCloneDetector:    
 
-    def run(path, tmp_dir_path):
+    def run(path, tmp_dir_path, log_clone_detector_run):
         orig_path = path
 
         orig_dir_name = str(path.name)
@@ -14,13 +22,27 @@ class RunCloneDetector:
         path = RunCloneDetector.create_tmp_filestructure(path, tmp_dir_path)
         
         #run nicad clone detector on tmp filestructure to find clones in test files
-        os.system("nicad6 functions py " + str(path) + "/ type2")
-
+        #UNSAFE: os.system("nicad6 functions py " + str(path) + "/ type2")
+        command = ["nicad6", "functions", "py", str(path) + "/", "type2"]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #if result.stderr:
+        #    print("in stderr")
+        #    print(result.stderr.decode())
+        #    sys.exit()
+        if log_clone_detector_run:
+            filename = "nicad" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".log")
+            with open(filename, "a+") as f:
+                f.write(result.stdout.decode())
+                f.write(result.stderr.decode())
+            print(f"Clone detection logged in {filename}")
+    
         target_xml_path = ""
-        #clones_xml_file = target_xml_path + "/" + orig_dir_name +"_test_clones.xml"
         clones_xml_file = "clone_classes.xml"
-        os.system("cp " + str(path) + "_functions-blind-clones/tmp_subfolder_functions-blind-clones-0.00-classes.xml " + clones_xml_file)
-        
+        cp_from_path = Path(str(path) + "_functions-blind-clones/tmp_subfolder_functions-blind-clones-0.00-classes.xml")
+        if not cp_from_path.exists():
+            raise FileNotFoundError("Path does not exist. This may be due to the clone detector crashing. Run with -lc, and check clone detector log")
+        command = ["cp", str(cp_from_path), str(clones_xml_file)]
+        subprocess.run(command, check=True)
 
         return (clones_xml_file, orig_path, path)
 

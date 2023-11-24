@@ -5,6 +5,7 @@ from pathlib import Path
 #remove files which aren't test_*py or *_test.py (TODO: also check potential pytest.ini file(or hidden .pytest.ini) for filepaths that could include tests other than tests/) 
 # run nicad on remaining files to see if code clones in tests of repo
 
+#TODO: remove this class. First check over and make sure there is nothing useful
 
 def main():
     path = get_path_obj()
