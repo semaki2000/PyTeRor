@@ -107,17 +107,19 @@ class TestClassB:
             _ = lark_parse(test_config_file_name, schema=init_user_config_schema())
 
 
-    @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_too_few_arguments_gives_config_validation_error():
-        test_config_file_name = "test.ert"
-        test_config_contents = dedent(
-            """
-            NUM_REALIZATIONS  1
-            ENKF_ALPHA
-            """
-        )
-        with open(test_config_file_name, "w", encoding="utf-8") as fh:
-            fh.write(test_config_contents)
+#THIS ONE IS GLOBAL
 
-        with pytest.raises(ConfigValidationError, match="at least 1 arguments"):
-            _ = lark_parse(test_config_file_name, schema=init_user_config_schema())
+@pytest.mark.usefixtures("use_tmpdir")
+def test_that_giving_too_few_arguments_gives_config_validation_error():
+    test_config_file_name = "test.ert"
+    test_config_contents = dedent(
+        """
+        NUM_REALIZATIONS  1
+        ENKF_ALPHA
+        """
+    )
+    with open(test_config_file_name, "w", encoding="utf-8") as fh:
+        fh.write(test_config_contents)
+
+    with pytest.raises(ConfigValidationError, match="at least 1 arguments"):
+        _ = lark_parse(test_config_file_name, schema=init_user_config_schema())

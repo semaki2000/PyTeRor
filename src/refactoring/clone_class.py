@@ -18,7 +18,7 @@ class CloneClass():
     """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
-    cnt = 0
+    cnt = 1 #start cnt (for self.id) at 1, as clone class ID starts at 1 in nicad
     
     def __init__(self, clones : list, custom_mark: bool, split_off = None, split_off_ind = None, verbose = False) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
@@ -84,9 +84,10 @@ class CloneClass():
 
     def print_pre_info(self):
         """Print info before refactoring. On object creation."""
-        print() 
+        print()
         print(f"Created clone class {self.id} with contents:")
-        [print(f"   Function {x.funcname}") for x in self.clones]
+        [print(f"   Function {x.funcname if not x.parent_is_class() else x.parent_node.name + '.' + x.funcname}") for x in self.clones]
+
 
     def check_unknown_decorators(self):
         """Checks each clones unknown_decorators_list, 
@@ -266,7 +267,7 @@ class CloneClass():
             for ind in cl:
                 clones.append(self.clones[ind])
 
-            CloneClass(clones, self.custom_mark, self, classes_split).refactor_clones()
+            CloneClass(clones, self.custom_mark, self, classes_split, verbose=self.verbose).refactor_clones()
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -330,8 +331,8 @@ class CloneClass():
     def print_post_info(self):
         """Print info after refactoring."""
         print(f"Refactored clone class {self.id}")
-        [print(f"   Function {x.funcname}") for x in self.clones]
-        print("into " + self.target.new_funcname + " in file: " + str(self.target.filehandler.filepath))
+        #[print(f"   Function {x.funcname}") for x in self.clones]
+        print("  into " + self.target.new_funcname + " in file: " + str(self.target.filehandler.filepath))
         for x, y in [(self.name_gen.constants_cnt, "constants"), (self.name_gen.names_cnt, "names"), (self.name_gen.other_cnt, "other nodes")]:
             print(f"    Parametrized {x} {y}.")
 

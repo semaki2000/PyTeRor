@@ -46,13 +46,13 @@ def main():
             list_of_clone_class_dicts.extend(xml_parser.parse())
     
     file_handlers = []
-    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers, args.mark)
+    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers, args.mark, args.verbose)
 
     for clone_class in clone_classes:
         clone_class.refactor_clones()
         
+    print()
     target_location = Path("refactored_files/check_repo/").resolve()
-    
     for file in file_handlers:
         if (args.overwrite):
             refactored = file.refactor_file(file.filepath)
@@ -72,7 +72,7 @@ def main():
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(renamed_path))
 
-def clone_class_generator(clones, file_handlers, add_mark):
+def clone_class_generator(clones, file_handlers, add_mark, verbose):
     for clone_class in clones:
 
         ast_clone_nodes = [] 
@@ -98,7 +98,7 @@ def clone_class_generator(clones, file_handlers, add_mark):
 
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno), filehandler=filehandler))
-        yield CloneClass(ast_clone_nodes, add_mark)
+        yield CloneClass(ast_clone_nodes, add_mark, verbose=verbose)
 
 #TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg
 def get_filepaths(args):
@@ -124,13 +124,17 @@ def parseargs():
     
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-o", "--output-dir",
-                        help="write new files to given directory, rather than in the directories of the old files")
+                        help="Write new files to given directory, rather than in the directories of the old files")
     group.add_argument("-w", "--overwrite", 
                         action='store_true', 
-                        help="overwrite the files that are being parametrized, rather than creating a new file with _parametrized added to filename")
+                        help="Overwrite the files that are being parametrized, rather than creating a new file with _parametrized added to filename")
+    
     parser.add_argument("-m", "--mark",
                         action='store_true', 
-                        help="add refactored_parametrized mark to each test that has been refactored, for easy testing whether refactoring was successful")
+                        help="Add refactored_parametrized mark to each test that has been refactored, for easy testing whether refactoring was successful")
+    parser.add_argument("-v", "--verbose",
+                        action='store_true', 
+                        help="Give more detailed output on what is happening.")
 
 
     args = parser.parse_args()
