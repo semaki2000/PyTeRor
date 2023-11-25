@@ -21,8 +21,10 @@ class RunCloneDetector:
 
         path = RunCloneDetector.create_tmp_filestructure(path, tmp_dir_path)
         
+        cwd = os.getcwd()
         #run nicad clone detector on tmp filestructure to find clones in test files
         #UNSAFE: os.system("nicad6 functions py " + str(path) + "/ type2")
+        #TODO: use config in this repo, instead of at nicad install location
         command = ["nicad6", "functions", "py", str(path) + "/", "type2"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #if result.stderr:

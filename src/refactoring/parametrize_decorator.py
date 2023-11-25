@@ -62,7 +62,7 @@ class ParametrizeDecorator:
                 self.add_value(0, param_names[0], args) #we can assume there is only one param_name
             
             elif type(args) == ast.Tuple:
-                print()
+                
                 for val in args.elts:
                     ind = args.elts.index(val)
                     self.add_value(0, param_names[ind], val)

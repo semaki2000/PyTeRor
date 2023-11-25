@@ -117,8 +117,7 @@ class Clone():
             
             elif DecoratorChecker.is_mark_decorator(decorator):
                 self.marks.append(decorator)
-                print("found a mark!: ")
-                print(decorator.attr if isinstance(decorator, ast.Attribute) else decorator.func.attr)
+                #print(decorator.attr if isinstance(decorator, ast.Attribute) else decorator.func.attr)
                 to_remove.append(decorator)                                
 
             elif DecoratorChecker.is_any_pytest_decorator(decorator):

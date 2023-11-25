@@ -1,0 +1,57 @@
+
+NiCad Clone Detector v6.2 (13.11.20)
+
+config=/usr/local/lib/nicad6/config/type2.cfg
+system=/tmp/tmp0opvl7d5/tmp_subfolder
+threshold=0.00
+granularity=functions
+language=py
+transform=none
+rename=blind
+filter=none
+abstract=none
+normalize=none
+cluster=yes
+report=no
+include=
+exclude=
+
+Sat Nov 25 14:43:25 CET 2023
+
+Extracting functions from py files in /tmp/tmp0opvl7d5/tmp_subfolder
+
+Extracted 10 functions
+
+Applying blind renaming to extracted functions from py files in /tmp/tmp0opvl7d5/tmp_subfolder
+
+Finding clones between 1 and 2500 lines at UPI threshold 0.00
+
+Found 24 clone pairs
+
+Clustering clone pairs into classes
+
+Clustered clone pairs into 2 classes
+
+Done.
+
+Detailed log in /tmp/tmp0opvl7d5/tmp_subfolder_functions-clones-2023-11-25-14:43:25.log
+Results in /tmp/tmp0opvl7d5/tmp_subfolder_functions-blind-clones/
+
+Sat Nov 25 14:43:25 CET 2023
+
+
+real	0m0.214s
+user	0m0.047s
+sys	0m0.109s
+
+real	0m0.097s
+user	0m0.000s
+sys	0m0.047s
+
+real	0m0.080s
+user	0m0.016s
+sys	0m0.031s
+
+real	0m0.068s
+user	0m0.016s
+sys	0m0.047s

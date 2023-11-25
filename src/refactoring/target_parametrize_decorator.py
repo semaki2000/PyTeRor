@@ -57,8 +57,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         """Takes an index, an argname and a list of values, adding each of these values to the list in self.argvals[index][argname].
         """
         self.argvals[index][argname].extend(values)
-        print("adding values")
-        print(self.argvals[index][argname])
+        #print(self.argvals[index][argname])
 
     def get_newname_for_parameter(self, parameter_name: str):
         """Given a string parameter_name, finds corresponding ast.Name object in argvals, and returns the key it is stored under.
