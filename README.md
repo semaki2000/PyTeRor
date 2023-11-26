@@ -18,6 +18,7 @@ TODO:
 5. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
 
+6. We want to use a modified version of nicad6's type2 config. How do we do this. When running nicad, for config option it only takes config files that exist in its config/ subfolder. Supplying an external config file doesn't seem to be an option.
 -------------------------------------------------------------------------------------------
 
 
