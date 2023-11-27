@@ -27,10 +27,7 @@ class RunCloneDetector:
         #TODO: use config in this repo, instead of at nicad install location
         command = ["nicad6", "functions", "py", str(path) + "/", "type2"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #if result.stderr:
-        #    print("in stderr")
-        #    print(result.stderr.decode())
-        #    sys.exit()
+
         if log_clone_detector_run:
             filename = "nicad" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".log")
             with open(filename, "a+") as f:

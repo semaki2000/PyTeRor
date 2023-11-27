@@ -9,11 +9,13 @@ Do we have to handle a case with two clones: one parametrized, one not? What wou
 TODO:
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
 
-2. requirements.txt
+2. Nicad ignores multiline string if its the first thing in function body. 
+See test_files/clone_check/test_clones_with_and_without_multiline_comments.py
 
 3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-4. Find out what to do with """ comment in top of test
+4. Find out what to do with """ comment in top of test. After finding out (2.), best to just ignore it.
+Perhaps remove them before walking the ASTs. Can be tmp saved somewhere else, then maybe added back to target? 
 
 5. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
