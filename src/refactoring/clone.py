@@ -27,7 +27,6 @@ class Clone():
         self.detached = False
         self.refactored = False
         self.filehandler.add_clone(self)
-        self.as_str = self.filehandler.get_clone_as_str_list(self)
         self.multiline_comment = None
 
         #only used by target
@@ -140,9 +139,9 @@ class Clone():
         The statement is removed from the function body because Nicad, the clone detector, ignores multiline comments
         when finding clones. This means that two clones that are otherwise the same, 
         can have a difference where one starts with a multiline comment, and another does not."""
-        #get first line of clone as_str 
-        first_line_body = self.as_str[1].strip()
-        if first_line_body[0:3] == '"""':
+        
+        first_line_body = self.filehandler.get_line(self.ast_node.lineno+1).strip()
+        if first_line_body[0:3] == '"""' and self.multiline_comment == None:
             self.multiline_comment = self.ast_node.body.pop(0)
             
 

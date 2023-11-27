@@ -8,6 +8,8 @@ Do we have to handle a case with two clones: one parametrized, one not? What wou
 -> pytest requires all parameters to either be in parametrize, or be a fixture.
 
 TODO:
+0. Nicad sees None as a name, not a literal.
+
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
 
 2. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m

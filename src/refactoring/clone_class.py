@@ -324,10 +324,11 @@ class CloneClass():
 
     def handle_different_nodes(self, nodes):
 
+        
         print(nodes)
         for node in nodes:
            print(ast.unparse(node))
-        print(f"ERROR: Differing types of nodes on line{nodes[0].lineno}:")
+        print("Differing types of nodes")
         sys.exit()
 
 

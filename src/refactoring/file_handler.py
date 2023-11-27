@@ -24,6 +24,8 @@ class FileHandler:
         first_line, last_line = self.lineno_info[index]
         return self.lines[first_line - 1: last_line]
         
+    def get_line(self, line_no):
+        return self.lines[line_no - 1]
 
     def refactor_file(self, dest_filepath, verbose = False):
         """Aims to refactor the file by keeping as much of the original file as possible"""
