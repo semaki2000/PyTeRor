@@ -9,11 +9,21 @@ class FileHandler:
         self.clones = []
         self.lineno_info = [] #lineno info for original file
         self.lineno_to_target_clone =  {} #dict from lineno to target Clone object
+        with open(self.filepath, "r") as file:
+            self.lines = file.readlines()
+
 
 
     def add_clone(self, clone):
         self.clones.append(clone)
         self.get_linenumber_info(clone)
+        
+        
+    def get_clone_as_str_list(self, clone):
+        index = self.clones.index(clone)
+        first_line, last_line = self.lineno_info[index]
+        return self.lines[first_line - 1: last_line]
+        
 
     def refactor_file(self, dest_filepath, verbose = False):
         """Aims to refactor the file by keeping as much of the original file as possible"""
@@ -22,10 +32,7 @@ class FileHandler:
 
         if verbose:
             print(f"Refactoring file: {self.filepath}")
-        
-        with open(self.filepath, "r") as file:
-            lines = file.readlines()
-        
+                
         has_target_clone = self.check_target_clones()
         
         
@@ -44,7 +51,7 @@ class FileHandler:
             
         remove_ind_list.sort(reverse=True)
         for ind in remove_ind_list:
-            lines.pop(ind)
+            self.lines.pop(ind)
             if ind in self.lineno_to_target_clone.keys():
                 if verbose:
                     print("formatting target clone")
@@ -57,16 +64,16 @@ class FileHandler:
                 formatted = tf.format_target()
 
                 for line in reversed(formatted):
-                    lines.insert(ind, line)
+                    self.lines.insert(ind, line)
 
 
         if has_target_clone and not self.pytest_import:
             if verbose:
                 print("adding 'import pytest")
-            lines.insert(0, "import pytest\n")
+            self.lines.insert(0, "import pytest\n")
 
         with open(dest_filepath, "w+") as dest_file:
-            dest_file.writelines(lines)
+            dest_file.writelines(self.lines)
         return True
 
 
@@ -103,4 +110,3 @@ class FileHandler:
         
         self.lineno_info.append((first, last))
         #return (clone.lineno, clone.ast_node.body[-1].lineno, len(clone.ast_node.decorator_list))
-    

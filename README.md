@@ -5,22 +5,36 @@ Runs with python 3.10 <=
 
 
 Do we have to handle a case with two clones: one parametrized, one not? What would this case look like
+-> pytest requires all parameters to either be in parametrize, or be a fixture.
 
 TODO:
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
 
-2. Nicad ignores multiline string if its the first thing in function body. 
-See test_files/clone_check/test_clones_with_and_without_multiline_comments.py
+2. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-3. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
+3. Find out what to do with """ comment in top of test. We have it saved in Clone object if it exists... add it back?
 
-4. Find out what to do with """ comment in top of test. After finding out (2.), best to just ignore it.
-Perhaps remove them before walking the ASTs. Can be tmp saved somewhere else, then maybe added back to target? 
-
-5. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
+4. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
 
-6. We want to use a modified version of nicad6's type2 config. How do we do this. When running nicad, for config option it only takes config files that exist in its config/ subfolder. Supplying an external config file doesn't seem to be an option.
+5. We want to use a modified version of nicad6's type2 config. How do we do this. When running nicad, for config option it only takes config files that exist in its config/ subfolder. Supplying an external config file doesn't seem to be an option.
+
+6. Remove redundant parameters from funcdef:
+```python
+def func1(a, b):
+    return a
+
+def func2(a, b):
+    return b
+
+"""BECOMES""":
+@pytest.mark.parametrize(
+    "parametrized_name_0", [pytest.param(a, id="func1"), pytest.param(b, id="func2")]
+)
+def func1_parametrized(parametrized_name_0, a, b): #remove a, b
+    return parametrized_name_0    
+
+```
 -------------------------------------------------------------------------------------------
 
 
@@ -37,6 +51,7 @@ Haven't dealt with this:
 import pytest
 
 #this line parametrizes every test in the module (file)
+#assigns to the pytestmark global variable
 pytestmark = pytest.mark.parametrize("n,expected", [(1, 2), (3, 4)])
 
 class TestClass:

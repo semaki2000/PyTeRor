@@ -75,6 +75,8 @@ class CloneClass():
                 remove_on_index.insert(0, clone)
             elif clone.is_fixture or clone.bad_parametrize_decorator:
                 remove_on_index.insert(0, clone)
+            else:
+                clone.remove_multiline_comment()
             
 
         for remove_clone in remove_on_index:
