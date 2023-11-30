@@ -1,6 +1,16 @@
 # master-refactoring
 
 
+To install: 
+
+1. clone repository
+
+2. Install nicad.
+
+3. Copy file 'python.grm' into txl sub-directory in nicad directory. E.g. 'sudo cp python.grm /use/local/lib/nicad6/txl/python.grm'
+
+4. Copy file 'type2_abstracted.cfg' into config sub-directory in nicad directory. E.g. 'sudo cp type2_abstracted.cfg /use/local/lib/nicad6/config/type2_abstracted.cfg'. 
+
 Runs with python 3.10 <=
 
 

@@ -1,0 +1,22 @@
+<clones>
+<systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind" threshold="0%" minlines="1" maxlines="2500"/>
+<cloneinfo npcs="10" npairs="3"/>
+<runinfo ncompares="16" cputime="15625"/>
+<classinfo nclasses="3"/>
+
+<class classid="1" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_clones_with_args_kws_difference.py" startline="3" endline="5" pcid="1"></source>
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_clones_with_args_kws_difference.py" startline="6" endline="7" pcid="2"></source>
+</class>
+
+<class classid="2" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_multiline_string_comment.py" startline="1" endline="4" pcid="3"></source>
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_multiline_string_comment.py" startline="5" endline="7" pcid="4"></source>
+</class>
+
+<class classid="3" nclones="2" nlines="3" similarity="100">
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_none_and_name.py" startline="2" endline="5" pcid="6"></source>
+<source file="/tmp/tmpywh7iiho/tmp_subfolder/test_none_and_name.py" startline="6" endline="9" pcid="7"></source>
+</class>
+
+</clones>
