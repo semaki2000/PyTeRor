@@ -3,7 +3,6 @@ from .name_generator import NameGenerator;
 from .clone_ast_utilities import CloneASTUtilities
 from .clone import Clone
 from .node_difference import NodeDifference
-from .constant_node_difference import ConstantNodeDifference
 from .name_node_difference import NameNodeDifference
 from .attribute_node_difference import AttributeNodeDifference
 from .parametrized_arg import ParametrizedArg
@@ -140,25 +139,33 @@ class CloneClass():
                         child_nodes.append(next(ite))
                     
 
-                    #if not all same type, something probably wrong:
                     if not all(isinstance(child, type(child_nodes[0])) for child in child_nodes):
-                        self.handle_different_nodes(child_nodes)
-
+                        #if not all same type:
+                        #special check for mixture of names and constants:
+                        if all((isinstance(child, ast.Name) or isinstance(child, ast.Constant)) for child in child_nodes):
+                            self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
+                        else:
+                            print(child_nodes)
+                            for node in child_nodes:
+                                print(ast.unparse(node))
+                                print("Differing types of nodes")
+                                sys.exit()
                     
                     if type(child_nodes[0]) == ast.Constant:
                         if any(child.value != child_nodes[0].value for child in child_nodes):
-                            self.node_differences.append(ConstantNodeDifference(child_nodes, parent_nodes))
+                            self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue
 
                     elif type(child_nodes[0]) == ast.Name and any(child.id != child_nodes[0].id for child in child_nodes):
                         
-                        self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes))
+                        self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
                         continue
+
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
                     elif type(child_nodes[0]) == ast.Attribute and any(child.attr != child_nodes[0].attr for child in child_nodes):
                         
-                        self.node_differences.append(AttributeNodeDifference(child_nodes, parent_nodes))
+                        self.node_differences.append(AttributeNodeDifference(child_nodes, parent_nodes, self.target_ind))
                         self.attribute_difference = True
                         continue
 
@@ -320,16 +327,6 @@ class CloneClass():
             if nd.stringtype == "name":
                 if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
                     nd.to_extract = False
-
-
-    def handle_different_nodes(self, nodes):
-
-        
-        print(nodes)
-        for node in nodes:
-           print(ast.unparse(node))
-        print("Differing types of nodes")
-        sys.exit()
 
 
     def remove_redundant_clones(self):

@@ -37,7 +37,7 @@ class RunCloneDetector:
     
         target_xml_path = ""
         clones_xml_file = "clone_classes.xml"
-        cp_from_path = Path(str(path) + "_functions-blind-clones/tmp_subfolder_functions-blind-clones-0.00-classes.xml")
+        cp_from_path = Path(str(path) + "_functions-blind-abstract-clones/tmp_subfolder_functions-blind-abstract-clones-0.00-classes.xml")
         if not cp_from_path.exists():
             raise FileNotFoundError("Path does not exist. This may be due to the clone detector crashing. Run with -lc, and check clone detector log")
         command = ["cp", str(cp_from_path), str(clones_xml_file)]

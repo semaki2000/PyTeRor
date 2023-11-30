@@ -18,20 +18,23 @@ Do we have to handle a case with two clones: one parametrized, one not? What wou
 -> pytest requires all parameters to either be in parametrize, or be a fixture.
 
 TODO:
-0. Nicad sees None as a name, not a literal.
 
-1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables
+
+1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 
 2. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-3. Find out what to do with """ comment in top of test. We have it saved in Clone object if it exists... add it back?
+3. Docstring: Add docstrings back into top of function body, prepend which test the docstring is from. All should still be in one string. Ex:
+"""test_name:
+DOCSTRING CONTENT OF TEST_NAME
+   test_name2:
+DOCSTRING CONTENT OF TEST_NAME2
+"""
 
 4. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
 
-5. We want to use a modified version of nicad6's type2 config. How do we do this. When running nicad, for config option it only takes config files that exist in its config/ subfolder. Supplying an external config file doesn't seem to be an option.
-
-6. Remove redundant parameters from funcdef:
+5. Remove redundant parameters from funcdef:
 ```python
 def func1(a, b):
     return a
@@ -39,14 +42,41 @@ def func1(a, b):
 def func2(a, b):
     return b
 
-"""BECOMES""":
+#BECOMES:
 @pytest.mark.parametrize(
     "parametrized_name_0", [pytest.param(a, id="func1"), pytest.param(b, id="func2")]
 )
 def func1_parametrized(parametrized_name_0, a, b): #remove a, b
     return parametrized_name_0    
-
+#specifically: names that are extracted into parametrize decorator, should be removed from function parameters.
 ```
+
+6. Tests can have multiple parametrize decorators. Currently only one is accounted for. 
+Turn clone.param_decorator into list of objects, rather than single object
+
+7. Related to above, handle this case:
+```python
+import pytest
+
+#this line parametrizes every test in the module (file)
+#assigns to the pytestmark global variable
+pytestmark = pytest.mark.parametrize("n,expected", [(1, 2), (3, 4)])
+#can also be assignment to a list of marks, e.g:
+#pytestmark = [pytest.mark.parametrize("n,expected", [(1, 2), (3, 4)]), pytest.mark.example_mark]
+
+class TestClass:
+    def test_simple_case(self, n, expected):
+        assert n + 1 == expected
+
+    def test_weird_simple_case(self, n, expected):
+        assert (n * 1) + 1 == expected
+```
+Do this by:
+    a. finding pytestmark line. This has to be done in filehandler, on a file by file basis.
+    b. For each mark m in pytestmark:
+        i. If parametrize, create ParametrizeDecorator object and parse m. Add object to all clones in file. (clone.param_decorator.append(m))
+        ii. Else, if regular mark, add to clone.marks for every clone.
+        iii. If fixture (is this possible?), set is_fixture to True for every clone in file.
 -------------------------------------------------------------------------------------------
 
 
@@ -55,22 +85,3 @@ POTENTIAL BUGS
 - When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)  
 
 
-
-OTHER INTERESTING STUFF:
-
-Haven't dealt with this:
-```python
-import pytest
-
-#this line parametrizes every test in the module (file)
-#assigns to the pytestmark global variable
-pytestmark = pytest.mark.parametrize("n,expected", [(1, 2), (3, 4)])
-
-class TestClass:
-    def test_simple_case(self, n, expected):
-        assert n + 1 == expected
-
-    def test_weird_simple_case(self, n, expected):
-        assert (n * 1) + 1 == expected
-
-```

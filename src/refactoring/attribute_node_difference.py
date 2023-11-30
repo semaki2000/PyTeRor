@@ -2,8 +2,8 @@ import ast
 from .node_difference import NodeDifference
 
 class AttributeNodeDifference(NodeDifference):
-    def __init__(self, nodes, parent_nodes):
-        super().__init__(nodes, parent_nodes)
+    def __init__(self, nodes, parent_nodes, target_index):
+        super().__init__(nodes, parent_nodes, target_index)
 
     
     def get_variants_dict(self):
