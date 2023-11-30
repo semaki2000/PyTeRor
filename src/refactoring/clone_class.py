@@ -349,6 +349,13 @@ class CloneClass():
             self.param_decorator.add_argname(nd.new_name) 
             self.param_decorator.add_value_list(nd.new_name, nd.nodes)
             
+            #if a name in funcdef args has been extracted, remove it from funcdef args.
+            if isinstance(nd, NameNodeDifference):
+                for name in self.target.ast_node.args.args:
+                    if nd[self.target_ind].id == name.arg:
+                        self.target.ast_node.args.args.remove(name)
+                     
+            
         
     
 
