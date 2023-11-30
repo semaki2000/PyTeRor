@@ -8,16 +8,18 @@ def calculator():
     calculator.angle_unit = 'deg'
     return calculator
 
-def test_addition(calculator):
-    a, b = 2, 3
-    expected_result = 5
+def test_addition_f(calculator):
+    a, b = 1, 2
+    expected_result = 3
 
     actual_result = calculator.add(a, b)
     assert actual_result == expected_result
 
-def test_subtraction(calculator):
-    a, b = 5, -3
-    expected_result = 2
+def test_addition2_f(calculator):
+    a, b = 4, 5
+    expected_result = 6
 
     actual_result = calculator.add(a, b)
     assert actual_result == expected_result
+
+"""Fixture should remain. The others should be refactored"""

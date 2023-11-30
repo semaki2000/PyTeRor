@@ -2,7 +2,7 @@ import pytest
 from Calculator import Calculator
 
 
-def test_addition():
+def test_addition_type2():
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'
@@ -13,7 +13,7 @@ def test_addition():
     assert actual_result == expected_result
 
 
-def test_addition2():
+def test_addition2_type2():
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'

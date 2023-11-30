@@ -138,12 +138,12 @@ class CloneClass():
                     for ite in iterators:
                         child_nodes.append(next(ite))
                     
-
                     if not all(isinstance(child, type(child_nodes[0])) for child in child_nodes):
                         #if not all same type:
                         #special check for mixture of names and constants:
                         if all((isinstance(child, ast.Name) or isinstance(child, ast.Constant)) for child in child_nodes):
                             self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
+                            continue
                         else:
                             print(child_nodes)
                             for node in child_nodes:
@@ -151,7 +151,7 @@ class CloneClass():
                                 print("Differing types of nodes")
                                 sys.exit()
                     
-                    if type(child_nodes[0]) == ast.Constant:
+                    elif type(child_nodes[0]) == ast.Constant:
                         if any(child.value != child_nodes[0].value for child in child_nodes):
                             self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue

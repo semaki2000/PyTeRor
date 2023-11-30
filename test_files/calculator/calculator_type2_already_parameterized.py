@@ -3,7 +3,7 @@ from Calculator import Calculator
 
 
 @pytest.mark.parametrize('angle_unit', ["deg", "rad", "grad"])
-def test_addition(angle_unit):
+def test_addition_type2p(angle_unit):
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = angle_unit
@@ -14,7 +14,7 @@ def test_addition(angle_unit):
     assert actual_result == expected_result
 
 
-def test_addition2():
+def test_addition2_type2p(angle_unit):
     calculator = Calculator()
     calculator.precision = 4
     calculator.angle_unit = 'deg'
@@ -23,3 +23,5 @@ def test_addition2():
     expected = 8 #different name 
     actual_result = calculator.add(a, b)
     assert actual_result == expected
+
+"""Should result in one test, with a parametrize with 4 thingys."""

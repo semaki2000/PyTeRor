@@ -28,18 +28,27 @@ class RunCloneDetector:
         command = ["nicad6", "functions", "py", str(path) + "/", "type2_abstracted"]
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        if log_clone_detector_run:
+
+        if log_clone_detector_run or "*** ERROR" in result.stdout.decode():
             filename = "nicad" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".log")
             with open(filename, "a+") as f:
                 f.write(result.stdout.decode())
                 f.write(result.stderr.decode())
             print(f"Clone detection logged in {filename}")
-    
+
+        crash = False
+        if "*** ERROR" in result.stdout.decode():
+            crash = True
+            print("Error running clone detector. Check log file.")
+            sys.exit()
+
+
+
         target_xml_path = ""
         clones_xml_file = "clone_classes.xml"
         cp_from_path = Path(str(path) + "_functions-blind-abstract-clones/tmp_subfolder_functions-blind-abstract-clones-0.00-classes.xml")
         if not cp_from_path.exists():
-            raise FileNotFoundError("Path does not exist. This may be due to the clone detector crashing. Run with -lc, and check clone detector log")
+            raise FileNotFoundError("Path does not exist: " + str(cp_from_path))
         command = ["cp", str(cp_from_path), str(clones_xml_file)]
         subprocess.run(command, check=True)
 
