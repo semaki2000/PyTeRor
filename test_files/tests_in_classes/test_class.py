@@ -11,7 +11,7 @@ from ert.config.parsing import (
 
 class TestClassA:
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_incorrect_queue_name_in_queue_option_fails():
+    def test_that_giving_incorrect_queue_name_in_queue_option_fails(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -28,7 +28,7 @@ class TestClassA:
 
 
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_invalid_boolean_values_are_handled_gracefully():
+    def test_that_invalid_boolean_values_are_handled_gracefully(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -45,7 +45,7 @@ class TestClassA:
 
 
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_non_int_values_give_config_validation_error():
+    def test_that_giving_non_int_values_give_config_validation_error(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -60,7 +60,7 @@ class TestClassA:
 
 class TestClassB:
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_non_float_values_give_config_validation_error():
+    def test_that_giving_non_float_values_give_config_validation_error(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -76,7 +76,7 @@ class TestClassB:
 
 
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_non_executable_gives_config_validation_error():
+    def test_that_giving_non_executable_gives_config_validation_error(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -92,7 +92,7 @@ class TestClassB:
 
 
     @pytest.mark.usefixtures("use_tmpdir")
-    def test_that_giving_too_many_arguments_gives_config_validation_error():
+    def test_that_giving_too_many_arguments_gives_config_validation_error(self, arg):
         test_config_file_name = "test.ert"
         test_config_contents = dedent(
             """
@@ -110,7 +110,7 @@ class TestClassB:
 #THIS ONE IS GLOBAL
 
 @pytest.mark.usefixtures("use_tmpdir")
-def test_that_giving_too_few_arguments_gives_config_validation_error():
+def test_that_giving_too_few_arguments_gives_config_validation_error(self, arg):
     test_config_file_name = "test.ert"
     test_config_contents = dedent(
         """

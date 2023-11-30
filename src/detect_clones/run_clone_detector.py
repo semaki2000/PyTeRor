@@ -29,19 +29,17 @@ class RunCloneDetector:
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
-        if log_clone_detector_run or "*** ERROR" in result.stdout.decode():
+        error = "*** ERROR" in result.stdout.decode()
+        if log_clone_detector_run or error:
             filename = "nicad" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".log")
             with open(filename, "a+") as f:
                 f.write(result.stdout.decode())
                 f.write(result.stderr.decode())
             print(f"Clone detection logged in {filename}")
 
-        crash = False
-        if "*** ERROR" in result.stdout.decode():
-            crash = True
+        if error:
             print("Error running clone detector. Check log file.")
             sys.exit()
-
 
 
         target_xml_path = ""

@@ -46,8 +46,12 @@ class Clone():
         Returns:
             None    
         """
-        #get ind after last positional argument (not keywords)
-        ind = len(self.ast_node.args.posonlyargs)
+
+        # get ind after last non keyword-optional argument 
+        # (so that we don't accidentally insert parameter before 'self', or after keywords)
+
+        ind = len(self.ast_node.args.args) - len(self.ast_node.args.defaults)
+
         for name in param_names:
             self.ast_node.args.args.insert(ind, ast.arg(arg = name))
             ind += 1

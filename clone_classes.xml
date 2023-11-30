@@ -1,12 +1,17 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="2" npairs="1"/>
-<runinfo ncompares="1" cputime="15625"/>
+<cloneinfo npcs="7" npairs="21"/>
+<runinfo ncompares="21" cputime="15625"/>
 <classinfo nclasses="1"/>
 
-<class classid="1" nclones="2" nlines="8" similarity="100">
-<source file="/tmp/tmpaoxq_xfy/tmp_subfolder/test_calculator_type2_already_parameterized.py" startline="6" endline="16" pcid="1"></source>
-<source file="/tmp/tmpaoxq_xfy/tmp_subfolder/test_calculator_type2_already_parameterized.py" startline="17" endline="26" pcid="2"></source>
+<class classid="1" nclones="7" nlines="8" similarity="100">
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="14" endline="29" pcid="1"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="31" endline="46" pcid="2"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="79" endline="93" pcid="5"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="48" endline="60" pcid="3"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="113" endline="125" pcid="7"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="63" endline="77" pcid="4"></source>
+<source file="/tmp/tmpgztt0jkn/tmp_subfolder/test_class.py" startline="95" endline="111" pcid="6"></source>
 </class>
 
 </clones>
