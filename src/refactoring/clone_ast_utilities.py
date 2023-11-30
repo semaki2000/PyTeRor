@@ -31,18 +31,6 @@ class CloneASTUtilities:
                     if (isinstance(class_node, ast.FunctionDef) and class_node.lineno == clone_lineno):
                         return Clone(class_node, parent_node=node, lineno=class_node.lineno, filehandler=filehandler)
 
-    def detach_redundant_clones(ast_base, redundant_clones: list):
-        """Detaches given nodes from the AST.
-
-        Parameters:
-            - ast_base - base of an AST from 'ast' module
-            - redundant_clones - list of ast nodes which are redundant clones (already parameterized)
-
-        Returns:
-            None
-        """
-        for node in redundant_clones:
-            ast_base.body.remove(node)
 
     def replace_node(child, parent, new_child):
         """Replaces one node with another in the AST.
@@ -94,13 +82,3 @@ class CloneASTUtilities:
                 ),
                 attr="mark"),
             attr=mark_name)
-
-    def get_eval_call_node(arg):
-        func_name = ast.Name(id="eval")
-        eval_node = ast.Call(func=func_name, args=[arg], keywords=[])
-        return eval_node
-
-    def get_getattr_call_node(arg):
-        func_name = ast.Name(id="getattr")
-        getattr_node = ast.Call(func=func_name, args=[arg], keywords=[])
-        return getattr_node

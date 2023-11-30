@@ -5,7 +5,6 @@ from .clone import Clone
 from .node_difference import NodeDifference
 from .name_node_difference import NameNodeDifference
 from .attribute_node_difference import AttributeNodeDifference
-from .parametrized_arg import ParametrizedArg
 from .target_parametrize_decorator import TargetParametrizeDecorator
 
 
@@ -368,7 +367,6 @@ class CloneClass():
             print(f"    Parametrized {x} {y}.")
 
 
-    #TODO: find out what to do if only a subset of the clones are parametrized
     def replace_names_with_values(self):
         """Function to replace previously parametrized names with their values. Example:
         ```python
@@ -379,34 +377,6 @@ class CloneClass():
         #after applying this function, it is turned into:
         @pytest.mark.parametrize('parametrized_name_0', [('a', ...), ('b', ...), ('c', ...)])
         """
-        
-        argnames = []
-        values = []
-        
-        for clone in self.clones:
-            
-            argnames += clone.param_decorator.argnames
-            
-            for argname in clone.param_decorator.argnames:
-                values += clone.param_decorator.get_values(argname)
-        print("DONE ARGNAME LIST:")
-        print(argnames)
-        if len(argnames) == 0:
-            return
-        #find under what argname previously parametrized names are stored
-        names = [ast.Name(argname) for argname in argnames]
-        print("ERROR HAPPENS")
-        
-        new_argname = self.param_decorator.get_argname_for_preparametrized_names(names)
-        if not new_argname:
-            return
-        #remove them from argname values
-        self.param_decorator.remove_value_list(new_argname, names)
-        for ind in range(self.len_clones):
-            #add the actual values to argname
-            self.param_decorator.add_values_to_index(ind, new_argname, values[ind])
-
-    def replace_names_with_values2(self):
         removed_param_names = []
         
         for ind in range(self.len_clones):
@@ -480,7 +450,7 @@ class CloneClass():
 
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
-            removed_param_names = self.replace_names_with_values2()
+            removed_param_names = self.replace_names_with_values()
 
             decorator = self.param_decorator.get_decorator()
 

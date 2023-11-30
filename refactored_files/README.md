@@ -1,0 +1,2 @@
+this is a place to store refactored files. Just for analysing the results of the program, nothing special.
+Files can be added here by supplying this directory as a path with the flag -o or --output-dir.

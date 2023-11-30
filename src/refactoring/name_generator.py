@@ -6,7 +6,7 @@ class NameGenerator:
         self.names = []
         self.constants_cnt = 0 #parametrized constants
         self.names_cnt = 0 #parametrized names
-        self.other_cnt = 0 #should be 0
+        self.other_cnt = 0 #parametrized names or constants (both parametrized together)
 
 
     def new_name(self, context=""):

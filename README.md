@@ -1,7 +1,7 @@
 # master-refactoring
 
 
-To install: 
+## Installation 
 
 1. clone repository
 
@@ -14,11 +14,7 @@ To install:
 Runs with python 3.10 <=
 
 
-Do we have to handle a case with two clones: one parametrized, one not? What would this case look like
--> pytest requires all parameters to either be in parametrize, or be a fixture.
-
-TODO:
-
+## TODO
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 
@@ -34,27 +30,10 @@ DOCSTRING CONTENT OF TEST_NAME2
 4. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
 
-5. Remove redundant parameters from funcdef:
-```python
-def func1(a, b):
-    return a
-
-def func2(a, b):
-    return b
-
-#BECOMES:
-@pytest.mark.parametrize(
-    "parametrized_name_0", [pytest.param(a, id="func1"), pytest.param(b, id="func2")]
-)
-def func1_parametrized(parametrized_name_0, a, b): #remove a, b
-    return parametrized_name_0    
-#specifically: names that are extracted into parametrize decorator, should be removed from function parameters.
-```
-
-6. Tests can have multiple parametrize decorators. Currently only one is accounted for. 
+5. Tests can have multiple parametrize decorators. Currently only one is accounted for. 
 Turn clone.param_decorator into list of objects, rather than single object
 
-7. Related to above, handle this case:
+6. Related to above, handle this case:
 ```python
 import pytest
 
@@ -77,6 +56,7 @@ Do this by:
         i. If parametrize, create ParametrizeDecorator object and parse m. Add object to all clones in file. (clone.param_decorator.append(m))
         ii. Else, if regular mark, add to clone.marks for every clone.
         iii. If fixture (is this possible?), set is_fixture to True for every clone in file.
+
 -------------------------------------------------------------------------------------------
 
 

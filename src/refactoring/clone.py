@@ -1,7 +1,5 @@
 import ast
-import sys
 from .decorator_checker import DecoratorChecker
-from .parametrized_arg import ParametrizedArg
 from .parametrize_decorator import ParametrizeDecorator
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
