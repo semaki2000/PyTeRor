@@ -355,8 +355,19 @@ class CloneClass():
                         self.target.ast_node.args.args.remove(name)
                      
             
-        
-    
+    def add_docstring(self):
+        """Adds docstring of each clone to the targets docstring."""
+        if any(clone.docstring != None for clone in self.clones):
+            docstring = ""
+            for clone in self.clones:
+                if clone.docstring != None:
+                    docstring += clone.funcname + ":\n"
+                    docstring += clone.docstring.value.value + "\n"
+                else:
+                    pass
+                    #TODO: do we want to add a docstring saying 'no docstring' for functions that don't have docstrings?
+            self.target.add_docstring(docstring)
+
 
     def print_post_info(self):
         """Print info after refactoring."""
@@ -463,6 +474,7 @@ class CloneClass():
             self.target.add_decorator(decorator)
             self.target.add_marks()
             self.target.rename_target()
+            self.add_docstring()
             
             for clone in self.clones:
                 clone.refactored = True

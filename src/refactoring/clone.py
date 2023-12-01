@@ -25,7 +25,7 @@ class Clone():
         self.detached = False
         self.refactored = False
         self.filehandler.add_clone(self)
-        self.multiline_comment = None
+        self.docstring = None
 
         #only used by target
         self.target_marks = []
@@ -81,7 +81,11 @@ class Clone():
     def add_decorator(self, decorator):
         self.ast_node.decorator_list.insert(0, decorator)
 
-        
+    #only used by target
+    def add_docstring(self, docstring : str):
+        docstring_node = ast.Expr(value=ast.Constant(value=docstring))
+        self.ast_node.body.insert(0, docstring_node)
+
 
     def parse_decorator_list(self):
         """'Parses' decorator list of this function to see if function is a fixture or is parameterized.
@@ -136,15 +140,15 @@ class Clone():
             self.ast_node.decorator_list.remove(decorator)
                 
     def remove_multiline_comment(self):
-        """This function checks if the first statement in the function body is a multiline comment.
-        If so, sets clone.multiline_comment as this statement, and removes it from function body.
-        The statement is removed from the function body because Nicad, the clone detector, ignores multiline comments
+        """This function checks if the first statement in the function body is a docstring.
+        If so, sets clone.docstring as this statement, and removes it from function body.
+        The statement is removed from the function body because Nicad, the clone detector, ignores docstrings
         when finding clones. This means that two clones that are otherwise the same, 
-        can have a difference where one starts with a multiline comment, and another does not."""
+        can have a difference where one starts with a docstring, and another does not."""
         
         first_line_body = self.filehandler.get_line(self.ast_node.lineno+1).strip()
-        if first_line_body[0:3] == '"""' and self.multiline_comment == None:
-            self.multiline_comment = self.ast_node.body.pop(0)
+        if first_line_body[0:3] == '"""' and self.docstring == None:
+            self.docstring = self.ast_node.body.pop(0)
             
 
     def get_ast_node(self):
