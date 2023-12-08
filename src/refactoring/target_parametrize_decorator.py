@@ -84,31 +84,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         return False
     
  
-    def get_argname_for_preparametrized_names(self, values):
-        """Given a list of ast.Name values, containing names which were parametrized pre-refactoring, 
-        finds the corresponding argname where these are stored and returns it."""
-        #TODO: make more general, or more specific.
-        for name in values:
-            print(name.id)
-        self.print_vals()
-        assert len(values) == len(self.argvals), "Error: amount of values supplied does not correspond to the amount of clones"
-        
 
-        for argname in self.argnames:
-            correct = True #initialize as True
-            for ind in range(len(self.argvals)):
-                node = self.argvals[ind][argname][0] #only need first node
-                if not isinstance(node, ast.Name):
-                    correct = False
-                    continue
-                if node.id != values[ind].id:
-                    correct = False
-                    continue
-            if correct:
-
-                return argname
-            
-        return False
 
 
     def pre_paramd(self, ind):

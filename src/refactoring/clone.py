@@ -1,6 +1,7 @@
 import ast
 from .decorator_checker import DecoratorChecker
 from .parametrize_decorator import ParametrizeDecorator
+from .parametrize_decorator import parse_decorator
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
@@ -17,7 +18,7 @@ class Clone():
         self.unknown_decorators_list = []
 
         self.param_decorator = ParametrizeDecorator(1)
-        self.param_dec_node = None
+        self.param_dec_nodes = []
         self.marks = [] #list of nodes that are 'pytest.mark's. (Except mark.parametrize)
         
         
@@ -116,9 +117,9 @@ class Clone():
                     self.unknown_decorator = True
 
                 else:
-                    self.param_decorator.parse_decorator(decorator)
-                    self.param_dec_node = decorator
-                    to_remove.append(self.param_dec_node)
+                    self.param_decorator = parse_decorator(decorator) + self.param_decorator
+                    self.param_dec_nodes.append(decorator)
+                    to_remove.append(decorator)
 
             elif DecoratorChecker.is_fixture_decorator(decorator):
                 self.is_fixture = True

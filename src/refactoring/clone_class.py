@@ -66,7 +66,7 @@ class CloneClass():
             1. excluding clones which are fixtures (parametrising fixtures will unintentionally parametrize the tests using those fixtures)
         """
         remove_on_index = []
-        for clone in self.clones:
+        for clone in self.clones: #TODO: just reversed() this list and remove in for-loop.
             #clone can be none, if defined inside another function. 
             #we remove this clone here, rather than before creating clone class, this is because we want CloneClass.id to correspond to id in xml file
             if clone is None:
@@ -220,7 +220,8 @@ class CloneClass():
                 
             if same_decorator:
                 #all have same decorator
-                self.target.ast_node.decorator_list.append(self.target.param_dec_node)
+                #TODO: 
+                self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
 
             else:
                 #add argnames to parametrized names. Will be replaced with values later
@@ -418,8 +419,8 @@ class CloneClass():
                 print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             for clone in self.clones:
                 clone.target = False
-                if clone.param_dec_node != None:
-                    clone.ast_node.decorator_list.append(clone.param_dec_node)
+                if clone.param_dec_nodes != []:
+                    clone.ast_node.decorator_list.extend(clone.param_dec_nodes)
             return
     
         #check parent nodes of clones, split if different:

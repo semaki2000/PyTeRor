@@ -160,4 +160,5 @@ def get_path_obj(args):
     
     return ret
 
-main()
+if __name__ == "__main__":
+    main()

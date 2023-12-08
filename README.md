@@ -20,20 +20,10 @@ Runs with python 3.10 <=
 
 2. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
-3. Docstring: Add docstrings back into top of function body, prepend which test the docstring is from. All should still be in one string. Ex:
-"""test_name:
-DOCSTRING CONTENT OF TEST_NAME
-   test_name2:
-DOCSTRING CONTENT OF TEST_NAME2
-"""
-
-4. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
+3. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.
 
-5. Tests can have multiple parametrize decorators. Currently only one is accounted for. 
-Turn clone.param_decorator into list of objects, rather than single object
-
-6. Related to above, handle this case:
+4. Handle this case:
 ```python
 import pytest
 
@@ -57,6 +47,18 @@ Do this by:
         ii. Else, if regular mark, add to clone.marks for every clone.
         iii. If fixture (is this possible?), set is_fixture to True for every clone in file.
 
+6. Find the pytest.ini file (if it exists) (eventually hidden .pytest.ini) (eventually eventually a pyproject.toml with [tool.pytest.ini_options]).
+Example of pytest.ini:
+```ini
+# content of pytest.ini
+# Example 1: have pytest look for "check" instead of "test"
+[pytest]
+python_files = check_*.py
+python_classes = Check
+python_functions = *_check
+norecursedirs = #dirs with files that should not tested. Should therefore not be copied in copytree
+testpaths = #if no arguments in CL, testpaths that should be recursed through to find tests. These need to be  
+``` 
 -------------------------------------------------------------------------------------------
 
 
