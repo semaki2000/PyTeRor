@@ -120,7 +120,8 @@ class Clone():
                     #same as above
                     self.unknown_decorator = True
 
-                else:
+
+                if not self.unknown_decorator:
                     self.param_decorator = parse_decorator(decorator) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
                     to_remove.append(decorator)

@@ -48,10 +48,6 @@ class ParametrizeDecorator:
         ```
         """
 
-        print("TRYING TO COMBINE")
-        self.print_vals()
-
-        other.print_vals()
         if not isinstance(other, ParametrizeDecorator):
             raise TypeError(f"Unsupported operand type: {type(other)}")
         elif len(self.argvals) > 1 or len(other.argvals) > 1:
@@ -78,8 +74,6 @@ class ParametrizeDecorator:
             for val in other_clone_dict[arg]:
                 this_clone_dict[arg].extend([val] * len_this)
 
-        print("COMBINED INTO")
-        self.print_vals()        
         return self
         
 
