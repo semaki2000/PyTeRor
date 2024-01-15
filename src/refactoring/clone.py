@@ -99,11 +99,15 @@ class Clone():
         to_remove = []
         for decorator in self.ast_node.decorator_list:
             if DecoratorChecker.is_parametrize_decorator(decorator):
-                #get contents of p.m.parametrize as actual literals
+                #get contents of parametrize marker as actual literals
                 
-                #assuming param_names is string
-                #TODO: dont assume param_names is string, people are stupid
-                param_names = decorator.args[0].value
+                #param_names can be anything, but for us, SHOULD be string.
+                param_names = decorator.args[0]
+                if type(param_names) != ast.Constant or type(param_names.value) != str:
+                    self.unknown_decorator = True
+                else:
+                    #correctly formed param_names. If it isn't string, we don't bother.
+                    param_names = param_names.value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
                 if type(decorator.args[1]) == ast.Name: 

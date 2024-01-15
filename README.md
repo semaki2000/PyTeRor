@@ -5,11 +5,15 @@
 
 1. clone repository
 
-2. Install nicad.
+2. Install requirements (pip install -r requirements.txt).
 
-3. Copy file 'python.grm' into txl sub-directory in nicad directory. E.g. 'sudo cp python.grm /use/local/lib/nicad6/txl/python.grm'
+3. Install nicad.
 
-4. Copy file 'type2_abstracted.cfg' into config sub-directory in nicad directory. E.g. 'sudo cp type2_abstracted.cfg /use/local/lib/nicad6/config/type2_abstracted.cfg'. 
+4. Copy file 'python.grm' into txl sub-directory in nicad directory. E.g. 'sudo cp python.grm /usr/local/lib/nicad6/txl/python.grm'
+
+5. Run makefile in nicad directory.
+
+5. Copy file 'type2_abstracted.cfg' into config sub-directory in nicad directory. E.g. 'sudo cp type2_abstracted.cfg /usr/local/lib/nicad6/config/type2_abstracted.cfg'. 
 
 Runs with python 3.10 <=
 
@@ -59,6 +63,7 @@ python_functions = *_check
 norecursedirs = #dirs with files that should not tested. Should therefore not be copied in copytree
 testpaths = #if no arguments in CL, testpaths that should be recursed through to find tests. These need to be  
 ``` 
+7. Add a #TODO comment over refactored tests? for renaming
 -------------------------------------------------------------------------------------------
 
 

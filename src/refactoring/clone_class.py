@@ -64,6 +64,8 @@ class CloneClass():
     def process_clones(self):
         """Processes the given clones by 
             1. excluding clones which are fixtures (parametrising fixtures will unintentionally parametrize the tests using those fixtures)
+            2. excluding clones that have parametrize decorators which supply anything other than a string as first argument, 
+                or anything other than a tuple or list as a second argument.
         """
         remove_on_index = []
         for clone in self.clones: #TODO: just reversed() this list and remove in for-loop.
@@ -200,7 +202,7 @@ class CloneClass():
             nd.replace_nodes(generated_name)
             extracted_cnt += 1
 
-    def compare_decorators(self):
+    def find_common_parametrize_decorators(self):
         """Looks through the decorator of each clone (if it has one).
         If all clones have the same decorator, it is added to the targets decorator list, without being changed."""
 
@@ -233,6 +235,8 @@ class CloneClass():
         #different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object
 
     def find_common_marks(self):
+        """Finds pytest.mark decorators which are common between all clones in the class.
+        Adds all common marks into the target's list of common marks."""
         #handle mark decorators:
         common_marks = []
         for clone in self.clones:
@@ -327,6 +331,7 @@ class CloneClass():
             if nd.stringtype == "name":
                 if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
                     nd.to_extract = False
+                    
 
 
     def remove_redundant_clones(self):
@@ -448,7 +453,7 @@ class CloneClass():
             self.split_on_attributes()
             return
         
-        self.compare_decorators()
+        self.find_common_parametrize_decorators()
         self.find_common_marks()
         #print("finding local variables")
         self.find_local_variables()
