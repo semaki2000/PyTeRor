@@ -25,7 +25,7 @@ def main():
         assert out_path.exists(), "Output path does not exist"
         assert out_path.is_dir(), "Output path does not point to a directory"
     elif args.overwrite:
-        print("implement overwrite")
+        print("TODO: implement overwrite")
     
     #TODO: add option to use xml file without using nicad
 

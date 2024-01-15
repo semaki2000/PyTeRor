@@ -72,7 +72,12 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         
         for ind in range(len(self.argvals)):
             for argname in self.argnames:
-                node = self.argvals[ind][argname][0] #only need first node
+                try:
+
+                    node = self.argvals[ind][argname][0] #only need first node
+                except:
+                    #error, doesnt exist. look for variable name ERROR_ERROR in refactored code
+                    node = ast.Name("ERROR_ERROR")
                 if not isinstance(node, ast.Name):
                     continue
                 if node.id == parameter_name:
