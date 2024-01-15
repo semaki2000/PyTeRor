@@ -81,11 +81,18 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                 if not isinstance(node, ast.Name):
                     continue
                 if node.id == parameter_name:
-                    assert len(self.argvals[ind][argname]) == 1 and type(self.argvals[ind][argname][0]) == ast.Name, "Error: resetting non-name values in the target parametrize decorator. Should not happen"
+                    try:
+                        assert len(self.argvals[ind][argname]) == 1 and type(self.argvals[ind][argname][0]) == ast.Name, "Error: resetting non-name values in the target parametrize decorator. Should not happen"
+                    except:
+                        print(len(self.argvals[ind][argname]) == 1)
+                        print(type(self.argvals[ind][argname][0]) == ast.Name)
+
+                        print("funcnames:")
+                        print(self.funcnames)
                     self.argvals[ind][argname] = [] #reset
                     self.pre_parametrized[argname] = True
                     return argname
-            
+                
         return False
     
  
