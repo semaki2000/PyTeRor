@@ -149,8 +149,10 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             for i2 in range(len(clone_dict[self.argnames[-1]])):
                 for argname in self.argnames:
                     if not self.pre_parametrized[argname]:
+                        print(clone_dict[argname])
+                        print(i2)
                         params_for_single_call.append(clone_dict[argname][i2])
-                    
+                        print("success!")
 
 
                 param_sets.append(params_for_single_call)

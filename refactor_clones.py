@@ -8,6 +8,8 @@ from src.refactoring.clone_class import CloneClass
 from src.detect_clones.run_clone_detector import RunCloneDetector
 from src.parse_clone_detection_output.parse_nicad.nicad_parser import NicadParser
 from src.refactoring.file_handler import FileHandler
+from src.refactoring.ast_parser import FindInitFile
+
 
 
 
