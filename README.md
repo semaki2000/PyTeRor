@@ -69,6 +69,8 @@ testpaths = #if no arguments in CL, testpaths that should be recursed through to
 
 POTENTIAL BUGS
 
-- When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)  
+- When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)
+- f-strings (literals that are in f-string, but dont have them as direct parent)
+
 
 

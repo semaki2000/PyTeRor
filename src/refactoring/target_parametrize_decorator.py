@@ -89,6 +89,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
 
                         print("funcnames:")
                         print(self.funcnames)
+                        SystemExit()
                     self.argvals[ind][argname] = [] #reset
                     self.pre_parametrized[argname] = True
                     return argname
@@ -135,7 +136,13 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             param_sets = []
             #line underneath asserts that all non-preparametrized argnames are of equal length
             #we check against index -1, as the last element will never be pre_parametrized (they appear first)
-            assert all(self.pre_parametrized[argname] or len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]) for argname in self.argnames)
+            try:
+                assert all(self.pre_parametrized[argname] or len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]) for argname in self.argnames)
+            except:
+                print("failed assertion check")
+                print("with functions:", self.funcnames)
+                self.print_vals()
+
             params_for_single_call = []
             
             pre_paramd_values = self.pre_paramd(ind)
