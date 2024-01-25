@@ -6,10 +6,12 @@ class ParametrizeDecorator:
         #each argname should be unique, otherwise pytest gives a ValueError: duplicate parametrization
         #as every clone can have multiple decorators, we link each argname to a decorator index
         
+        
+        self.n_clones = n_clones
+        
+        self.argvals = [{} for _ in range(n_clones)] 
         #list with one inner dict per clone, each dict having argnames as keys, with paramvalues as values
 
-        self.n_clones = n_clones
-        self.argvals = [{} for _ in range(n_clones)] 
         self.decorators_parsed = 0
 
 

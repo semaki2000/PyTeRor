@@ -12,15 +12,19 @@ from pathlib import Path
 # TODO: also check potential pytest.ini file(or hidden .pytest.ini) 
 #   for filepaths that could include tests other than tests/)
 
-class RunCloneDetector:    
+class RunCloneDetector:
+    fileglob = {}
 
-    def run(path, tmp_dir_path, log_clone_detector_run):
+    def run(path, tmp_dir_path, config, log_clone_detector_run):
         orig_path = path
 
         orig_dir_name = str(path.name)
 
         path = RunCloneDetector.create_tmp_filestructure(path, tmp_dir_path)
         
+        if 'fileglob' in config.keys():
+            RunCloneDetector.fileglob = config['fileglob']
+
         cwd = os.getcwd()
         #run nicad clone detector on tmp filestructure to find clones in test files
         #UNSAFE: os.system("nicad6 functions py " + str(path) + "/ type2_abstracted")
@@ -76,15 +80,16 @@ class RunCloneDetector:
 
 
     #copytree will only copy test files and directories
-    def ignore_non_test_py_files(dir, files):
-        pdir = Path(dir)
+    def ignore_non_test_py_files(direc, files):
+        pdir = Path(direc)
         ignore_files = []
         for file in files:
             
-            filepath = Path(dir + "/" + file)
+            filepath = Path(direc + "/" + file)
             if filepath.match("*/test_*.py") or filepath.match("*_test.py") or filepath.is_dir():
                 pass
-            else:
-                
+            elif any(filepath.match("*/" + glob) for glob in RunCloneDetector.fileglob):
+                pass
+            else:             
                 ignore_files.append(file)
         return ignore_files

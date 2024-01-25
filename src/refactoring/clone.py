@@ -1,4 +1,5 @@
 import ast
+import fnmatch
 from .decorator_checker import DecoratorChecker
 from .parametrize_decorator import ParametrizeDecorator
 from .parametrize_decorator import parse_decorator
@@ -145,6 +146,11 @@ class Clone():
         for decorator in to_remove:
             self.ast_node.decorator_list.remove(decorator)
                 
+    #TODO: if implementing reading pytest.ini for overriding test name, implement it here too.
+    def is_test(self):
+        pattern = 'test_*'
+        return fnmatch.fnmatch(self.funcname, pattern)
+
     def remove_multiline_comment(self):
         """This function checks if the first statement in the function body is a docstring.
         If so, sets clone.docstring as this statement, and removes it from function body.

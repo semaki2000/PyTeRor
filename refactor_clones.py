@@ -8,7 +8,7 @@ from src.refactoring.clone_class import CloneClass
 from src.detect_clones.run_clone_detector import RunCloneDetector
 from src.parse_clone_detection_output.parse_nicad.nicad_parser import NicadParser
 from src.refactoring.file_handler import FileHandler
-from src.refactoring.ast_parser import FindInitFile
+from src.detect_clones.parse_init_file import parse_init_file
 
 
 
@@ -34,11 +34,13 @@ def main():
     list_of_clone_class_dicts = []
     for path in paths:
         if path.is_dir():
+            config = parse_init_file(path)
+
             #tmp directory, for copying test files into and running clone detector
             #will be deleted automatically after 'with' is done
             with tempfile.TemporaryDirectory() as tmp_path:
                 
-                parser_args = RunCloneDetector.run(path, tmp_path, args.log_clone_detection)
+                parser_args = RunCloneDetector.run(path, tmp_path, config, args.log_clone_detection)
                 xml_parser = NicadParser(*parser_args)
                 list_of_clone_class_dicts.extend(xml_parser.parse())
         else:
