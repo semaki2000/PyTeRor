@@ -19,6 +19,7 @@ Runs with python 3.10 <=
 
 
 ## TODO
+0. Check name of class is correct for clones. Should be 'Test...'.
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 

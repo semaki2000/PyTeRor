@@ -111,7 +111,7 @@ class Clone():
                     param_names = param_names.value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
-                if type(decorator.args[1]) == ast.Name: 
+                if not self.unknown_decorator and type(decorator.args[1]) == ast.Name: 
                     #print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
                     #sys.exit()
                     
