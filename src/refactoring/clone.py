@@ -15,7 +15,6 @@ class Clone():
 
         self.bad_parametrize_decorator = False #True if a decorator has a func call or name instead of values.
         self.is_fixture : bool = False
-        self.unknown_decorator = False
         self.unknown_decorators_list = []
 
         self.param_decorator = ParametrizeDecorator(1)
@@ -99,30 +98,32 @@ class Clone():
         
         to_remove = []
         for decorator in self.ast_node.decorator_list:
+            unknown_decorator = False
             if DecoratorChecker.is_parametrize_decorator(decorator):
                 #get contents of parametrize marker as actual literals
                 
                 #param_names can be anything, but for us, SHOULD be string.
                 param_names = decorator.args[0]
+                
                 if type(param_names) != ast.Constant or type(param_names.value) != str:
-                    self.unknown_decorator = True
+                    unknown_decorator = True
                 else:
                     #correctly formed param_names. If it isn't string, we don't bother.
                     param_names = param_names.value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
-                if not self.unknown_decorator and type(decorator.args[1]) == ast.Name: 
+                if not unknown_decorator and type(decorator.args[1]) == ast.Name: 
                     #print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
                     #sys.exit()
                     
                     #set to unknown decorator, this clone will be ignored
-                    self.unknown_decorator = True
+                    unknown_decorator = True
                 elif type(decorator.args[1]) == ast.Call:
                     #same as above
-                    self.unknown_decorator = True
+                    unknown_decorator = True
 
 
-                if not self.unknown_decorator:
+                if not unknown_decorator:
                     self.param_decorator = parse_decorator(decorator) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
                     to_remove.append(decorator)
@@ -137,10 +138,12 @@ class Clone():
 
             elif DecoratorChecker.is_any_pytest_decorator(decorator):
                 pass
-
+                #TODO check the actual cases for this... is it necessary? Does it cause extra bugs (f.ex. with pytest plugins probably)
             else:
+                unknown_decorator = True
+            
+            if unknown_decorator:
 
-                self.unknown_decorator = True
                 self.unknown_decorators_list.append(ast.unparse(decorator))
         
         for decorator in to_remove:

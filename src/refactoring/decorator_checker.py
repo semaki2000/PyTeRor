@@ -88,7 +88,7 @@ class DecoratorChecker:
         return False
 
     def is_any_pytest_decorator(decorator):
-        """Checks whether a given node is a pytest.mark... decorator.
+        """Checks whether a given node is a pytest decorator.
 
         Params:
             - decorator - AST-node of decorator to check.

@@ -43,8 +43,8 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         
-
-        self.process_clones()
+        if not split_off:
+            self.process_clones()
 
         self.len_clones = len(clones)
         self.param_decorator = TargetParametrizeDecorator(
@@ -98,10 +98,10 @@ class CloneClass():
         split_groups = {}
         for ind in range(len(self.clones)):
             clone = self.clones[ind]
-            clone.unknown_decorators_list.sort()
+            #clone.unknown_decorators_list.sort() #genius, but wrong.
+
             split_groups.setdefault(str(clone.unknown_decorators_list), []).append(ind)
 
-        
         return split_groups.values()
 
 
@@ -234,6 +234,8 @@ class CloneClass():
                         self.param_decorator.add_value(ind, argname, ast.Name(argname))
 
         #different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object
+        #UPDATE: or maybe not? Parametrize decorator is surely stripped before NodeDifference objects are created...
+
 
     def find_common_marks(self):
         """Finds pytest.mark decorators which are common between all clones in the class.
@@ -424,6 +426,7 @@ class CloneClass():
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             for clone in self.clones:
+                #TODO: check what happens with docstrings
                 clone.target = False
                 if clone.param_dec_nodes != []:
                     clone.ast_node.decorator_list.extend(clone.param_dec_nodes)

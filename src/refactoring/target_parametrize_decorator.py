@@ -146,17 +146,16 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             params_for_single_call = []
             
             pre_paramd_values = self.pre_paramd(ind)
-            for i2 in range(len(clone_dict[self.argnames[-1]])):
-                for argname in self.argnames:
-                    if not self.pre_parametrized[argname]:
-                        print(clone_dict[argname][0].value)
-                        print(i2)
-                        params_for_single_call.append(clone_dict[argname][i2])
-                        print("success!")
+            #for i2 in range(len(clone_dict[self.argnames[-1]])):
+            #after commenting out last line, everything from here... 
+            for argname in self.argnames:
+                if not self.pre_parametrized[argname]:
+                    #print(clone_dict[argname][0].id)
 
-
-                param_sets.append(params_for_single_call)
-                params_for_single_call = []
+                    params_for_single_call.append(clone_dict[argname][0]) #i2 -> 0
+            param_sets.append(params_for_single_call)
+            params_for_single_call = []
+            #TO HERE was dedented once
             
             if not pre_paramd_values == []:
                 param_sets = [tuple(a + b) for a, b in itertools.product(pre_paramd_values, param_sets)]

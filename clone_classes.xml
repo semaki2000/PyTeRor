@@ -1,12 +1,62 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="3" npairs="1"/>
-<runinfo ncompares="1" cputime="15625"/>
-<classinfo nclasses="1"/>
+<cloneinfo npcs="66" npairs="40"/>
+<runinfo ncompares="252" cputime="15625"/>
+<classinfo nclasses="9"/>
 
-<class classid="1" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmpm68npz5o/tmp_subfolder/test_calculator_type2.py" startline="5" endline="14" pcid="1"></source>
-<source file="/tmp/tmpm68npz5o/tmp_subfolder/test_calculator_type2.py" startline="15" endline="23" pcid="2"></source>
+<class classid="1" nclones="2" nlines="7" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="169" endline="179" pcid="10"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="180" endline="190" pcid="11"></source>
+</class>
+
+<class classid="2" nclones="2" nlines="4" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="191" endline="196" pcid="12"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="210" endline="215" pcid="15"></source>
+</class>
+
+<class classid="3" nclones="2" nlines="3" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="198" endline="202" pcid="13"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_analysis_config.py" startline="217" endline="221" pcid="16"></source>
+</class>
+
+<class classid="4" nclones="4" nlines="6" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="40" endline="48" pcid="28"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="80" endline="89" pcid="32"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="107" endline="115" pcid="35"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="90" endline="99" pcid="33"></source>
+</class>
+
+<class classid="5" nclones="3" nlines="6" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="50" endline="59" pcid="29"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="71" endline="79" pcid="31"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="61" endline="69" pcid="30"></source>
+</class>
+
+<class classid="6" nclones="2" nlines="4" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="100" endline="106" pcid="34"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="116" endline="122" pcid="36"></source>
+</class>
+
+<class classid="7" nclones="3" nlines="7" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="155" endline="166" pcid="39"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="167" endline="178" pcid="40"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_config_schema_deprecations.py" startline="219" endline="228" pcid="43"></source>
+</class>
+
+<class classid="8" nclones="3" nlines="4" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_field.py" startline="14" endline="20" pcid="44"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_field.py" startline="22" endline="28" pcid="45"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_field.py" startline="30" endline="36" pcid="46"></source>
+</class>
+
+<class classid="9" nclones="7" nlines="8" similarity="100">
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="164" endline="178" pcid="56"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="327" endline="339" pcid="66"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="264" endline="277" pcid="62"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="200" endline="214" pcid="59"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="311" endline="325" pcid="65"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="295" endline="309" pcid="64"></source>
+<source file="/tmp/tmp1qnzmypl/tmp_subfolder/test_lark_parser.py" startline="279" endline="293" pcid="63"></source>
 </class>
 
 </clones>
