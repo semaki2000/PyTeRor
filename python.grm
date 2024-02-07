@@ -28,8 +28,13 @@
 
 % Modification Log:
 
-% Added definition of noneliteral, added it as a rule for literal
-% Added literal_or_id intermediate rule between atom and literal/id, used for analysing type2 clones in nicad.
+% Unofficial v1.9, Sebastian Kingston, Februray 2024
+%    Extracted f-strings from definition of stringliteral, and placed them in an intermediate layer above literal, 
+%    ...in order to be more in line with the Python ast-module's definition of f-strings. (JoinedStr node) 
+
+% Unofficial v1.8, Sebastian Kingston, December 2023
+%    Added definition of noneliteral, added it as a rule for literal
+%    Added literal_or_id intermediate rule between atom and literal/id, used for analysing type2 clones in nicad.
 
 % v1.7, Jim Cordy, July 2020.
 %    Added Python 3.8 type hints and format strings
@@ -635,7 +640,7 @@ define exp_factor
 end define 
 
 define atom 
-        [literal_or_id] 
+        [literal_or_id_or_fstring] 
     |	'( [IN] [repeat endofline] [opt yield_expr] [repeat endofline] ') [EX] 
     |   '( [IN] [repeat endofline] [testplist_gexp] [repeat endofline] ') [EX] 
     |   '[ [IN] [repeat endofline] [opt listmaker] '] [EX]
@@ -643,9 +648,10 @@ define atom
     |   '` [testlist1] '` 
 end define 
 
-define literal_or_id
+define literal_or_id_or_fstring
         [literal]
     |   [id]
+    |   [fstring]
 end define
 
 define listmaker 
@@ -768,6 +774,12 @@ define yield_expr
     'yield [opt testlist] 
 end define 
 
+% new extracted fstring definiton to capture fstrings outside the regular literal path. 
+% used for avoiding fstrings in NiCad abstraction of literals.
+define fstring
+    'f [SPOFF] [string] [SPON]
+end define
+
 % Python literals
 define literal
 	[stringliteral] [repeat more_stringliteral]
@@ -788,7 +800,6 @@ end define
 define stringprefix 
     	'r |  'u |  'ur |  'R |  'U |  'UR |  'Ur |  'uR 
     |	'b |  'br
-    |	'f
 end define 
 
 define string
