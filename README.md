@@ -19,6 +19,9 @@ Runs with python 3.10 <=
 
 
 ## TODO
+-1. Run this and check the results (parametrize decorator should hopefully be kept as is, and another one added above/below): python3 refactor_clones.py test_files/test_same_param_decorator/
+
+
 0. Check name of class is correct for clones. Should be 'Test...'.
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
