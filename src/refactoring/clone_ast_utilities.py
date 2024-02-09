@@ -82,3 +82,17 @@ class CloneASTUtilities:
                 ),
                 attr="mark"),
             attr=mark_name)
+    
+    def equal_nodes(node1, node2):
+        """Used to compare nodes against each other (by comparing the relevant attribute)
+        Returns boolean whether same 'value'."""
+
+        if type(node1) != type(node2):
+            return False
+        elif type(node1) == ast.Constant:
+            return node1.value == node2.value
+        elif type(node1) == ast.Name:
+            return node1.id == node2.id
+        else:
+            print("comparing stuff that shouldnt be compared??")
+            print("Type:", type(node1))

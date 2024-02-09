@@ -15,15 +15,7 @@ def test_A2(arg1, arg2):
 
 
 """
-A1 - parametrize decorator with
-arg1: 1, '1'
-arg2: 2, '2'
-
-A2 - parametrize decorator with
-arg1: 3, '3'
-arg2: 4, '4'
-
-
-Target - parametrize decorator with
-starts with: parametrized"arg1", "arg2"
+Running on these two tests should give an output file with one test, two parametrize decorators.
+Pre-existing parametrize decorator is kept.
+However, if they had not been equal, a single parametrize decorator would be created.
 """

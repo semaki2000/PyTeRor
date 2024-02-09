@@ -218,10 +218,17 @@ class CloneClass():
                 for clone in self.clones:
                     vals_compare = clone.param_decorator.get_values_on_ind(argname, 0)
                     for i in range(len(vals)):
+                        if not CloneASTUtilities.equal_nodes(vals[i], vals_compare[i]):
                             #not all values are the same
+                            print("difference:")
+                            print(vals[i])
+                            print(
+                                vals_compare[i]
+                            )
                             same_decorator = False
                 
             if same_decorator:
+                print("same decorator yep")
                 #all have same decorator
                 #TODO: 
                 self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
@@ -269,6 +276,8 @@ class CloneClass():
         splits the clone class into as many classes as there are variants within the AttributeNodeDifference's nodes."""
         #TODO: check all attributes before splitting. 
         # Currently only splits on first AttributeNodeDifference (but will recursively split if more differences are found)
+
+        #I guess this is what they call self-documenting code
         attributes = [[] for _ in range(len(self.clones))]
         nds = []
         for nd in self.node_differences:

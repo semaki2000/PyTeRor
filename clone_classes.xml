@@ -1,12 +1,12 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="3" npairs="1"/>
-<runinfo ncompares="3" cputime="15625"/>
+<cloneinfo npcs="2" npairs="1"/>
+<runinfo ncompares="1" cputime="15625"/>
 <classinfo nclasses="1"/>
 
-<class classid="1" nclones="2" nlines="6" similarity="100">
-<source file="/tmp/tmppdypc4ev/tmp_subfolder/test_fstring_vs_string.py" startline="5" endline="14" pcid="1"></source>
-<source file="/tmp/tmppdypc4ev/tmp_subfolder/test_fstring_vs_string.py" startline="16" endline="24" pcid="2"></source>
+<class classid="1" nclones="2" nlines="3" similarity="100">
+<source file="/tmp/tmpnezpw14g/tmp_subfolder/test_same_param_decorator.py" startline="5" endline="10" pcid="1"></source>
+<source file="/tmp/tmpnezpw14g/tmp_subfolder/test_same_param_decorator.py" startline="12" endline="16" pcid="2"></source>
 </class>
 
 </clones>
