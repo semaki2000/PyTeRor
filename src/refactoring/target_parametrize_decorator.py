@@ -142,7 +142,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                 print("failed assertion check")
                 print("with functions:", self.funcnames)
                 self.print_vals()
-
+            
             params_for_single_call = []
             
             pre_paramd_values = self.pre_paramd(ind)
@@ -163,10 +163,11 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
 
             a_params.append(tuple([ind, param_sets])) 
 
+
+            #UNDERNEATH: incorrect implementation (we don't want cartesian product)
             #all_vals = []
             #for key in clone_dict.keys():
             #    all_vals.append(clone_dict[key])            
-
             #a_params.append(tuple([ind, list(itertools.product(*all_vals))])) #itertools used for cartesian product. This is WRONG.
             #what is correct: we want each index to match up. Each tuple is a set of values for a call
 

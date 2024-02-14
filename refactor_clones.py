@@ -56,21 +56,24 @@ def main():
         
     print()
     target_location = Path("refactored_files/check_repo/").resolve()
+    if args.dry_run:
+        print("Dry run, no files written to.")
+
     for file in file_handlers:
         if (args.overwrite):
-            refactored = file.refactor_file(file.filepath)
+            refactored = file.refactor_file(file.filepath, args.dry_run)
             if refactored:
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(file.filepath))
         elif (out_path):
             new_path = out_path / Path(file.filepath.stem + "_refactored.py")
-            refactored = file.refactor_file(new_path)
+            refactored = file.refactor_file(new_path, args.dry_run)
             if refactored:
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(new_path))
         else:
             renamed_path = file.filepath.parent / Path(file.filepath.stem + "_refactored.py")
-            refactored = file.refactor_file(renamed_path)
+            refactored = file.refactor_file(renamed_path, args.dry_run)
             if refactored:
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(renamed_path))
@@ -125,13 +128,16 @@ def parseargs():
         action="append", 
         help="path(s) to check for code clones")
     
+    #group
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-o", "--output-dir",
                         help="Write new files to given directory, rather than in the directories of the old files")
     group.add_argument("-w", "--overwrite", 
                         action='store_true', 
                         help="Overwrite the files that are being parametrized, rather than creating a new file with _parametrized added to filename")
-    
+    #----------------------------- group over
+
+
     parser.add_argument("-m", "--mark",
                         action='store_true', 
                         help="Add refactored_parametrized mark to each test that has been refactored, for easy testing whether refactoring was successful")
@@ -143,6 +149,9 @@ def parseargs():
                         action='store_true', 
                         help="Log clone detector.")
 
+    parser.add_argument("-dr", "--dry-run",
+                        action='store_true', 
+                        help="Run the program without writing to file.")
 
     args = parser.parse_args()
     return args

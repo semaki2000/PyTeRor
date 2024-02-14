@@ -27,7 +27,7 @@ class FileHandler:
     def get_line(self, line_no):
         return self.lines[line_no - 1]
 
-    def refactor_file(self, dest_filepath, verbose = False):
+    def refactor_file(self, dest_filepath, dry_run, verbose = False):
         """Aims to refactor the file by keeping as much of the original file as possible"""
         if all(not clone.refactored for clone in self.clones):
             return False
@@ -74,8 +74,10 @@ class FileHandler:
                 print("adding 'import pytest")
             self.lines.insert(0, "import pytest\n")
 
-        with open(dest_filepath, "w+") as dest_file:
-            dest_file.writelines(self.lines)
+
+        if not dry_run:
+            with open(dest_filepath, "w+") as dest_file:
+                dest_file.writelines(self.lines)
         return True
 
 

@@ -5,8 +5,8 @@
 <classinfo nclasses="1"/>
 
 <class classid="1" nclones="2" nlines="3" similarity="100">
-<source file="/tmp/tmpnezpw14g/tmp_subfolder/test_same_param_decorator.py" startline="5" endline="10" pcid="1"></source>
-<source file="/tmp/tmpnezpw14g/tmp_subfolder/test_same_param_decorator.py" startline="12" endline="16" pcid="2"></source>
+<source file="/tmp/tmp27xiq3xa/tmp_subfolder/test_replace_names_with_values.py" startline="28" endline="32" pcid="1"></source>
+<source file="/tmp/tmp27xiq3xa/tmp_subfolder/test_replace_names_with_values.py" startline="33" endline="37" pcid="2"></source>
 </class>
 
 </clones>
