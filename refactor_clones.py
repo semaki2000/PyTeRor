@@ -31,7 +31,10 @@ def main():
     
     if args.cross_file:
         CloneClass.split_separate_modules = False
-    #TODO: add option to use xml file without using nicad
+    if args.mark:
+        CloneClass.custom_mark = True
+    if args.verbose:
+        CloneClass.verbose = True
 
     list_of_clone_class_dicts = []
     for path in paths:
@@ -51,7 +54,7 @@ def main():
             list_of_clone_class_dicts.extend(xml_parser.parse())
     
     file_handlers = []
-    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers, args.mark, args.verbose)
+    clone_classes = clone_class_generator(list_of_clone_class_dicts, file_handlers)
 
     for clone_class in clone_classes:
         clone_class.refactor_clones()
@@ -80,7 +83,7 @@ def main():
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(renamed_path))
 
-def clone_class_generator(clones, file_handlers, add_mark, verbose):
+def clone_class_generator(clones, file_handlers):
     for clone_class in clones:
 
         ast_clone_nodes = [] 
@@ -106,7 +109,7 @@ def clone_class_generator(clones, file_handlers, add_mark, verbose):
 
                 #add clone on lineno in filepath to list of clone objects
                 ast_clone_nodes.append(CAU.find_clone_node_in_AST(ast_base, clone_lineno=int(lineno), filehandler=filehandler))
-        yield CloneClass(ast_clone_nodes, add_mark, verbose=verbose)
+        yield CloneClass(ast_clone_nodes)
 
 #TODO: maybe use with a -f flag for supplying specific files rather than a dir as arg
 def get_filepaths(args):

@@ -6,14 +6,12 @@ from .parametrize_decorator import ParametrizeDecorator
 class TargetParametrizeDecorator(ParametrizeDecorator):
     """Subclass of ParametrizeDecorator which has functionality specifically for the target of the refactoring."""
 
-    def __init__(self, n_clones: int, funcnames: list, marks: list, add_custom_mark: bool) -> None:
+    def __init__(self, n_clones: int, funcnames: list, marks: list) -> None:
         super().__init__(n_clones)
         self.funcnames = funcnames
         self.clone_marks = marks
         self.pre_parametrized = {}
-        if add_custom_mark:
-            for il in marks:
-                il.append(CAU.get_mark_decorator())
+
         
 
     def add_argname(self, argname:str):

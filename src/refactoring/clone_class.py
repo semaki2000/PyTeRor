@@ -1,6 +1,6 @@
 
 from .name_generator import NameGenerator;
-from .clone_ast_utilities import CloneASTUtilities
+from .clone_ast_utilities import CloneASTUtilities as CAU
 from .clone import Clone
 from .node_difference import NodeDifference
 from .name_node_difference import NameNodeDifference
@@ -18,8 +18,10 @@ class CloneClass():
     
     cnt = 1 #start cnt (for self.id) at 1, as clone class ID starts at 1 in nicad
     split_separate_modules = True
+    custom_mark = False
+    verbose = False
     
-    def __init__(self, clones : list, custom_mark: bool, split_off = None, split_off_ind = None, verbose = False) -> None:
+    def __init__(self, clones : list, split_off = None, split_off_ind = None) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
     
@@ -36,8 +38,6 @@ class CloneClass():
             self.id = str(CloneClass.cnt)
             CloneClass.cnt += 1
         
-        self.verbose = verbose
-        self.custom_mark = custom_mark
         self.split_off = split_off
         self.redundant_clones = []
         self.node_differences = []
@@ -51,8 +51,7 @@ class CloneClass():
         self.param_decorator = TargetParametrizeDecorator(
             n_clones=len(self.clones), 
             funcnames=[clone.funcname for clone in self.clones],
-            marks=[clone.marks for clone in self.clones],
-            add_custom_mark=custom_mark)
+            marks=[clone.marks for clone in self.clones])
         self.attribute_difference = False
         
         if (self.verbose):
@@ -223,7 +222,7 @@ class CloneClass():
                 for clone in self.clones:
                     vals_compare = clone.param_decorator.get_values_on_ind(argname, 0)
                     for i in range(len(vals)):
-                        if not CloneASTUtilities.equal_nodes(vals[i], vals_compare[i]):
+                        if not CAU.equal_nodes(vals[i], vals_compare[i]):
                             #not all values are the same
                             print("difference:")
                             print(vals[i])
@@ -321,7 +320,7 @@ class CloneClass():
             for ind in cl:
                 clones.append(self.clones[ind])
 
-            CloneClass(clones, self.custom_mark, self, classes_split, verbose=self.verbose).refactor_clones()
+            CloneClass(clones, self, classes_split).refactor_clones()
 
     def find_local_variables(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
@@ -497,6 +496,11 @@ class CloneClass():
 
             self.target.add_parameters_to_func_def(self.param_decorator.argnames)
             self.target.add_decorator(decorator)
+
+            if self.custom_mark:
+                self.target.target_marks.append(CAU.get_mark_decorator())
+
+
             self.target.add_marks()
             self.target.rename_target()
             self.add_docstring()

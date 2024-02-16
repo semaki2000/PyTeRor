@@ -1,13 +1,13 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
 <cloneinfo npcs="3" npairs="3"/>
-<runinfo ncompares="3" cputime="31250"/>
+<runinfo ncompares="3" cputime="15625"/>
 <classinfo nclasses="1"/>
 
 <class classid="1" nclones="3" nlines="2" similarity="100">
-<source file="/tmp/tmph587ph1u/tmp_subfolder/test_module_a.py" startline="2" endline="4" pcid="1"></source>
-<source file="/tmp/tmph587ph1u/tmp_subfolder/test_module_a.py" startline="5" endline="6" pcid="2"></source>
-<source file="/tmp/tmph587ph1u/tmp_subfolder/test_module_b.py" startline="2" endline="3" pcid="3"></source>
+<source file="/tmp/tmpukq6t8vg/tmp_subfolder/test_module_a.py" startline="2" endline="4" pcid="1"></source>
+<source file="/tmp/tmpukq6t8vg/tmp_subfolder/test_module_a.py" startline="5" endline="6" pcid="2"></source>
+<source file="/tmp/tmpukq6t8vg/tmp_subfolder/test_module_b.py" startline="2" endline="3" pcid="3"></source>
 </class>
 
 </clones>
