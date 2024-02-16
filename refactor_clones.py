@@ -29,6 +29,8 @@ def main():
     elif args.overwrite:
         print("TODO: implement overwrite")
     
+    if args.cross_file:
+        CloneClass.split_separate_modules = False
     #TODO: add option to use xml file without using nicad
 
     list_of_clone_class_dicts = []
@@ -152,6 +154,12 @@ def parseargs():
     parser.add_argument("-dr", "--dry-run",
                         action='store_true', 
                         help="Run the program without writing to file.")
+    
+    parser.add_argument("-cf", "--cross-file",
+                        action='store_true', 
+                        help="""Enable parametrization across files. 
+                        This means that clones in separate modules will be attempted parametrized. 
+                        No guarantees can be made as to the correctness of the resulting test.""")
 
     args = parser.parse_args()
     return args

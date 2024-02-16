@@ -19,6 +19,8 @@ Runs with python 3.10 <=
 
 
 ## TODO
+Remove refactoring between files by default. Add CLI option to refactor between files
+
 -1. Run this and check the results (parametrize decorator should hopefully be kept as is, and another one added above/below): python3 refactor_clones.py test_files/test_same_param_decorator/
 
 

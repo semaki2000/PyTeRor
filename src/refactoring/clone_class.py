@@ -17,6 +17,7 @@ class CloneClass():
         Clone class therefore here meaning a set of functions which are type2 clones with each other."""
     
     cnt = 1 #start cnt (for self.id) at 1, as clone class ID starts at 1 in nicad
+    split_separate_modules = True
     
     def __init__(self, clones : list, custom_mark: bool, split_off = None, split_off_ind = None, verbose = False) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
@@ -108,11 +109,15 @@ class CloneClass():
     def check_parent_nodes(self):
         """Checks the parent nodes of each clone, and splitting the clone class if:
             1. 1 or more clones are in the global scope, whilst 1 or more clones are inside a class.
-            2. There are clones in different classes."""
+            2. There are clones in different classes.
+            (DEFAULT LAUNCH OPTION, (disablable)):
+            3. There are clones from different modules.            
+            """
+
         split_groups = {} #dict from ast_node, where each value is a list which has indices of clones that belong in the same class
         for ind in range(len(self.clones)):
             clone = self.clones[ind]
-            if clone.parent_is_class():
+            if clone.parent_is_class() or self.split_separate_modules:
                 #if not in dict, sets value to [], else appends ind to value list
                 split_groups.setdefault(clone.parent_node, []).append(ind)
             else:
@@ -394,6 +399,7 @@ class CloneClass():
         print("  into " + self.target.new_funcname + " in file: " + str(self.target.filehandler.filepath))
         for x, y in [(self.name_gen.constants_cnt, "constants"), (self.name_gen.names_cnt, "names"), (self.name_gen.other_cnt, "other nodes")]:
             print(f"    Parametrized {x} {y}.")
+
 
 
     def replace_names_with_values(self):
