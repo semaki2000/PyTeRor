@@ -19,10 +19,7 @@ Runs with python 3.10 <=
 
 
 ## TODO
-Remove refactoring between files by default. Add CLI option to refactor between files
-
--1. Run this and check the results (parametrize decorator should hopefully be kept as is, and another one added above/below): python3 refactor_clones.py test_files/test_same_param_decorator/
-
+-1. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.W
 
 0. Check name of class is correct for clones. Should be 'Test...'.
 

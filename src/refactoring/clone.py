@@ -154,6 +154,16 @@ class Clone():
         pattern = 'test_*'
         return fnmatch.fnmatch(self.funcname, pattern)
 
+    #TODO: if implementing reading pytest.ini for overriding test class name, implement it here too.    
+    def has_bad_parent(self):
+        """If the clone is in a class which is not named after pytest test doscpvery rules, return True.
+        Else, return False"""
+        if self.parent_is_class():
+            pattern = 'Test*'
+            return not fnmatch.fnmatch(self.parent_node.name, pattern)
+
+        return False
+
     def remove_multiline_comment(self):
         """This function checks if the first statement in the function body is a docstring.
         If so, sets clone.docstring as this statement, and removes it from function body.

@@ -74,7 +74,7 @@ class CloneClass():
             #we remove this clone here, rather than before creating clone class, this is because we want CloneClass.id to correspond to id in xml file
             if clone is None:
                 remove_on_index.insert(0, clone)
-            elif (not clone.is_test()) or clone.is_fixture or clone.bad_parametrize_decorator:
+            elif (not clone.is_test()) or clone.is_fixture or clone.bad_parametrize_decorator or clone.has_bad_parent():
                 remove_on_index.insert(0, clone)
             else:
                 clone.remove_multiline_comment()
