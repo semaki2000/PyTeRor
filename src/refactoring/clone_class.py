@@ -68,10 +68,12 @@ class CloneClass():
             2. excluding clones that have parametrize decorators which supply anything other than a string as first argument, 
                 or anything other than a tuple or list as a second argument.
         """
+        #we remove these clones in-function, rather than before creating clone class, 
+        #this is because we want CloneClass.id to correspond to id in xml file (for debug purposes)
         remove_on_index = []
         for clone in self.clones: #TODO: just reversed() this list and remove in for-loop.
+
             #clone can be none, if defined inside another function. 
-            #we remove this clone here, rather than before creating clone class, this is because we want CloneClass.id to correspond to id in xml file
             if clone is None:
                 remove_on_index.insert(0, clone)
             elif (not clone.is_test()) or clone.is_fixture or clone.bad_parametrize_decorator or clone.has_bad_parent():
@@ -215,7 +217,7 @@ class CloneClass():
         if self.clones[0].param_decorator.argnames != [] and all(clone.param_decorator.argnames == self.clones[0].param_decorator.argnames for clone in self.clones):
             
             #check if values are same
-            same_decorator = True
+            same_decorator = True 
             for argname in self.clones[0].param_decorator.argnames:
 
                 vals = self.clones[0].param_decorator.get_values_on_ind(argname, 0)
@@ -232,9 +234,7 @@ class CloneClass():
                             same_decorator = False
                 
             if same_decorator:
-                print("same decorator yep")
-                #all have same decorator
-                #TODO: 
+                #all have exact same decorator, add it to list of decorators. Why not just string comapre this??? okay
                 self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
 
             else:
@@ -472,13 +472,13 @@ class CloneClass():
             return
         
         self.find_common_parametrize_decorators()
+
         self.find_common_marks()
         #print("finding local variables")
         self.find_local_variables()
         #print("extracting differences")
         self.extract_clone_differences()
-        
-        if len(self.node_differences) > 0:
+        if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
 
             #create pytest decorator
             #print("adding diffs to param decorator")
@@ -486,7 +486,6 @@ class CloneClass():
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
             removed_param_names = self.replace_names_with_values()
-
             decorator = self.param_decorator.get_decorator()
 
             

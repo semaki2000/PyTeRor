@@ -1,16 +1,12 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="6" npairs="15"/>
-<runinfo ncompares="15" cputime="15625"/>
+<cloneinfo npcs="2" npairs="1"/>
+<runinfo ncompares="1" cputime="15625"/>
 <classinfo nclasses="1"/>
 
-<class classid="1" nclones="6" nlines="2" similarity="100">
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="9" endline="11" pcid="1"></source>
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="12" endline="16" pcid="2"></source>
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="26" endline="28" pcid="5"></source>
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="18" endline="20" pcid="3"></source>
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="29" endline="30" pcid="6"></source>
-<source file="/tmp/tmp52dsnhyw/tmp_subfolder/test_classname.py" startline="21" endline="25" pcid="4"></source>
+<class classid="1" nclones="2" nlines="2" similarity="100">
+<source file="/tmp/tmpgb0qezop/tmp_subfolder/test_pytestparam.py" startline="9" endline="13" pcid="1"></source>
+<source file="/tmp/tmpgb0qezop/tmp_subfolder/test_pytestparam.py" startline="17" endline="18" pcid="2"></source>
 </class>
 
 </clones>

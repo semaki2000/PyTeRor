@@ -1,3 +1,4 @@
+from .decorator_checker import DecoratorChecker;
 import ast;
 class ParametrizeDecorator:
     """Class which holds data for and creates a parametrize decorator."""
@@ -160,6 +161,7 @@ def parse_decorator(ast_node) -> ParametrizeDecorator:
             ):
                 #special case for tuples, lists which are supplied as arguments to single-param_name decorators
                 #TODO: find out whether there are more special cases here.
+                
                 pd.add_value(0, param_names[0], args) #we can assume there is only one param_name
             
             elif type(args) == ast.Tuple:
@@ -168,5 +170,13 @@ def parse_decorator(ast_node) -> ParametrizeDecorator:
                     ind = args.elts.index(val)
                     pd.add_value(0, param_names[ind], val)
                 #[self.add_value(0, param_names[args.elts.index(val)], val) for val in args.elts]
+            elif DecoratorChecker.is_pytest_param_call(args):
+                #for pytest.param calls, we want the args 
+                pytestparam = args #rename for simplicity
+
+                print(pytestparam.args)
+                for val in pytestparam.args:
+                    ind = pytestparam.args.index(val)
+                    pd.add_value(0, param_names[ind], val)
 
         return pd
