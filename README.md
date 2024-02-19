@@ -19,9 +19,7 @@ Runs with python 3.10 <=
 
 
 ## TODO
--1. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.W
-
-0. Check name of class is correct for clones. Should be 'Test...'.
+0. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 
@@ -66,7 +64,7 @@ python_functions = *_check
 norecursedirs = #dirs with files that should not tested. Should therefore not be copied in copytree
 testpaths = #if no arguments in CL, testpaths that should be recursed through to find tests. These need to be  
 ``` 
-7. Add a #TODO comment over refactored tests? for renaming
+7. Add a #TODO comment over refactored tests? for renaming. probably, dont.
 -------------------------------------------------------------------------------------------
 
 
