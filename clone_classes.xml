@@ -1,12 +1,16 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="2" npairs="1"/>
-<runinfo ncompares="1" cputime="15625"/>
+<cloneinfo npcs="6" npairs="15"/>
+<runinfo ncompares="15" cputime="15625"/>
 <classinfo nclasses="1"/>
 
-<class classid="1" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpgb0qezop/tmp_subfolder/test_pytestparam.py" startline="9" endline="13" pcid="1"></source>
-<source file="/tmp/tmpgb0qezop/tmp_subfolder/test_pytestparam.py" startline="17" endline="18" pcid="2"></source>
+<class classid="1" nclones="6" nlines="6" similarity="100">
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="5" endline="14" pcid="1"></source>
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="15" endline="24" pcid="2"></source>
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="45" endline="54" pcid="5"></source>
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="25" endline="34" pcid="3"></source>
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="55" endline="63" pcid="6"></source>
+<source file="/tmp/tmpkk1i25pb/tmp_subfolder/test_verbose.py" startline="35" endline="44" pcid="4"></source>
 </class>
 
 </clones>

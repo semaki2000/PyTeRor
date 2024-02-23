@@ -6,7 +6,7 @@ class NameNodeDifference(NodeDifference):
 
     def __init__(self, nodes, parent_nodes, target_index):
         super().__init__(nodes, parent_nodes, target_index)
-        self.left_side_assign = type(nodes[0].ctx) == ast.Store
+        self.context = type(nodes[0].ctx)
         self.stringtype = "name"
 
     

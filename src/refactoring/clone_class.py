@@ -43,6 +43,11 @@ class CloneClass():
         self.node_differences = []
         self.name_gen = NameGenerator()
         self.clones = clones
+
+        
+        self.names_with_load_ctx = [] 
+        #a list of NameNodeDifference objects which arent actually necessarily differences
+        #is used to store all load contexts in clones, for finding local definitions later.
         
         if not split_off:
             self.process_clones()
@@ -164,10 +169,14 @@ class CloneClass():
                             self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue
 
-                    elif type(child_nodes[0]) == ast.Name and any(child.id != child_nodes[0].id for child in child_nodes):
+                    elif type(child_nodes[0]) == ast.Name:
                         
-                        self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
-                        continue
+                        if any(child.id != child_nodes[0].id for child in child_nodes):
+                            self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
+                            continue
+                        elif type(child_nodes[0].ctx) == ast.Store:  
+                            #create a "spoof" node difference to store locally defined variables (for potential renaming)
+                            self.names_with_load_ctx.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
 
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
@@ -203,6 +212,7 @@ class CloneClass():
                 
             else:
                 generated_name = self.name_gen.new_name(nd.stringtype)
+
                 nd.new_name = generated_name
                 nodes_to_name_dict[str(nd)] = generated_name
 
@@ -332,22 +342,35 @@ class CloneClass():
         #str representation of list of nodes -> earliest local definition (or None)
         #only matters for NameNodeDifference objects (only they can be on left side of assign)
 
+        for local_def in self.names_with_load_ctx:
+            if not str(local_def) in nodes_to_local_lineno_definition.keys():
+                nodes_to_local_lineno_definition[str(local_def)] = local_def.lineno
+
 
         #find earliest definition of local name
         for nd in self.node_differences:
             #handle local names (don't have to be parametrized)
+
+            #non-local names get inf value
             if not str(nd) in nodes_to_local_lineno_definition.keys():
                 nodes_to_local_lineno_definition[str(nd)] = float('inf')
-            if nd.stringtype == "name" and nd.left_side_assign:
-                if nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
-                    nodes_to_local_lineno_definition[str(nd)] = nd.lineno
 
-        #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
-        for nd in self.node_differences:
+
             if nd.stringtype == "name":
-                if nd.left_side_assign or nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
+                #this if-check (underneath) is redundant unless ast.Del context is used
+                if nd.context == ast.Store:
                     nd.to_extract = False
-                    
+                    if nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
+                        nodes_to_local_lineno_definition[str(nd)] = nd.lineno
+                
+                elif nd.context == ast.Load:
+                    #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
+                    if nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
+                        nd.to_extract = False
+                
+                elif nd.context == ast.Del:
+                    #if we delete name, reset value in dict to inf
+                    nodes_to_local_lineno_definition[str(nd)] = float('inf')
 
 
     def remove_redundant_clones(self):

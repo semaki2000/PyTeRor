@@ -21,3 +21,4 @@ def test_multiplication_advanced():
     actual_result = calculator.multiply(a, b)
     assert actual_result == expected
 
+

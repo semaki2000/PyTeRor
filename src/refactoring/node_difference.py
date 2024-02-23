@@ -6,7 +6,7 @@ class NodeDifference:
         self.nodes = nodes
         self.parent_nodes = parent_nodes
         self.target_index = target_index
-        self.stringtype = ""
+        self.stringtype = "constant" #we default to constant (because we removed ConstantNodeDifference class, instead implementing it as the superclass)
         self.lineno = nodes[0].lineno
         self.to_extract = True
         self.previously_extracted = False

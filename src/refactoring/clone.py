@@ -67,7 +67,7 @@ class Clone():
     #only used by target
     def add_marks(self):
         for mark in self.target_marks:
-            self.ast_node.decorator_list.insert(0, mark)
+            self.ast_node.decorator_list.append(mark)
 
     #only used by target
     def set_common_marks(self, target_marks):
@@ -80,7 +80,7 @@ class Clone():
 
     #only used by target
     def add_decorator(self, decorator):
-        self.ast_node.decorator_list.insert(0, decorator)
+        self.ast_node.decorator_list.append(decorator)
 
     #only used by target
     def add_docstring(self, docstring : str):
