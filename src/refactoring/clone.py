@@ -112,15 +112,12 @@ class Clone():
                     param_names = param_names.value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
-                if not unknown_decorator and type(decorator.args[1]) == ast.Name: 
-                    #print("Error: refactoring program does not currently handle names as args to .parametrize decorator")
+                if not unknown_decorator and type(decorator.args[1]) != ast.List:
+                    #print("Error: refactoring program does not currently handle anything other than List as second arg to parametrize decorator")
                     #sys.exit()
                     
                     #set to unknown decorator, this clone will be ignored
-                    unknown_decorator = True
-                elif type(decorator.args[1]) == ast.Call:
-                    #same as above
-                    unknown_decorator = True
+                    unknown_decorator = True                
 
 
                 if not unknown_decorator:

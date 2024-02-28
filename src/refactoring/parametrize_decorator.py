@@ -153,6 +153,7 @@ def parse_decorator(ast_node) -> ParametrizeDecorator:
         for name in param_names:
             pd.add_argname(name)
 
+        
         for args in ast_node.args[1].elts:
             if (
                 type(args) == ast.Constant 
