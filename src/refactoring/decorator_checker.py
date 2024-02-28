@@ -104,6 +104,6 @@ class DecoratorChecker:
     def is_pytest_param_call(node):
         if type(node) != ast.Call:
             return False
-        if type(node.func) == ast.Attribute and node.func.value.id == "pytest" and node.func.attr == "param":
+        if type(node.func) == ast.Attribute and node.func.value == ast.Name and node.func.value.id == "pytest" and node.func.attr == "param":
             return True
         return False
