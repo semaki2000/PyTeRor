@@ -231,18 +231,22 @@ class CloneClass():
             for argname in self.clones[0].param_decorator.argnames:
 
                 vals = self.clones[0].param_decorator.get_values_on_ind(argname, 0)
+                len_vals = len(vals)
                 for clone in self.clones:
                     vals_compare = clone.param_decorator.get_values_on_ind(argname, 0)
-                    for i in range(len(vals)):
-                        if not CAU.equal_nodes(vals[i], vals_compare[i]):
-                            #not all values are the same
-                            print("difference:")
-                            print(vals[i])
-                            print(
-                                vals_compare[i]
-                            )
-                            same_decorator = False
-                
+                    if len_vals != len(vals_compare):
+                        same_decorator = False
+                    else: 
+                        for i in range(len_vals):
+                            if not CAU.equal_nodes(vals[i], vals_compare[i]):
+                                #not all values are the same
+                                print("difference:")
+                                print(vals[i])
+                                print(
+                                    vals_compare[i]
+                                )
+                                same_decorator = False
+                    
             if same_decorator:
                 #all have exact same decorator, add it to list of decorators. Why not just string comapre this??? okay
                 self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
