@@ -158,11 +158,14 @@ class CloneClass():
                             self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue
                         else:
+                            print("Differing types of nodes")
                             print(child_nodes)
                             for node in child_nodes:
                                 print(ast.unparse(node))
-                                print("Differing types of nodes")
-                                sys.exit()
+                            for clone in self.clones:
+
+                                print(clone.filehandler.filepath)
+                            sys.exit()
                     
                     elif type(child_nodes[0]) == ast.Constant:
                         if any(child.value != child_nodes[0].value for child in child_nodes):
