@@ -20,6 +20,8 @@ class CloneClass():
     split_separate_modules = True
     custom_mark = False
     verbose = False
+    tests_parametrized = 0
+    targets_refactored = 0
     
     def __init__(self, clones : list, split_off = None, split_off_ind = None) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
@@ -541,7 +543,9 @@ class CloneClass():
             self.target.rename_target()
             self.add_docstring()
             
+            self.targets_refactored += 1
             for clone in self.clones:
+                self.tests_parametrized += 1
                 clone.refactored = True
             self.redundant_clones = self.clones[1:]
             self.remove_redundant_clones()

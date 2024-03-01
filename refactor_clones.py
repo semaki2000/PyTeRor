@@ -82,6 +82,10 @@ def main():
             if refactored:
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(renamed_path))
+    if args.verbose:
+        print("Parametrized", CloneClass.tests_parametrized)
+        print("in", CloneClass.targets_refactored, "targets")
+
 
 def clone_class_generator(clones, file_handlers):
     for clone_class in clones:
