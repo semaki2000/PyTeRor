@@ -43,6 +43,7 @@ class CloneClass():
         self.node_differences = []
         self.name_gen = NameGenerator()
         self.clones = clones
+        self.unmatched_asts = False
 
         
         self.names_with_load_ctx = [] 
@@ -158,14 +159,15 @@ class CloneClass():
                             self.node_differences.append(NodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue
                         else:
-                            print("Differing types of nodes")
-                            print(child_nodes)
-                            for node in child_nodes:
-                                print(ast.unparse(node))
-                            for clone in self.clones:
+                            #print("Differing types of nodes")
+                            #print(child_nodes)
+                            #for node in child_nodes:
+                            #    print(ast.unparse(node))
+                            #for clone in self.clones:
 
-                                print(clone.filehandler.filepath)
-                            sys.exit()
+                            #    print(clone.filehandler.filepath)
+                            self.unmatched_asts = False
+                            return
                     
                     elif type(child_nodes[0]) == ast.Constant:
                         if any(child.value != child_nodes[0].value for child in child_nodes):
@@ -463,17 +465,16 @@ class CloneClass():
                 self.param_decorator.add_values_to_index(ind, new_argname, values)
         return removed_param_names                
 
+
     def refactor_clones(self):
         """Function to refactor clones."""
         #type 2 clones -> need to parametrize
         if len(self.clones) < 2:
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
-            for clone in self.clones:
-                #TODO: check what happens with docstrings
-                clone.target = False
-                if clone.param_dec_nodes != []:
-                    clone.ast_node.decorator_list.extend(clone.param_dec_nodes)
+            
+              
+            self.target.target = False
             return
     
         #check parent nodes of clones, split if different:
@@ -492,6 +493,12 @@ class CloneClass():
 
         #print("getting differences")
         self.get_clone_differences()
+        if self.unmatched_asts:
+            #this branch is often triggered by decorators within clones... mismatch between nicad and ast module grammars
+            if (self.verbose):
+                print(f"Aborted refactoring of clone class {self.id}: Structurally different ASTs.")
+            self.target.target = False
+            return
 
         #print("checking whether attribute differences")
 
