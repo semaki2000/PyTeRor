@@ -5,19 +5,19 @@ But not in our list of node differences...
 
 
 def test_a():
-    a = 1
+    a1 = 1
     b = 2
-    a + a
+    a1 + a1
     b + b
 
 def test_b():
-    a = 1
+    a2 = 1
     b = 2
+    a2 + a2
     b + b
-    a + a
     
 def test_c():
-    a = 1
+    a3 = 1
     b = 2
-    a + b
-    b + a
+    a3 + a3
+    b + a3

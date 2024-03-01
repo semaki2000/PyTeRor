@@ -103,6 +103,10 @@ class Clone():
                 #get contents of parametrize marker as actual literals
                 
                 #param_names can be anything, but for us, SHOULD be string.
+                if len(decorator.args) == 0:
+                    print("PARAMETRIZE DECORATOR WITHOUT ARGS??")
+                    print(ast.unparse(decorator))
+
                 param_names = decorator.args[0]
                 
                 if type(param_names) != ast.Constant or type(param_names.value) != str:

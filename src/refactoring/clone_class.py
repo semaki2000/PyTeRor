@@ -46,6 +46,7 @@ class CloneClass():
         self.name_gen = NameGenerator()
         self.clones = clones
         self.unmatched_asts = False
+        self.inconsistent_local_identifiers = False
 
         
         self.names_with_load_ctx = [] 
@@ -178,12 +179,13 @@ class CloneClass():
 
                     elif type(child_nodes[0]) == ast.Name:
                         
+                        if type(child_nodes[0].ctx) == ast.Store:  
+                            #create a "spoof" node difference to store locally defined variables (for potential renaming)
+                            self.names_with_load_ctx.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
+
                         if any(child.id != child_nodes[0].id for child in child_nodes):
                             self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
                             continue
-                        elif type(child_nodes[0].ctx) == ast.Store:  
-                            #create a "spoof" node difference to store locally defined variables (for potential renaming)
-                            self.names_with_load_ctx.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
 
                     
                     #for Attribute (value.attr), only check attr, not value (value should be checked recursively later)
@@ -387,6 +389,62 @@ class CloneClass():
                     nodes_to_local_lineno_definition[str(nd)] = float('inf')
 
 
+    def find_local_variables2(self):
+        """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
+        If so, NodeDifference.to_extract is set to False, meaning that the AST node will not be extracted and replaced with a new name.
+
+        For now, we assume definition of local variables is unconditional.
+        """
+
+
+        nodes_to_local_lineno_definition : dict = {}
+        
+
+        #find earliest definition of local name
+        for local_def in self.names_with_load_ctx:
+
+            if not local_def in nodes_to_local_lineno_definition.keys():
+                nodes_to_local_lineno_definition[local_def] = local_def.lineno
+        
+        for nd in self.node_differences:
+            #only interested in names here
+            if type(nd) != NameNodeDifference:
+                continue
+
+
+            #consistency check.
+            #INCONSISTENT LOCAL IDENTIFIERS are not parametrizable...
+            non_local_identifier = True
+            for local_def in nodes_to_local_lineno_definition.keys():
+                consistency = local_def.check_consistency(nd)
+                match consistency:
+                    case "inconsistent":
+                        self.inconsistent_local_identifiers = True
+                        return
+
+                    case "consistent":
+                        non_local_identifier = False
+                        break
+                    case "different":
+                        continue
+
+            if non_local_identifier:
+                nodes_to_local_lineno_definition[nd] = float('inf')
+
+            if nd.stringtype == "name":
+                if nd.context == ast.Store:
+                    nd.to_extract = False
+                    #this if-check (underneath) exists in case variable is deleted (ast.Del, del keyword)
+                    if nodes_to_local_lineno_definition[nd] > nd.lineno:
+                        nodes_to_local_lineno_definition[nd] = nd.lineno
+                elif nd.context == ast.Load:
+                    #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
+                    if nodes_to_local_lineno_definition[nd] < nd.lineno:
+                        nd.to_extract = False
+                elif nd.context == ast.Del:
+                    #if we delete name, reset value in dict to inf
+                    nodes_to_local_lineno_definition[nd] = float('inf')
+
     def remove_redundant_clones(self):
         """Removes clones which have been parametrized from AST (and therefore subsequent output file).
         """
@@ -517,7 +575,16 @@ class CloneClass():
 
         self.find_common_marks()
         #print("finding local variables")
-        self.find_local_variables()
+
+        #self.find_local_variables()
+        self.find_local_variables2()
+        if self.inconsistent_local_identifiers:
+            #this branch is often triggered by decorators within clones... mismatch between nicad and ast module grammars
+            if (self.verbose):
+                print(f"Aborted refactoring of clone class {self.id}: Inconsistent local names between clones cannot be parametrized.")
+            self.target.target = False
+            return
+
         #print("extracting differences")
         self.extract_clone_differences()
         if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
