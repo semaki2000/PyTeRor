@@ -353,6 +353,9 @@ class CloneClass():
         #str representation of list of nodes -> earliest local definition (or None)
         #only matters for NameNodeDifference objects (only they can be on left side of assign)
 
+
+        #LOCAL variables are REQUIRED to be consistently renamed...
+        #(unlike non-local, which are not)
         for local_def in self.names_with_load_ctx:
             if not str(local_def) in nodes_to_local_lineno_definition.keys():
                 nodes_to_local_lineno_definition[str(local_def)] = local_def.lineno
@@ -475,7 +478,7 @@ class CloneClass():
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             
-            if len(self.clones == 1):
+            if len(self.clones) == 1:
                 self.target.target = False
             return
     
