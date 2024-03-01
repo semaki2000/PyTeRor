@@ -475,8 +475,8 @@ class CloneClass():
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize one or fewer tests.")
             
-              
-            self.target.target = False
+            if len(self.clones == 1):
+                self.target.target = False
             return
     
         #check parent nodes of clones, split if different:
