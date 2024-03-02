@@ -19,6 +19,12 @@ Runs with python 3.10 <=
 
 
 ## TODO
+
+handle this: 
+
+pytest.mark.parametrize(argnames='axis', argvalues=[None, 1, (1,), (0, 1), (-3, -1)])
+(keywords)
+
 0. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
