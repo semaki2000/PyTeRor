@@ -131,9 +131,18 @@ class ParametrizeDecorator:
             print()
         print("----")
         
-
-
 def parse_decorator(ast_node) -> ParametrizeDecorator:
+        """Parses a decorator AST node, storing the names and values. 
+        Used for clones when they are being processed.
+        Not used for the creation of the parametrize decorator for the target.
+        Takes a simple ast_node as arg, sends this through to function.
+        This function is used for the default case where neither argnames or argvals are set as a 
+        keyword in the parametrize decorator."""
+
+        return parse_argnames_and_argvals(ast_node.args[0], ast_node.args[1])
+
+
+def parse_argnames_and_argvals(argnames, argvalues) -> ParametrizeDecorator:
         """Parses a decorator AST node, storing the names and values. 
         Used for clones when they are being processed.
         Not used for the creation of the parametrize decorator for the target."""
@@ -147,14 +156,14 @@ def parse_decorator(ast_node) -> ParametrizeDecorator:
         #and override plus operator for parametrize decorators?
 
 
-        param_names = ast_node.args[0].value.split(",")
+        param_names = argnames.split(",")
         param_names = [name.strip() for name in param_names]
         pd = ParametrizeDecorator(1) #initialize with '1' clone.
         for name in param_names:
             pd.add_argname(name)
 
         
-        for args in ast_node.args[1].elts:
+        for args in argvalues.elts:
             if (
                 type(args) == ast.Constant 
                 or  (type(args) == ast.Tuple and len(param_names) == 1)

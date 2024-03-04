@@ -2,7 +2,7 @@ import ast
 import fnmatch
 from .decorator_checker import DecoratorChecker
 from .parametrize_decorator import ParametrizeDecorator
-from .parametrize_decorator import parse_decorator
+from .parametrize_decorator import parse_argnames_and_argvals
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
 
@@ -102,21 +102,34 @@ class Clone():
             if DecoratorChecker.is_parametrize_decorator(decorator):
                 #get contents of parametrize marker as actual literals
                 
-                #param_names can be anything, but for us, SHOULD be string.
-                if len(decorator.args) == 0:
-                    print("PARAMETRIZE DECORATOR WITHOUT ARGS??")
-                    print(ast.unparse(decorator))
+                argnames_kw = False
+                argvalues_kw = False
+                for kw in decorator.keywords:
+                    if kw.arg == "argnames":
+                        argnames_kw = True
+                        argnames = kw.value
+                    elif kw.arg == "argvalues":
+                        argvalues_kw = True
+                        argvalues = kw.value
 
-                param_names = decorator.args[0]
-                
-                if type(param_names) != ast.Constant or type(param_names.value) != str:
+                if not argnames_kw:
+                    argnames = decorator.args[0]
+        
+
+                #argnames can be anything, but for us, SHOULD be string.
+                if type(argnames) != ast.Constant or type(argnames.value) != str:
                     unknown_decorator = True
                 else:
-                    #correctly formed param_names. If it isn't string, we don't bother.
-                    param_names = param_names.value
+                    #correctly formed argnames. If it isn't string, we don't bother.
+                    argnames = argnames.value
 
                 # argvalues can be as name, or a list of either tuples or single elements.
-                if not unknown_decorator and type(decorator.args[1]) != ast.List:
+                if argnames_kw and not argvalues_kw:
+                    argvalues = decorator.args[0]
+                elif not argnames_kw and not argvalues_kw:
+                    argvalues = decorator.args[1]
+
+                if not unknown_decorator and type(argvalues) != ast.List:
                     #print("Error: refactoring program does not currently handle anything other than List as second arg to parametrize decorator")
                     #sys.exit()
                     
@@ -125,7 +138,7 @@ class Clone():
 
 
                 if not unknown_decorator:
-                    self.param_decorator = parse_decorator(decorator) + self.param_decorator
+                    self.param_decorator = parse_argnames_and_argvals(argnames, argvalues) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
                     to_remove.append(decorator)
 
