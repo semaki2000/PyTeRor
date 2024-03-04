@@ -63,7 +63,7 @@ class CloneClass():
             marks=[clone.marks for clone in self.clones])
         self.attribute_difference = False
         
-        if (self.verbose):
+        if (CloneClass.verbose):
             self.print_pre_info()
         #set target clone
         if len(self.clones) > 0:
@@ -613,9 +613,9 @@ class CloneClass():
             self.target.rename_target()
             self.add_docstring()
             
-            self.targets_refactored += 1
+            CloneClass.targets_refactored += 1
             for clone in self.clones:
-                self.tests_parametrized += 1
+                CloneClass.tests_parametrized += 1
                 clone.refactored = True
             self.redundant_clones = self.clones[1:]
             self.remove_redundant_clones()
