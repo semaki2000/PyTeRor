@@ -2,15 +2,15 @@ import pytest
 
 @pytest.fixture
 def f():
-    pass
+    return 1
 
 @pytest.mark.parametrize("a", [1, 2])
 def test_a(a):
-    return a
+    assert a
 
 @pytest.mark.parametrize("b", [3, 4])
 def test_b(b):
-    return b
+    assert b
 
 def test_f(f):
-    return f
+    assert f

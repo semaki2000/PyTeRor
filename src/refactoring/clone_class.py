@@ -136,36 +136,6 @@ class CloneClass():
 
         return split_groups.values()
 
-    def check_inconsistent_parameters(self):
-        """Checks the parameters of the nodes, making sure that each corresponding parameter in the clones has the same 'context'. At least one of these must be fulfilled:
-            1. exists in the parametrize decorator
-            2. is the same name (== the same fixture)
-        """
-        all_name_contexts = []
-        for clone in self.clones:
-            print(clone.get_param_names())
-            name_contexts = []
-            param_names = clone.get_param_names()
-            for name in param_names:
-                if clone.name_is_parametrized(name):
-                    name_contexts.append("parametrized name")
-                elif clone.name_is_fixture(name):
-                    name_contexts.append(name)
-            all_name_contexts.append(name_contexts)
-        
-        zipped_contexts = zip(all_name_contexts)
-        wrong_clones = []
-
-        for name_set in zipped_contexts:
-            split_groups = {}
-            for ind in range(len(name_set)):
-                name = name_set[ind]
-                if name != "parametrized name":
-                    split_groups.setdefault(name, []).append(ind)
-            
-        #THIS PART IM TALKING ABOUT
-
-        return #return the resultant list
         
 
     def get_clone_differences(self):
@@ -535,14 +505,6 @@ class CloneClass():
             #groups are split and refactored
             self.split_clone_class(split_groups, reason = " because of a difference in scope (class vs global).")
             return
-
-        #check inconsistent parameters 
-        # (at least 1 clone has fixture as parameter, where at least 1 clone has parametrized value in same place)
-        #unparametrizable (fixtures cannot be extracted into param decorator)
-        # (stupid, i know)
-        split_groups = self.check_inconsistent_parameters()
-        #if len(split_groups) > 1:
-
 
 
         #check unknown decorators of clones, split if different:

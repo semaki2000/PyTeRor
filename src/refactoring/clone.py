@@ -191,6 +191,13 @@ class Clone():
             
     def get_param_names(self):
         return self.ast_node.args.args
+    
+    def name_is_parametrized(self, name_str):
+        return name_str in self.param_decorator.argnames
+
+    def name_is_fixture(self, name_str):
+        """If name is not in param decorator, it follows that it must be a fixture (if valid pytest test code)"""
+        return not self.name_is_parametrized(name_str)
 
     def get_ast_node(self):
         return self.ast_node
