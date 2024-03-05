@@ -20,11 +20,10 @@ Runs with python 3.10 <=
 
 ## TODO
 
-handle this: 
+handle extracting fixtures into param decorator (NOT ALLOWED! for some reason)
 
-pytest.mark.parametrize(argnames='axis', argvalues=[None, 1, (1,), (0, 1), (-3, -1)])
-(keywords)
 
+Other: 
 0. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
@@ -74,10 +73,52 @@ testpaths = #if no arguments in CL, testpaths that should be recursed through to
 -------------------------------------------------------------------------------------------
 
 
-POTENTIAL BUGS
+KNOWN BUGS
 
-- When keeping names after they appear on the left side of an assign statement, we don't check whether the assign statement is reached. Preferably, we should only keep names if the assign statement is always executed (not inside an if, loop, etc.)
-- f-strings (literals that are in f-string, but dont have them as direct parent)
 
 -decorators inside inner functions inside our test functions... ignored by nicad, not by ast module
  
+-multiline strings can be wrongly indented after refactoring (only if test is in a class):
+
+```python
+#pre-refactoring
+    def test_to_records_with_inf_as_na_record(self):
+        # GH 48526
+        expected = """   NaN  inf         record
+0  inf    b    [0, inf, b]
+1  NaN  NaN  [1, nan, nan]
+2    e    f      [2, e, f]"""
+        msg = "use_inf_as_na option is deprecated"
+        with tm.assert_produces_warning(FutureWarning, match=msg):
+            with option_context("use_inf_as_na", True):
+                df = DataFrame(
+                    [[np.inf, "b"], [np.nan, np.nan], ["e", "f"]],
+                    columns=[np.nan, np.inf],
+                )
+                df["record"] = df[[np.nan, np.inf]].to_records()
+                result = repr(df)
+        assert result == expected
+
+#post-refactoring
+    @pytest.mark.parametrize(
+        "parametrized_constant_0",
+        [
+            pytest.param(True, id="test_to_records_with_inf_as_na_record"),
+            pytest.param(False, id="test_to_records_with_inf_record"),
+        ],
+    )
+    @pytest.mark.parametrize_refactored
+    def test_to_records_with_inf_as_na_record_parametrized(self, parametrized_constant_0):
+        expected = """   NaN  inf         record
+    0  inf    b    [0, inf, b]
+    1  NaN  NaN  [1, nan, nan]
+    2    e    f      [2, e, f]"""
+        msg = "use_inf_as_na option is deprecated"
+        with tm.assert_produces_warning(FutureWarning, match=msg):
+            with option_context("use_inf_as_na", parametrized_constant_0):
+                df = DataFrame(
+                    [[np.inf, "b"], [np.nan, np.nan], ["e", "f"]], columns=[np.nan, np.inf]
+                )
+                df["record"] = df[[np.nan, np.inf]].to_records()
+                result = repr(df)
+        assert result == expected
