@@ -189,6 +189,8 @@ class Clone():
         if first_line_body[0:3] == '"""' and self.docstring == None:
             self.docstring = self.ast_node.body.pop(0)
             
+    def get_param_names(self):
+        return self.ast_node.args.args
 
     def get_ast_node(self):
         return self.ast_node

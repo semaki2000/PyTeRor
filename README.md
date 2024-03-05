@@ -28,7 +28,6 @@ Other:
 
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 
-2. when -m/--mark flag is used, add custom mark to pytest.ini file. (How to find pytest.ini file?) Only do this if we want to keep -m
 
 3. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
 Doesnt sound right.

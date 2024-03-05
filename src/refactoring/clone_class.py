@@ -136,6 +136,38 @@ class CloneClass():
 
         return split_groups.values()
 
+    def check_inconsistent_parameters(self):
+        """Checks the parameters of the nodes, making sure that each corresponding parameter in the clones has the same 'context'. At least one of these must be fulfilled:
+            1. exists in the parametrize decorator
+            2. is the same name (== the same fixture)
+        """
+        all_name_contexts = []
+        for clone in self.clones:
+            print(clone.get_param_names())
+            name_contexts = []
+            param_names = clone.get_param_names()
+            for name in param_names:
+                if clone.name_is_parametrized(name):
+                    name_contexts.append("parametrized name")
+                elif clone.name_is_fixture(name):
+                    name_contexts.append(name)
+            all_name_contexts.append(name_contexts)
+        
+        zipped_contexts = zip(all_name_contexts)
+        wrong_clones = []
+
+        for name_set in zipped_contexts:
+            split_groups = {}
+            for ind in range(len(name_set)):
+                name = name_set[ind]
+                if name != "parametrized name":
+                    split_groups.setdefault(name, []).append(ind)
+            
+        #THIS PART IM TALKING ABOUT
+
+        return #return the resultant list
+        
+
     def get_clone_differences(self):
         """Travels recursively down through the AST, looking for nodes that are different.
         When a difference is found, a NodeDifference object is created and added to self.nodeDifferences.
@@ -345,51 +377,8 @@ class CloneClass():
 
             CloneClass(clones, self, classes_split).refactor_clones()
 
+
     def find_local_variables(self):
-        """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
-        If so, NodeDifference.to_extract is set to False, meaning that the AST node will not be extracted and replaced with a new name.
-
-        For now, we assume definition of local variables is unconditional.
-        """
-        nodes_to_local_lineno_definition : dict = {}
-        #str representation of list of nodes -> earliest local definition (or None)
-        #only matters for NameNodeDifference objects (only they can be on left side of assign)
-
-
-        #LOCAL variables are REQUIRED to be consistently renamed...
-        #(unlike non-local, which are not)
-        for local_def in self.names_with_load_ctx:
-            if not str(local_def) in nodes_to_local_lineno_definition.keys():
-                nodes_to_local_lineno_definition[str(local_def)] = local_def.lineno
-
-
-        #find earliest definition of local name
-        for nd in self.node_differences:
-            #handle local names (don't have to be parametrized)
-
-            #non-local names get inf value
-            if not str(nd) in nodes_to_local_lineno_definition.keys():
-                nodes_to_local_lineno_definition[str(nd)] = float('inf')
-
-
-            if nd.stringtype == "name":
-                #this if-check (underneath) is redundant unless ast.Del context is used
-                if nd.context == ast.Store:
-                    nd.to_extract = False
-                    if nodes_to_local_lineno_definition[str(nd)] > nd.lineno:
-                        nodes_to_local_lineno_definition[str(nd)] = nd.lineno
-                
-                elif nd.context == ast.Load:
-                    #for nodes where lineno is newer than newest local definition, do not extract name (uses local name instead)
-                    if nodes_to_local_lineno_definition[str(nd)] < nd.lineno:
-                        nd.to_extract = False
-                
-                elif nd.context == ast.Del:
-                    #if we delete name, reset value in dict to inf
-                    nodes_to_local_lineno_definition[str(nd)] = float('inf')
-
-
-    def find_local_variables2(self):
         """For each NodeDifference object, checks whether it is a local definition (method-local), or a usage of a local variable.
         If so, NodeDifference.to_extract is set to False, meaning that the AST node will not be extracted and replaced with a new name.
 
@@ -547,6 +536,15 @@ class CloneClass():
             self.split_clone_class(split_groups, reason = " because of a difference in scope (class vs global).")
             return
 
+        #check inconsistent parameters 
+        # (at least 1 clone has fixture as parameter, where at least 1 clone has parametrized value in same place)
+        #unparametrizable (fixtures cannot be extracted into param decorator)
+        # (stupid, i know)
+        split_groups = self.check_inconsistent_parameters()
+        #if len(split_groups) > 1:
+
+
+
         #check unknown decorators of clones, split if different:
         split_groups = self.check_unknown_decorators()
         if len(split_groups) > 1:
@@ -574,10 +572,9 @@ class CloneClass():
         self.find_common_parametrize_decorators()
 
         self.find_common_marks()
-        #print("finding local variables")
 
-        #self.find_local_variables()
-        self.find_local_variables2()
+        #print("finding local variables")
+        self.find_local_variables()
         if self.inconsistent_local_identifiers:
             #this branch is often triggered by decorators within clones... mismatch between nicad and ast module grammars
             if (self.verbose):
