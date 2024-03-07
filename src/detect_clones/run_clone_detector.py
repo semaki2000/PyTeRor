@@ -15,7 +15,9 @@ from pathlib import Path
 class RunCloneDetector:
     fileglob = {}
 
-    def run(path, tmp_dir_path, config, log_clone_detector_run):
+    consistent_cross_file = False
+    log_clone_detector_run = False
+    def run(path, tmp_dir_path, config):
         orig_path = path
 
         orig_dir_name = str(path.name)
@@ -29,12 +31,20 @@ class RunCloneDetector:
         #run nicad clone detector on tmp filestructure to find clones in test files
         #UNSAFE: os.system("nicad6 functions py " + str(path) + "/ type2_abstracted")
         #TODO: use config in this repo, instead of at nicad install location
-        command = ["nicad6", "functions", "py", str(path) + "/", "type2_abstracted"]
+        if RunCloneDetector.consistent_cross_file:
+            command = ["nicad6", "functions", "py", str(path) + "/", "type2_consistent_abstracted"]
+            cp_from_path = Path(str(path) + "_functions-consistent-abstract-clones/tmp_subfolder_functions-consistent-abstract-clones-0.00-classes.xml")
+
+        else:
+            command = ["nicad6", "functions", "py", str(path) + "/", "type2_abstracted"]
+            cp_from_path = Path(str(path) + "_functions-blind-abstract-clones/tmp_subfolder_functions-blind-abstract-clones-0.00-classes.xml")
+
+
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
         error = "*** ERROR" in result.stdout.decode()
-        if log_clone_detector_run or error:
+        if RunCloneDetector.log_clone_detector_run or error:
             filename = "nicad" + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".log")
             with open(filename, "a+") as f:
                 f.write(result.stdout.decode())
@@ -48,7 +58,6 @@ class RunCloneDetector:
 
         target_xml_path = ""
         clones_xml_file = "clone_classes.xml"
-        cp_from_path = Path(str(path) + "_functions-blind-abstract-clones/tmp_subfolder_functions-blind-abstract-clones-0.00-classes.xml")
         if not cp_from_path.exists():
             raise FileNotFoundError("Path does not exist: " + str(cp_from_path))
         command = ["cp", str(cp_from_path), str(clones_xml_file)]

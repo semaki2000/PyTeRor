@@ -35,6 +35,11 @@ def main():
         CloneClass.custom_mark = True
     if args.verbose:
         CloneClass.verbose = True
+    if args.cross_file:
+        CloneClass.split_separate_modules = False
+        RunCloneDetector.consistent_cross_file = True
+    if args.log_clone_detection:
+        RunCloneDetector.log_clone_detector_run = True
 
     list_of_clone_class_dicts = []
     for path in paths:
@@ -45,7 +50,7 @@ def main():
             #will be deleted automatically after 'with' is done
             with tempfile.TemporaryDirectory() as tmp_path:
                 
-                parser_args = RunCloneDetector.run(path, tmp_path, config, args.log_clone_detection)
+                parser_args = RunCloneDetector.run(path, tmp_path, config)
                 xml_parser = NicadParser(*parser_args)
                 list_of_clone_class_dicts.extend(xml_parser.parse())
         else:
