@@ -1,12 +1,1 @@
-<clones>
-<systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-consistent-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="6" npairs="1"/>
-<runinfo ncompares="4" cputime="15625"/>
-<classinfo nclasses="1"/>
 
-<class classid="1" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpkkodssae/tmp_subfolder/test_a.py" startline="3" endline="6" pcid="1"></source>
-<source file="/tmp/tmpkkodssae/tmp_subfolder/test_b.py" startline="3" endline="5" pcid="3"></source>
-</class>
-
-</clones>
