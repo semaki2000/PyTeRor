@@ -31,6 +31,17 @@ class CloneASTUtilities:
                     if (isinstance(class_node, ast.FunctionDef) and class_node.lineno == clone_lineno):
                         return Clone(class_node, parent_node=node, lineno=class_node.lineno, filehandler=filehandler)
 
+    def count_tests(ast_base) -> int:
+        cnt = 0
+        for node in ast_base.body:
+            if isinstance(node, ast.FunctionDef) and node.name[:5] == "test_": 
+                cnt += 1
+            elif isinstance(node, ast.ClassDef) and node.name[:4] == "Test":
+                for class_node in node.body:
+                    if isinstance(class_node, ast.FunctionDef) and class_node.name[:5] == "test_":
+                        cnt += 1
+        return cnt
+
 
     def replace_node(child, parent, new_child):
         """Replaces one node with another in the AST.

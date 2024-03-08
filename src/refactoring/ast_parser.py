@@ -2,8 +2,10 @@ import ast
 #from black import FileMode, format_str
 from pathlib import Path;
 from .unparser import Unparser
+from .clone_ast_utilities import CloneASTUtilities
 
 class ASTParser():
+    tests = 0
     """Class which includes static methods for parsing and unparsing an AST for a file.
     Also does some sanity checks to make sure the file is correct, 
     in addition to formatting the pytest.mark.parametrize decorator line.
@@ -29,7 +31,10 @@ class ASTParser():
         
         #opening file
         with open(path) as f:
-            parsed_ast = ast.parse(f.read())
+            try:
+                parsed_ast = ast.parse(f.read())
+            except:
+                return False
         return parsed_ast
 
 
@@ -49,6 +54,17 @@ class ASTParser():
         #target_sc = ASTParser.format_parametrize_decorator(target_sc)
         with open(path, "w+") as file:
             file.write(f'{target_sc}')
+
+
+    def count_tests(path: str | Path):
+        path = Path(path).resolve()
+
+        for file in [str(file) for file in path.rglob('*') if file.is_file()]:
+            parsed_ast = ASTParser.parse_file_to_AST(file)
+            
+            if type(parsed_ast) == ast.Module:
+                ASTParser.tests += CloneASTUtilities.count_tests(parsed_ast)
+
 
 
     #TODO

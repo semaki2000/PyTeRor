@@ -1,17 +1,12 @@
 <clones>
-<systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="4" npairs="2"/>
-<runinfo ncompares="2" cputime="15625"/>
-<classinfo nclasses="2"/>
+<systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-consistent-abstract" threshold="0%" minlines="1" maxlines="2500"/>
+<cloneinfo npcs="6" npairs="1"/>
+<runinfo ncompares="4" cputime="15625"/>
+<classinfo nclasses="1"/>
 
 <class classid="1" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmp20mfv407/tmp_subfolder/test_a.py" startline="3" endline="6" pcid="1"></source>
-<source file="/tmp/tmp20mfv407/tmp_subfolder/test_b.py" startline="3" endline="5" pcid="3"></source>
-</class>
-
-<class classid="2" nclones="2" nlines="4" similarity="100">
-<source file="/tmp/tmp20mfv407/tmp_subfolder/test_a.py" startline="7" endline="13" pcid="2"></source>
-<source file="/tmp/tmp20mfv407/tmp_subfolder/test_b.py" startline="6" endline="12" pcid="4"></source>
+<source file="/tmp/tmpkkodssae/tmp_subfolder/test_a.py" startline="3" endline="6" pcid="1"></source>
+<source file="/tmp/tmpkkodssae/tmp_subfolder/test_b.py" startline="3" endline="5" pcid="3"></source>
 </class>
 
 </clones>

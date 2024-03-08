@@ -41,6 +41,7 @@ def main():
     if args.log_clone_detection:
         RunCloneDetector.log_clone_detector_run = True
 
+
     list_of_clone_class_dicts = []
     for path in paths:
         if path.is_dir():
@@ -49,8 +50,12 @@ def main():
             #tmp directory, for copying test files into and running clone detector
             #will be deleted automatically after 'with' is done
             with tempfile.TemporaryDirectory() as tmp_path:
-                
+
                 parser_args = RunCloneDetector.run(path, tmp_path, config)
+
+                if args.experiment:
+                    ASTParser.count_tests(tmp_path)
+
                 xml_parser = NicadParser(*parser_args)
                 list_of_clone_class_dicts.extend(xml_parser.parse())
         else:
@@ -64,11 +69,9 @@ def main():
     for clone_class in clone_classes:
         clone_class.refactor_clones()
         
-    print()
     target_location = Path("refactored_files/check_repo/").resolve()
     if args.dry_run:
         print("Dry run, no files written to.")
-
     for file in file_handlers:
         if (args.overwrite):
             refactored = file.refactor_file(file.filepath, args.dry_run)
@@ -87,9 +90,18 @@ def main():
             if refactored:
                 print("refactored file:", file.filepath)
                 print("\t-> " + str(renamed_path))
+
     if args.verbose:
         print("Parametrized", CloneClass.tests_parametrized)
         print("in", CloneClass.targets_refactored, "targets")
+
+    if args.experiment:
+        print("\nExperiment results:")
+        print("Total tests in suite:", ASTParser.tests)
+        print("Total tests removed due to parametrization:", CloneClass.tests_parametrized - CloneClass.targets_refactored)
+        print("% of tests removed:", (CloneClass.tests_parametrized - CloneClass.targets_refactored) / ASTParser.tests * 100, "%")
+
+
 
 
 def clone_class_generator(clones, file_handlers):
@@ -172,6 +184,13 @@ def parseargs():
                         help="""Enable parametrization across files. 
                         This means that clones in separate modules will be attempted parametrized. 
                         No guarantees can be made as to the correctness of the resulting test.""")
+
+    parser.add_argument("-ex", "--experiment",
+                        action='store_true', 
+                        help="""Enables option for measuring metrics for experiment. 
+                        Will count number of tests before refactoring.
+                        Will also count number of tests removed through parametrization (not including targets).""")
+
 
     args = parser.parse_args()
     return args
