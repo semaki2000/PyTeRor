@@ -26,8 +26,6 @@ def main():
         out_path = Path(args.output_dir)
         assert out_path.exists(), "Output path does not exist"
         assert out_path.is_dir(), "Output path does not point to a directory"
-    elif args.overwrite:
-        print("TODO: implement overwrite")
     
     if args.cross_file:
         CloneClass.split_separate_modules = False
@@ -45,7 +43,8 @@ def main():
     list_of_clone_class_dicts = []
     for path in paths:
         if path.is_dir():
-            config = parse_init_file(path)
+            #config = parse_init_file(path)
+            config = {}
 
             #tmp directory, for copying test files into and running clone detector
             #will be deleted automatically after 'with' is done

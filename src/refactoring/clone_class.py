@@ -47,6 +47,7 @@ class CloneClass():
         self.clones = clones
         self.unmatched_asts = False
         self.inconsistent_local_identifiers = False
+        self.crossmodule_and_inconsistent_global_identifiers = False
 
         
         self.names_with_load_ctx = [] 
@@ -389,6 +390,13 @@ class CloneClass():
 
             if non_local_identifier:
                 nodes_to_local_lineno_definition[nd] = float('inf')
+                if not  CloneClass.split_separate_modules:
+                    #can't have differences unless all are same scope, check this:
+                    self.split_separate_modules = True
+                    if len(self.check_parent_nodes()) > 1:
+                        self.crossmodule_and_inconsistent_global_identifiers = True
+                        return
+
 
             if nd.stringtype == "name":
                 if nd.context == ast.Store:
@@ -538,9 +546,16 @@ class CloneClass():
         #print("finding local variables")
         self.find_local_variables()
         if self.inconsistent_local_identifiers:
-            #this branch is often triggered by decorators within clones... mismatch between nicad and ast module grammars
+            #this branch is triggered when local identifiers are inconsistent between clones. unparametrizable
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Inconsistent local names between clones cannot be parametrized.")
+            self.target.target = False
+            return
+
+        if self.crossmodule_and_inconsistent_global_identifiers:
+            #this branch is triggered when 
+            if (self.verbose):
+                print(f"Aborted refactoring of clone class {self.id}: Inconsistent global names between cross-module clones cannot be parametrized.")
             self.target.target = False
             return
 
