@@ -39,13 +39,17 @@ class CloneClass():
         else:
             self.id = str(CloneClass.cnt)
             CloneClass.cnt += 1
-        
+
+
         self.split_off = split_off
         self.redundant_clones = []
         self.node_differences = []
         self.name_gen = NameGenerator()
         self.clones = clones
+
+        #reasons to not parametrize
         self.unmatched_asts = False
+        self.name_difference_in_import_statement = False
         self.inconsistent_local_identifiers = False
         self.crossmodule_and_inconsistent_global_identifiers = False
 
@@ -198,7 +202,17 @@ class CloneClass():
                         self.attribute_difference = True
                         continue
 
+                    elif type(child_nodes[0]) == ast.Import or type(child_nodes[0]) == ast.ImportFrom:
+                        if any(child.module != child_nodes[0].module for child in child_nodes):
+                            self.name_difference_in_import_statement = True
+                            return
+                        for ind in range(len(child_nodes[0].names)):
+                            if any(not CAU.equal_nodes(child.names[ind], child_nodes[0].names[ind]) for child in child_nodes):
+                                self.name_difference_in_import_statement = True
+                                return
+
                     get_differences_recursive(child_nodes)
+
                 except StopIteration:
                     break
             return
@@ -530,6 +544,15 @@ class CloneClass():
                 print(f"Aborted refactoring of clone class {self.id}: Structurally different ASTs.")
             self.target.target = False
             return
+        
+        elif self.name_difference_in_import_statement:
+            #this branch is triggered when we are trying to parametrize a name in an import statement.
+            #these names are by definition out of scope, and cannot be parametrized
+            if (self.verbose):
+                print(f"Aborted refactoring of clone class {self.id}: Cannot parametrize names in import statements.")
+            self.target.target = False
+            return
+
 
         #print("checking whether attribute differences")
 
