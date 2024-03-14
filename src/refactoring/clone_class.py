@@ -54,9 +54,9 @@ class CloneClass():
         self.crossmodule_and_inconsistent_global_identifiers = False
 
         
-        self.names_with_load_ctx = [] 
+        self.names_with_store_ctx = [] 
         #a list of NameNodeDifference objects which arent actually necessarily differences
-        #is used to store all load contexts in clones, for finding local definitions later.
+        #is used to store all store contexts in clones, for finding local definitions later.
         
         if not split_off:
             self.process_clones()
@@ -188,7 +188,7 @@ class CloneClass():
                         
                         if type(child_nodes[0].ctx) == ast.Store:  
                             #create a "spoof" node difference to store locally defined variables (for potential renaming)
-                            self.names_with_load_ctx.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
+                            self.names_with_store_ctx.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
 
                         if any(child.id != child_nodes[0].id for child in child_nodes):
                             self.node_differences.append(NameNodeDifference(child_nodes, parent_nodes, self.target_ind))
@@ -210,6 +210,12 @@ class CloneClass():
                             if any(not CAU.equal_nodes(child.names[ind], child_nodes[0].names[ind]) for child in child_nodes):
                                 self.name_difference_in_import_statement = True
                                 return
+
+                    elif type(child_nodes[0]) == ast.FunctionDef or type(child_nodes[0]) == ast.AsyncFunctionDef:
+                        for ind in range(len(child_nodes[0].args.args)):
+                            param_names = [ast.Name(child_nodes[0].args.args[ind].arg, lineno=child.lineno, ctx = ast.Store) for child in child_nodes]
+                            self.names_with_store_ctx.append(NameNodeDifference(param_names, child_nodes, self.target_ind))
+
 
                     get_differences_recursive(child_nodes)
 
@@ -375,7 +381,7 @@ class CloneClass():
         
 
         #find earliest definition of local name
-        for local_def in self.names_with_load_ctx:
+        for local_def in self.names_with_store_ctx:
 
             if not local_def in nodes_to_local_lineno_definition.keys():
                 nodes_to_local_lineno_definition[local_def] = local_def.lineno
@@ -404,7 +410,7 @@ class CloneClass():
 
             if non_local_identifier:
                 nodes_to_local_lineno_definition[nd] = float('inf')
-                if not  CloneClass.split_separate_modules:
+                if not CloneClass.split_separate_modules:
                     #can't have differences unless all are same scope, check this:
                     self.split_separate_modules = True
                     if len(self.check_parent_nodes()) > 1:

@@ -1,7 +1,7 @@
     
 
 def test_a():
-    from docs_src.dependency_testing.tutorial001_an_py310 import (
+    from blabla import (
         test_override_in_items_with_q,
     )
     a = 1
@@ -9,7 +9,7 @@ def test_a():
 
 
 def test_b():
-    from docs_src.dependency_testing.tutorial001_an_py310 import (
+    from blabla import (
         test_override_in_items_with_q,
     )
     a = 2
