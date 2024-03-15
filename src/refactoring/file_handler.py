@@ -1,5 +1,7 @@
 from .clone_ast_utilities import CloneASTUtilities as CAU
 from .target_formatter import TargetFormatter
+import ast
+
 
 class FileHandler:
 
@@ -72,8 +74,7 @@ class FileHandler:
         if has_target_clone and not self.pytest_import:
             if verbose:
                 print("adding 'import pytest")
-            self.lines.insert(0, "import pytest\n")
-
+            self.add_import_pytest()
 
         if not dry_run:
             with open(dest_filepath, "w+") as dest_file:
@@ -97,6 +98,19 @@ class FileHandler:
     @property
     def pytest_import(self):
         return CAU.has_import_statement(self.ast_base)
+
+    def add_import_pytest(self):
+        """Function to add 'import pytest' statement into top of file.
+        Exists as own function due to logic requiring this import to appear after any 'from __future__ import ...' imports.
+        This line is then inserted after these imports, should they exist."""
+        last_future_import = None
+        for stmt in self.ast_base.body:
+            if type(stmt) == ast.ImportFrom and stmt.module == "__future__":
+                last_future_import = stmt
+                continue
+            else:
+                self.lines.insert(last_future_import.lineno, "import pytest\n")
+                break
 
     def get_linenumber_info(self, clone):
         """For a given clone, adds the first and last lineno of the clone 

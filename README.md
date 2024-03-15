@@ -20,8 +20,6 @@ Runs with python 3.10 <=
 
 ## TODO
 
-'import pytest' must occur after all 'from \__future\__ import ...' imports... How to do this? 
-Use FileHandler to look for them on a per file basis, then add import pytest after these.
 
 0. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.
 
