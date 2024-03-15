@@ -272,11 +272,6 @@ class CloneClass():
                         for i in range(len_vals):
                             if not CAU.equal_nodes(vals[i], vals_compare[i]):
                                 #not all values are the same
-                                print("difference:")
-                                print(vals[i])
-                                print(
-                                    vals_compare[i]
-                                )
                                 same_decorator = False
                     
             if same_decorator:
@@ -598,6 +593,10 @@ class CloneClass():
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
             removed_param_names = self.replace_names_with_values()
+            print("class: ")
+            for clone in self.clones:
+                print(clone.filehandler.filepath)
+                print(clone.funcname)
             decorator = self.param_decorator.get_decorator()
 
             

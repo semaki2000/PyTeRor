@@ -183,7 +183,6 @@ def parse_argnames_and_argvals(argnames, argvalues) -> ParametrizeDecorator:
                 #for pytest.param calls, we want the args 
                 pytestparam = args #rename for simplicity
 
-                print(pytestparam.args)
                 for val in pytestparam.args:
                     ind = pytestparam.args.index(val)
                     pd.add_value(0, param_names[ind], val)
