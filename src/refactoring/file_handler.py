@@ -101,15 +101,18 @@ class FileHandler:
 
     def add_import_pytest(self):
         """Function to add 'import pytest' statement into top of file.
-        Exists as own function due to logic requiring this import to appear after any 'from __future__ import ...' imports.
-        This line is then inserted after these imports, should they exist."""
-        last_future_import = None
+        Exists as own function due to logic requiring this import to appear certain other statements: 'from __future__ import ...' imports.
+        The future import must be the first line in file, EXCEPT for the docstring of the module, which is a plain string.
+        This line is then inserted after the docstring, and after these future imports, should they exist."""
+        last_prioritized_lineno = 0 
         for stmt in self.ast_base.body:
-            if type(stmt) == ast.ImportFrom and stmt.module == "__future__":
-                last_future_import = stmt
+            #from __future__ import ... OR docstring for module
+            if (type(stmt) == ast.ImportFrom and stmt.module == "__future__") or \
+            type(stmt) == ast.Expr and type(stmt.value) == ast.Constant and type(stmt.value.value) == str:
+                last_prioritized_lineno = stmt.lineno
                 continue
             else:
-                self.lines.insert(last_future_import.lineno, "import pytest\n")
+                self.lines.insert(last_prioritized_lineno, "import pytest\n")
                 break
 
     def get_linenumber_info(self, clone):

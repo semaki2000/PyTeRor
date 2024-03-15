@@ -1,3 +1,4 @@
+"""Docstring! surprise"""
 from __future__ import annotations
 
 def test_a_simple():

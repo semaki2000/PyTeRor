@@ -129,6 +129,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         args.append(ast.Constant(value=", ".join(self.argnames)))
         
         a_params = []
+
         for ind in range(len(self.argvals)):
             clone_dict = self.argvals[ind]
             param_sets = []

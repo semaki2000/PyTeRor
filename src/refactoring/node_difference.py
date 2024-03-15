@@ -24,11 +24,11 @@ class NodeDifference:
         ret = []
         for node in self.nodes:
             if isinstance(node, ast.Name):
-                ret.append(node.id)
+                ret.append("name " + node.id)
             elif isinstance(node, ast.Constant):
-                ret.append(node.value)
+                ret.append("constant " + str(node.value))
             elif isinstance(node, ast.Attribute):
-                ret.append(ast.unparse(node))
+                ret.append("attribute" + ast.unparse(node))
             else:
                 print("Error in NodeDifference. Shouldn't come here.")
         return str(ret)

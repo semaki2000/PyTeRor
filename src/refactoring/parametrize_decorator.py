@@ -110,7 +110,6 @@ class ParametrizeDecorator:
         """Takes an argname and a list of values for that argname, adding the value at each index to the clone dict at each index.
         """
         assert argname in self.argnames, "Error: an unrecognized argument name has been provided to the parametrize decorator: " + argname
-        
         self.argvals[clone_ind][argname].append(val)
             
 
