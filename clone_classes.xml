@@ -1,17 +1,17 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="4" npairs="2"/>
-<runinfo ncompares="6" cputime="15625"/>
+<cloneinfo npcs="6" npairs="2"/>
+<runinfo ncompares="15" cputime="15625"/>
 <classinfo nclasses="2"/>
 
 <class classid="1" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmp_aoqihop/tmp_subfolder/test_imported.py" startline="3" endline="5" pcid="1"></source>
-<source file="/tmp/tmp_aoqihop/tmp_subfolder/test_imported.py" startline="6" endline="8" pcid="2"></source>
+<source file="/tmp/tmpr60f_iyu/tmp_subfolder/test_order.py" startline="8" endline="11" pcid="1"></source>
+<source file="/tmp/tmpr60f_iyu/tmp_subfolder/test_order.py" startline="58" endline="61" pcid="5"></source>
 </class>
 
 <class classid="2" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmp_aoqihop/tmp_subfolder/test_not_imported.py" startline="3" endline="5" pcid="3"></source>
-<source file="/tmp/tmp_aoqihop/tmp_subfolder/test_not_imported.py" startline="6" endline="8" pcid="4"></source>
+<source file="/tmp/tmpr60f_iyu/tmp_subfolder/test_order.py" startline="53" endline="56" pcid="4"></source>
+<source file="/tmp/tmpr60f_iyu/tmp_subfolder/test_order.py" startline="69" endline="70" pcid="6"></source>
 </class>
 
 </clones>

@@ -157,6 +157,8 @@ def parse_argnames_and_argvals(argnames, argvalues) -> ParametrizeDecorator:
 
         param_names = argnames.split(",")
         param_names = [name.strip() for name in param_names]
+        if param_names[-1] == "":
+            param_names.pop()
         pd = ParametrizeDecorator(1) #initialize with '1' clone.
         for name in param_names:
             pd.add_argname(name)

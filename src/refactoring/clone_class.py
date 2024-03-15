@@ -501,13 +501,20 @@ class CloneClass():
                 #get new argname. Old name in param_decorator removes itself in called function
                 new_argname = self.param_decorator.get_newname_for_parameter(parameter_name)
                 if not new_argname:
-                    #NOT SURE why this would be false. Think more about it
-                    #should probably throw an error.
-                    continue
-
-                removed_param_names.append(parameter_name)
-                values = clone.param_decorator.get_values(parameter_name)[0]
-                self.param_decorator.add_values_to_index(ind, new_argname, values)
+                    #this is false when a fixture OR previously parametrized name is not parametrized further.
+                    #if fixture, OK
+                    #if previously parametrized name, we need to add  values to index in new decorator:
+                    if clone.name_is_fixture(parameter_name):
+                        #OK
+                        continue
+                    else:
+                        removed_param_names.append(parameter_name)
+                        values = clone.param_decorator.get_values(parameter_name)[0]
+                        self.param_decorator.add_pre_paramd_values_to_index(ind, parameter_name, values)           
+                else:
+                    removed_param_names.append(parameter_name)
+                    values = clone.param_decorator.get_values(parameter_name)[0]
+                    self.param_decorator.add_pre_paramd_values_to_index(ind, new_argname, values)
         return removed_param_names                
 
 
@@ -585,6 +592,8 @@ class CloneClass():
 
         #print("extracting differences")
         self.extract_clone_differences()
+        for clone in self.clones:
+            clone.param_decorator.print_vals()
         if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
 
             #create pytest decorator
@@ -592,17 +601,17 @@ class CloneClass():
 
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
-            removed_param_names = self.replace_names_with_values()
+            if len(self.node_differences) > 0:
+                removed_param_names = self.replace_names_with_values()
+                for param in removed_param_names:
+                    self.target.remove_parameter_from_func_def(param)
+
             print("class: ")
             for clone in self.clones:
                 print(clone.filehandler.filepath)
                 print(clone.funcname)
             decorator = self.param_decorator.get_decorator()
 
-            
-            for param in removed_param_names:
-                self.target.remove_parameter_from_func_def(param)
-               
 
             self.target.add_parameters_to_func_def(self.param_decorator.argnames)
             self.target.add_decorator(decorator)

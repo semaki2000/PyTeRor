@@ -56,6 +56,13 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         """
         self.argvals[index][argname].extend(values)
         #print(self.argvals[index][argname])
+            
+    def add_pre_paramd_values_to_index(self, index, argname, values):
+        """Special case of add_values_to_index, for pre_paramd names"""
+        self.argvals[index][argname] = values
+        self.pre_parametrized[argname] = True
+        if argname not in self.argnames:
+            self.argnames.append(argname)
 
     def get_newname_for_parameter(self, parameter_name: str):
         """Given a string parameter_name, finds corresponding ast.Name object in argvals, and returns the key it is stored under.
@@ -82,36 +89,40 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                     try:
                         assert len(self.argvals[ind][argname]) == 1 and type(self.argvals[ind][argname][0]) == ast.Name, "Error: resetting non-name values in the target parametrize decorator. Should not happen"
                     except:
-                        print(len(self.argvals[ind][argname]) == 1)
-                        print(type(self.argvals[ind][argname][0]) == ast.Name)
+                        continue
 
-                        print("funcnames:")
-                        print(self.funcnames)
-                        SystemExit()
                     self.argvals[ind][argname] = [] #reset
                     self.pre_parametrized[argname] = True
-                    return argname
-                
+                    return argname                
         return False
     
  
-
-
 
     def pre_paramd(self, ind):
         #TODO: does this assume either none or all clones have this decorator? is that correct?
 
         #if pre_parametrized args exist in this decorator
         vals = []
-        if self.pre_parametrized[self.argnames[0]]:
-            #loop over indexes
-            for i in range(len(self.argvals[ind][self.argnames[0]])):
-                vals_at_i = []
-                for argname in self.argnames:
-                    if self.pre_parametrized[argname]:
-                        val = self.argvals[ind][argname][i]
-                        vals_at_i.append(val)
-                vals.append(vals_at_i)
+        
+        max_len = max([len(self.argvals[ind][self.argnames[i]]) for i in range(len(self.argnames))])
+        #loop over indexes
+        for i in range(max_len):
+            vals_at_i = []
+            for argname in self.argnames:
+                print(argname)
+                if i > len(self.argvals[ind][argname]):
+                    continue
+                
+                if self.pre_parametrized[argname]:
+                    val = self.argvals[ind][argname][i]
+                    vals_at_i.append(val)
+            vals.append(vals_at_i)
+
+
+
+        print("pre_paramd:")
+        print(vals)
+        print([ast.unparse(val) for li in vals for val in li])
         return vals
 
 
@@ -129,22 +140,29 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         args.append(ast.Constant(value=", ".join(self.argnames)))
         
         a_params = []
-
+        self.print_vals()
         for ind in range(len(self.argvals)):
             clone_dict = self.argvals[ind]
             param_sets = []
             #line underneath asserts that all non-preparametrized argnames are of equal length
             #we check against index -1, as the last element will never be pre_parametrized (they appear first)
             try:
+                
                 assert all(self.pre_parametrized[argname] or len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]) for argname in self.argnames)
             except:
-                print("failed assertion check")
-                print("with functions:", self.funcnames)
-                self.print_vals()
+                print("failed assertion check because")
+                for argname in self.argnames:
+                    print("   argname", argname)
+                    print("     ", self.pre_parametrized[argname])
+                    print("     ", len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]))
+
+                #print("with functions:", self.funcnames)
+                #self.print_vals()
             
             params_for_single_call = []
             
             pre_paramd_values = self.pre_paramd(ind)
+            
             #for i2 in range(len(clone_dict[self.argnames[-1]])):
             #after commenting out last line, everything from here... 
             for argname in self.argnames:
@@ -157,7 +175,7 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             #TO HERE was dedented once
             
             if not pre_paramd_values == []:
-                param_sets = [tuple(a + b) for a, b in itertools.product(pre_paramd_values, param_sets)]
+                param_sets = [tuple(a + b) for a, b in itertools.product(param_sets, pre_paramd_values)]
 
 
             a_params.append(tuple([ind, param_sets])) 
