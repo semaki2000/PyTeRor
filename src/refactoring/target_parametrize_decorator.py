@@ -108,21 +108,15 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         #loop over indexes
         for i in range(max_len):
             vals_at_i = []
+
             for argname in self.argnames:
-                print(argname)
-                if i > len(self.argvals[ind][argname]):
-                    continue
-                
+                if i >= len(self.argvals[ind][argname]):
+                    continue      
                 if self.pre_parametrized[argname]:
                     val = self.argvals[ind][argname][i]
                     vals_at_i.append(val)
             vals.append(vals_at_i)
 
-
-
-        print("pre_paramd:")
-        print(vals)
-        print([ast.unparse(val) for li in vals for val in li])
         return vals
 
 
@@ -137,7 +131,14 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             An ast.Call node containing a pytest.mark.parametrize decorator, to be put into ast.FunctionDef.decorator_list
         """
         args = []
-        args.append(ast.Constant(value=", ".join(self.argnames)))
+        argnames_ordered = []
+        for name in self.argnames:
+            if self.pre_parametrized[name]:
+                argnames_ordered.append(name)
+        for name in self.argnames:
+            if not self.pre_parametrized[name]:
+                argnames_ordered.append(name)
+        args.append(ast.Constant(value=", ".join(argnames_ordered)))
         
         a_params = []
         self.print_vals()
@@ -175,7 +176,11 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
             #TO HERE was dedented once
             
             if not pre_paramd_values == []:
-                param_sets = [tuple(a + b) for a, b in itertools.product(param_sets, pre_paramd_values)]
+                param_sets = [tuple(a + b) for a, b in itertools.product(pre_paramd_values, param_sets)]
+                #param_sets = [tuple(a + b) for a, b in itertools.product(param_sets, pre_paramd_values)]
+                #we need both, but only either/or is possible...
+                #how to solve?
+
 
 
             a_params.append(tuple([ind, param_sets])) 
