@@ -1,30 +1,17 @@
 <clones>
 <systeminfo processor="nicad6" system="tmp_subfolder" granularity="functions-blind-abstract" threshold="0%" minlines="1" maxlines="2500"/>
-<cloneinfo npcs="11" npairs="11"/>
-<runinfo ncompares="55" cputime="15625"/>
-<classinfo nclasses="4"/>
+<cloneinfo npcs="62" npairs="2"/>
+<runinfo ncompares="152" cputime="15625"/>
+<classinfo nclasses="2"/>
 
-<class classid="1" nclones="4" nlines="2" similarity="100">
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="8" endline="11" pcid="1"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="58" endline="61" pcid="5"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order_refactored.py" startline="8" endline="11" pcid="7"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order_refactored.py" startline="100" endline="103" pcid="11"></source>
+<class classid="1" nclones="2" nlines="7" similarity="100">
+<source file="/tmp/tmphionfzz1/tmp_subfolder/tests/handlers/archive/test_tar.py" startline="362" endline="372" pcid="13"></source>
+<source file="/tmp/tmphionfzz1/tmp_subfolder/tests/handlers/archive/test_tar.py" startline="380" endline="388" pcid="14"></source>
 </class>
 
 <class classid="2" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="24" endline="27" pcid="2"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order_refactored.py" startline="24" endline="27" pcid="8"></source>
-</class>
-
-<class classid="3" nclones="2" nlines="2" similarity="100">
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="38" endline="41" pcid="3"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order_refactored.py" startline="38" endline="41" pcid="9"></source>
-</class>
-
-<class classid="4" nclones="3" nlines="2" similarity="100">
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="53" endline="56" pcid="4"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order_refactored.py" startline="95" endline="98" pcid="10"></source>
-<source file="/tmp/tmpoj30c160/tmp_subfolder/test_order.py" startline="69" endline="70" pcid="6"></source>
+<source file="/tmp/tmphionfzz1/tmp_subfolder/tests/handlers/filesystem/test_romfs.py" startline="42" endline="43" pcid="21"></source>
+<source file="/tmp/tmphionfzz1/tmp_subfolder/tests/test_iter_utils.py" startline="16" endline="17" pcid="53"></source>
 </class>
 
 </clones>

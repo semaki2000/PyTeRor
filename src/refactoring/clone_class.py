@@ -433,6 +433,21 @@ class CloneClass():
         for clone in self.redundant_clones:
             clone.detach()
 
+    @property
+    def fixture_difference(self):
+        for nd in self.node_differences:
+            if type(nd) != NameNodeDifference:
+                continue
+
+            if any(self.clones[ind].name_is_fixture(nd[ind]) for ind in range(len(self.clones))):
+                
+                split_groups = {} #dict from ast_node, where each value is a list which has indices of clones that belong in the same class
+                for ind in range(len(self.clones)):
+                    split_groups.setdefault(nd[ind].id, []).append(ind)
+                    
+                return split_groups.values()
+        return False
+
 
     def add_differences_to_param_decorator(self):
         """Adds nodes that are marked as different between clones to the clone classes TargetParametrizeDecorator,
@@ -569,6 +584,10 @@ class CloneClass():
             #split class and return
             self.split_on_attributes()
             return
+        fixture_diff = self.fixture_difference
+        if fixture_diff:
+            self.split_clone_class(fixture_diff)
+            return
         
         self.find_common_parametrize_decorators()
 
@@ -592,8 +611,6 @@ class CloneClass():
 
         #print("extracting differences")
         self.extract_clone_differences()
-        for clone in self.clones:
-            clone.param_decorator.print_vals()
         if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
 
             #create pytest decorator
@@ -606,10 +623,6 @@ class CloneClass():
                 for param in removed_param_names:
                     self.target.remove_parameter_from_func_def(param)
 
-            print("class: ")
-            for clone in self.clones:
-                print(clone.filehandler.filepath)
-                print(clone.funcname)
             decorator = self.param_decorator.get_decorator()
 
 

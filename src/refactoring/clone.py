@@ -3,8 +3,11 @@ import fnmatch
 from .decorator_checker import DecoratorChecker
 from .parametrize_decorator import ParametrizeDecorator
 from .parametrize_decorator import parse_argnames_and_argvals
+from .clone_ast_utilities import CloneASTUtilities
+
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
+    split_separate_modules = True
 
     def __init__(self, ast_node, parent_node, lineno, filehandler) -> None:
         self.ast_node = ast_node
@@ -32,7 +35,9 @@ class Clone():
         self.target_marks = []
         self.new_funcname = self.funcname + "_parametrized"
         
+
         self.parse_decorator_list()
+
 
     #only used by target
     def add_parameters_to_func_def(self, param_names: list):
@@ -45,10 +50,19 @@ class Clone():
         Returns:
             None    
         """
+        #check whether any of the parameters already exist:
+        to_pop = []
+        for ind in range(len(param_names)):
+            for arg in self.ast_node.args.args:
+                assert type(arg.arg) == str
+                if param_names[ind] == arg.arg:
+                    to_pop.append(ind)
+
+        for ind in reversed(to_pop):
+            param_names.pop(ind)
 
         # get ind after last non keyword-optional argument 
         # (so that we don't accidentally insert parameter before 'self', or after keywords)
-
         ind = len(self.ast_node.args.args) - len(self.ast_node.args.defaults)
 
         for name in param_names:
@@ -136,8 +150,10 @@ class Clone():
                     #set to unknown decorator, this clone will be ignored
                     unknown_decorator = True                
 
+                if type(argvalues) == ast.List and not Clone.split_separate_modules and any(type(elem) == ast.Call for elem in argvalues.elts):
+                    self.bad_parametrize_decorator = True
 
-                if not unknown_decorator:
+                if not unknown_decorator and not self.bad_parametrize_decorator:
                     self.param_decorator = parse_argnames_and_argvals(argnames, argvalues) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
                     to_remove.append(decorator)

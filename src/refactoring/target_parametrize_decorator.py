@@ -103,7 +103,6 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
 
         #if pre_parametrized args exist in this decorator
         vals = []
-        
         max_len = max([len(self.argvals[ind][self.argnames[i]]) for i in range(len(self.argnames))])
         #loop over indexes
         for i in range(max_len):
@@ -138,10 +137,10 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
         for name in self.argnames:
             if not self.pre_parametrized[name]:
                 argnames_ordered.append(name)
+
         args.append(ast.Constant(value=", ".join(argnames_ordered)))
         
         a_params = []
-        self.print_vals()
         for ind in range(len(self.argvals)):
             clone_dict = self.argvals[ind]
             param_sets = []
@@ -151,11 +150,12 @@ class TargetParametrizeDecorator(ParametrizeDecorator):
                 
                 assert all(self.pre_parametrized[argname] or len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]) for argname in self.argnames)
             except:
-                print("failed assertion check because")
-                for argname in self.argnames:
-                    print("   argname", argname)
-                    print("     ", self.pre_parametrized[argname])
-                    print("     ", len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]))
+                pass
+                #print("failed assertion check because")
+                #for argname in self.argnames:
+                    #print("   argname", argname)
+                    #print("     ", self.pre_parametrized[argname])
+                    #print("     ", len(clone_dict[argname]) == len(clone_dict[self.argnames[-1]]))
 
                 #print("with functions:", self.funcnames)
                 #self.print_vals()

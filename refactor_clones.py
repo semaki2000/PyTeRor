@@ -5,6 +5,8 @@ from pathlib import Path
 from src.refactoring.ast_parser import ASTParser
 from src.refactoring.clone_ast_utilities import CloneASTUtilities as CAU
 from src.refactoring.clone_class import CloneClass
+from src.refactoring.clone import Clone
+
 from src.detect_clones.run_clone_detector import RunCloneDetector
 from src.parse_clone_detection_output.parse_nicad.nicad_parser import NicadParser
 from src.refactoring.file_handler import FileHandler
@@ -29,6 +31,8 @@ def main():
     
     if args.cross_file:
         CloneClass.split_separate_modules = False
+        Clone.split_separate_modules = False
+
     if args.mark:
         CloneClass.custom_mark = True
     if args.verbose:
