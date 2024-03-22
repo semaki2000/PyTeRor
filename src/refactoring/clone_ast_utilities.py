@@ -109,3 +109,5 @@ class CloneASTUtilities:
         else:
             print("comparing stuff that shouldnt be compared??")
             print("Type:", type(node1))
+            print("vals:", ast.unparse(node1))
+            return False #?

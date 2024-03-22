@@ -8,6 +8,7 @@ from .clone_ast_utilities import CloneASTUtilities
 class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
     split_separate_modules = True
+    cnt = 0
 
     def __init__(self, ast_node, parent_node, lineno, filehandler) -> None:
         self.ast_node = ast_node
@@ -35,6 +36,7 @@ class Clone():
         self.target_marks = []
         self.new_funcname = self.funcname + "_parametrized"
         
+        Clone.cnt += 1
 
         self.parse_decorator_list()
 
@@ -101,6 +103,10 @@ class Clone():
         docstring_node = ast.Expr(value=ast.Constant(value=docstring))
         self.ast_node.body.insert(0, docstring_node)
 
+    def deregister(self):
+        """Used when the clone is falsely registered as a clone we are interested in, 
+        due to being a non test function, ie. a fixture, inner function, etc."""
+        Clone.cnt -= 1
 
     def parse_decorator_list(self):
         """'Parses' decorator list of this function to see if function is a fixture or is parameterized.
@@ -205,15 +211,16 @@ class Clone():
         if first_line_body[0:3] == '"""' and self.docstring == None:
             self.docstring = self.ast_node.body.pop(0)
             
-    def get_param_names(self):
-        return self.ast_node.args.args
+    def get_param_names_as_strlist(self):
+        return [arg.arg for arg in self.ast_node.args.args]
     
     def name_is_parametrized(self, name_str):
         return name_str in self.param_decorator.argnames
 
     def name_is_fixture(self, name_str):
-        """If name is not in param decorator, it follows that it must be a fixture (if valid pytest test code)"""
-        return not self.name_is_parametrized(name_str)
+        """If name is not in param decorator but IS in param names, 
+        it must be a fixture (given valid pytest test code)"""
+        return not self.name_is_parametrized(name_str) and name_str in self.get_param_names_as_strlist()
 
     def get_ast_node(self):
         return self.ast_node

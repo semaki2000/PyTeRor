@@ -101,6 +101,7 @@ def main():
     if args.experiment:
         print("\nExperiment results:")
         print("Total tests in suite:", ASTParser.tests)
+        print("Total test clones in suite:", Clone.cnt)
         print("Total tests removed due to parametrization:", CloneClass.tests_parametrized - CloneClass.targets_refactored)
         print("% of tests removed:", (CloneClass.tests_parametrized - CloneClass.targets_refactored) / ASTParser.tests * 100, "%")
 

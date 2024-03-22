@@ -98,6 +98,7 @@ class CloneClass():
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
+            if remove_clone is not None: remove_clone.deregister()
 
 
 
@@ -439,12 +440,13 @@ class CloneClass():
             if type(nd) != NameNodeDifference:
                 continue
 
-            if any(self.clones[ind].name_is_fixture(nd[ind]) for ind in range(len(self.clones))):
-                
+            
+            if any(self.clones[ind].name_is_fixture(nd[ind].id) for ind in range(len(self.clones))):
+
                 split_groups = {} #dict from ast_node, where each value is a list which has indices of clones that belong in the same class
                 for ind in range(len(self.clones)):
                     split_groups.setdefault(nd[ind].id, []).append(ind)
-                    
+                                        
                 return split_groups.values()
         return False
 
@@ -519,6 +521,7 @@ class CloneClass():
                     #this is false when a fixture OR previously parametrized name is not parametrized further.
                     #if fixture, OK
                     #if previously parametrized name, we need to add  values to index in new decorator:
+                    
                     if clone.name_is_fixture(parameter_name):
                         #OK
                         continue
@@ -584,6 +587,7 @@ class CloneClass():
             #split class and return
             self.split_on_attributes()
             return
+        
         fixture_diff = self.fixture_difference
         if fixture_diff:
             self.split_clone_class(fixture_diff)
