@@ -277,7 +277,10 @@ class CloneClass():
                     
             if same_decorator:
                 #all have exact same decorator, add it to list of decorators. Why not just string comapre this??? okay
-                self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
+                
+                #UPDATE: dont do this, the values will be added part of the target parametrize decorator anyway
+                #self.target.ast_node.decorator_list.extend(self.target.param_dec_nodes)
+                pass
 
             else:
                 #add argnames to parametrized names. Will be replaced with values later
