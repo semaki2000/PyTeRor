@@ -9,6 +9,7 @@ class Clone():
     """Keeps track of a single clone, including its node in the AST, and the file it came from."""
     split_separate_modules = True
     cnt = 0
+    rename_new_func = False
 
     def __init__(self, ast_node, parent_node, lineno, filehandler) -> None:
         self.ast_node = ast_node
@@ -34,8 +35,11 @@ class Clone():
 
         #only used by target
         self.target_marks = []
-        self.new_funcname = self.funcname + "_parametrized"
-        
+        if (Clone.rename_new_func):
+            self.new_funcname = self.funcname + "_parametrized"
+        else:
+            self.new_funcname = self.funcname
+
         Clone.cnt += 1
 
         self.parse_decorator_list()
@@ -149,19 +153,28 @@ class Clone():
                 elif not argnames_kw and not argvalues_kw:
                     argvalues = decorator.args[1]
 
-                if not unknown_decorator and type(argvalues) != ast.List:
+                if not unknown_decorator and type(argvalues) != ast.List and type(argvalues) != ast.Tuple:
+                   
+                    
                     #print("Error: refactoring program does not currently handle anything other than List as second arg to parametrize decorator")
                     #sys.exit()
                     
                     #set to unknown decorator, this clone will be ignored
                     unknown_decorator = True                
 
-                if type(argvalues) == ast.List and not Clone.split_separate_modules and any(type(elem) == ast.Call for elem in argvalues.elts):
-                    self.bad_parametrize_decorator = True
+                if (type(argvalues) == ast.List or type(argvalues) == ast.Tuple) and not Clone.split_separate_modules:
+                    if any(type(elem) == ast.Name or 
+                        (type(elem) == ast.Call and 
+                        not DecoratorChecker.is_pytest_param_call(elem)) for elem in argvalues.elts):
+                          self.bad_parametrize_decorator = True
+                    elif any(type(elem) == ast.Tuple and (self.is_local_variable(ast.unparse(inner_elem)) for inner_elem in elem.elts) for elem in argvalues.elts): 
+                          self.bad_parametrize_decorator = True
+                
 
                 if not unknown_decorator and not self.bad_parametrize_decorator:
                     self.param_decorator = parse_argnames_and_argvals(argnames, argvalues) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
+                    self.param_decorator.print_vals()
                     to_remove.append(decorator)
 
             elif DecoratorChecker.is_fixture_decorator(decorator):
@@ -185,6 +198,15 @@ class Clone():
         for decorator in to_remove:
             self.ast_node.decorator_list.remove(decorator)
                 
+
+    def is_local_variable(self, str_var):
+        try: 
+            symbol = self.filehandler.symtable.lookup(str_var)
+            return symbol.is_local()
+
+        except KeyError:
+            return False
+
     #TODO: if implementing reading pytest.ini for overriding test name, implement it here too.
     def is_test(self):
         pattern = 'test_*'
@@ -199,6 +221,8 @@ class Clone():
             return not fnmatch.fnmatch(self.parent_node.name, pattern)
 
         return False
+    
+
 
     def remove_multiline_comment(self):
         """This function checks if the first statement in the function body is a docstring.
@@ -222,13 +246,15 @@ class Clone():
         it must be a fixture (given valid pytest test code)"""
         return not self.name_is_parametrized(name_str) and name_str in self.get_param_names_as_strlist()
 
+
     def get_ast_node(self):
         return self.ast_node
     
     def detach(self):
         """Detach this clone's node from the AST."""
         self.detached = True
-        self.parent_node.body.remove(self.ast_node)
+
+        #self.parent_node.body.remove(self.ast_node)
 
     def parent_is_class(self):
         return isinstance(self.parent_node, ast.ClassDef)

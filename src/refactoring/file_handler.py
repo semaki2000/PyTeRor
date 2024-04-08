@@ -1,6 +1,7 @@
 from .clone_ast_utilities import CloneASTUtilities as CAU
 from .target_formatter import TargetFormatter
 import ast
+import symtable
 
 
 class FileHandler:
@@ -13,7 +14,8 @@ class FileHandler:
         self.lineno_to_target_clone =  {} #dict from lineno to target Clone object
         with open(self.filepath, "r") as file:
             self.lines = file.readlines()
-
+            reduced = ''.join(self.lines)
+            self.symtable = symtable.symtable(reduced, self.filepath, 'exec')
 
 
     def add_clone(self, clone):

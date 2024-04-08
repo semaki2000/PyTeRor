@@ -23,6 +23,7 @@ class CloneClass():
     tests_parametrized = 0
     targets_refactored = 0
     
+    
     def __init__(self, clones : list, split_off = None, split_off_ind = None) -> None:
         """This class keeps track of and refactors a single class of type2 clones, here at the fixed granularity of functions. 
         Clone class therefore here meaning a set of functions which are type2 clones with each other.
@@ -99,6 +100,7 @@ class CloneClass():
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
             if remove_clone is not None: remove_clone.deregister()
+            #TODO: except bad_parametrize_decorator from deregister. is still a clone
 
 
 
@@ -106,7 +108,10 @@ class CloneClass():
         """Print info before refactoring. On object creation."""
         print()
         print(f"Created clone class {self.id} with contents:")
-        [print(f"   Function {x.funcname if not x.parent_is_class() else x.parent_node.name + '.' + x.funcname}") for x in self.clones]
+        if CloneClass.split_separate_modules:
+            [print(f"   Function {x.funcname if not x.parent_is_class() else x.parent_node.name + '.' + x.funcname}") for x in self.clones] 
+        else:
+            [print(f"   Function {str(x.filehandler.filepath) + ':' + (x.funcname if not x.parent_is_class() else x.parent_node.name + '.' + x.funcname)}") for x in self.clones]
 
 
     def check_unknown_decorators(self):
@@ -118,7 +123,11 @@ class CloneClass():
             #clone.unknown_decorators_list.sort() #genius, but wrong.
 
             split_groups.setdefault(str(clone.unknown_decorators_list), []).append(ind)
-
+        if (len(split_groups.values()) > 1):
+            for ind in range(len(self.clones)):
+                clone = self.clones[ind]
+                
+                
         return split_groups.values()
 
 
@@ -438,11 +447,28 @@ class CloneClass():
             clone.detach()
 
     @property
+    def parametrizable(self):
+        if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
+            return True
+        if self.id == "11":
+            print(self.clones[0].param_decorator.is_empty())
+
+    @property
     def fixture_difference(self):
+        if not CloneClass.split_separate_modules:
+            split_groups = {}
+            for ind in range(len(self.clones)):
+                clone = self.clones[ind]
+                for param_name in clone.get_param_names_as_strlist():
+                    if clone.name_is_fixture(param_name):
+                        split_groups.setdefault(clone.parent_node, []).append(ind)
+            if len(split_groups.values()) > 1:
+                
+                return split_groups.values()                
+        ###if not using -cf flag, below is the only relevant part
         for nd in self.node_differences:
             if type(nd) != NameNodeDifference:
                 continue
-
             
             if any(self.clones[ind].name_is_fixture(nd[ind].id) for ind in range(len(self.clones))):
 
@@ -618,17 +644,17 @@ class CloneClass():
 
         #print("extracting differences")
         self.extract_clone_differences()
-        if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
+        if self.parametrizable:
 
             #create pytest decorator
             #print("adding diffs to param decorator")
 
             self.add_differences_to_param_decorator()
             #print("replacing names with values")
-            if len(self.node_differences) > 0:
-                removed_param_names = self.replace_names_with_values()
-                for param in removed_param_names:
-                    self.target.remove_parameter_from_func_def(param)
+                
+            removed_param_names = self.replace_names_with_values()
+            for param in removed_param_names:
+                self.target.remove_parameter_from_func_def(param)
 
             decorator = self.param_decorator.get_decorator()
 

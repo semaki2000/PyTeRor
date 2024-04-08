@@ -107,6 +107,7 @@ class CloneASTUtilities:
         elif type(node1) == ast.alias:
             return node1.name == node2.name and node1.asname == node2.asname
         else:
+            return False
             print("comparing stuff that shouldnt be compared??")
             print("Type:", type(node1))
             print("vals:", ast.unparse(node1))

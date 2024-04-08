@@ -30,9 +30,10 @@ def main():
         assert out_path.is_dir(), "Output path does not point to a directory"
     
     if args.cross_file:
-        CloneClass.split_separate_modules = False
         Clone.split_separate_modules = False
-
+        CloneClass.split_separate_modules = False
+    if args.rename:
+        Clone.rename_new_func = True
     if args.mark:
         CloneClass.custom_mark = True
     if args.verbose:
@@ -101,6 +102,7 @@ def main():
     if args.experiment:
         print("\nExperiment results:")
         print("Total tests in suite:", ASTParser.tests)
+        print("Total clone classes in suite:", CloneClass.cnt - 1) #-1 because value is an ID ready to be assigned to 'next' clone class
         print("Total test clones in suite:", Clone.cnt)
         print("Total tests removed due to parametrization:", CloneClass.tests_parametrized - CloneClass.targets_refactored)
         print("% of tests removed:", (CloneClass.tests_parametrized - CloneClass.targets_refactored) / ASTParser.tests * 100, "%")
@@ -194,6 +196,10 @@ def parseargs():
                         help="""Enables option for measuring metrics for experiment. 
                         Will count number of tests before refactoring.
                         Will also count number of tests removed through parametrization (not including targets).""")
+    
+    parser.add_argument("-r", "--rename",
+                        action='store_true', 
+                        help="""With this option, when parametrizing tests, the target's function name will have '_parametrized' appended to it.""")
 
 
     args = parser.parse_args()

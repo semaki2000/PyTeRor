@@ -167,7 +167,8 @@ def parse_argnames_and_argvals(argnames, argvalues) -> ParametrizeDecorator:
         for args in argvalues.elts:
             if (
                 type(args) == ast.Constant 
-                or  (type(args) == ast.Tuple and len(param_names) == 1)
+                or type(args) == ast.Dict
+                or (type(args) == ast.Tuple and len(param_names) == 1)
                 or (type(args) == ast.List and len(param_names) == 1)
             ):
                 #special case for tuples, lists which are supplied as arguments to single-param_name decorators
