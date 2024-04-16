@@ -174,7 +174,6 @@ class Clone():
                 if not unknown_decorator and not self.bad_parametrize_decorator:
                     self.param_decorator = parse_argnames_and_argvals(argnames, argvalues) + self.param_decorator
                     self.param_dec_nodes.append(decorator)
-                    self.param_decorator.print_vals()
                     to_remove.append(decorator)
 
             elif DecoratorChecker.is_fixture_decorator(decorator):

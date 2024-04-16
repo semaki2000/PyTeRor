@@ -105,7 +105,11 @@ def main():
         print("Total clone classes in suite:", CloneClass.cnt - 1) #-1 because value is an ID ready to be assigned to 'next' clone class
         print("Total test clones in suite:", Clone.cnt)
         print("Total tests removed due to parametrization:", CloneClass.tests_parametrized - CloneClass.targets_refactored)
+        print("Total clone classes parametrized:", CloneClass.targets_refactored)
+        
+
         print("% of tests removed:", (CloneClass.tests_parametrized - CloneClass.targets_refactored) / ASTParser.tests * 100, "%")
+        print("% of clones removed:", CloneClass.tests_parametrized / Clone.cnt * 100, "%")
 
 
 

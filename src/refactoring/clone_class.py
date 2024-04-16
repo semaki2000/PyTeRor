@@ -52,7 +52,7 @@ class CloneClass():
         self.unmatched_asts = False
         self.name_difference_in_import_statement = False
         self.inconsistent_local_identifiers = False
-        self.crossmodule_and_inconsistent_global_identifiers = False
+        self.crossmodule_and_different_global_identifiers = False
 
         
         self.names_with_store_ctx = [] 
@@ -99,7 +99,7 @@ class CloneClass():
 
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
-            if remove_clone is not None: remove_clone.deregister()
+            if remove_clone is not None and not remove_clone.bad_parametrize_decorator: remove_clone.deregister()
             #TODO: except bad_parametrize_decorator from deregister. is still a clone
 
 
@@ -186,7 +186,7 @@ class CloneClass():
                             #for clone in self.clones:
 
                             #    print(clone.filehandler.filepath)
-                            self.unmatched_asts = False
+                            self.unmatched_asts = False #TODO: change to True and make sure nothing breaks
                             return
                     
                     elif type(child_nodes[0]) == ast.Constant:
@@ -422,7 +422,7 @@ class CloneClass():
                     #can't have differences unless all are same scope, check this:
                     self.split_separate_modules = True
                     if len(self.check_parent_nodes()) > 1:
-                        self.crossmodule_and_inconsistent_global_identifiers = True
+                        self.crossmodule_and_different_global_identifiers = True
                         return
 
 
@@ -635,7 +635,7 @@ class CloneClass():
             self.target.target = False
             return
 
-        if self.crossmodule_and_inconsistent_global_identifiers:
+        if self.crossmodule_and_different_global_identifiers:
             #this branch is triggered when 
             if (self.verbose):
                 print(f"Aborted refactoring of clone class {self.id}: Inconsistent global names between cross-module clones cannot be parametrized.")

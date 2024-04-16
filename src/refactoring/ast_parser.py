@@ -65,9 +65,8 @@ class ASTParser():
             if type(parsed_ast) == ast.Module:
                 ASTParser.tests += CloneASTUtilities.count_tests(parsed_ast)
 
-
-
-    #TODO
+    
+    #--- no longer used ---
     #change from source code analysis to going through AST
     #needs to be done here:
     #   strings which have explicit \n in them need to be changed to multiline strings

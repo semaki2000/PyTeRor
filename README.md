@@ -21,13 +21,8 @@ Runs with python 3.10 <=
 ## TODO
 
 
-0. When extracting differences that are names, check if names are parameters. If so, replace them in suite and definition with generated identifier.
-
 1. Currently we refactor into the 'first occurence' (whatever nicad gives us first.). Can cause problem with undefined variables. Better idea to refactor into last occuring clone?
 
-
-3. "#different argnames should be handled elsewhere, as it should lead to the creation of a NodeDifference object". Investigate...
-Doesnt sound right.
 
 4. Handle this case:
 ```python
@@ -53,26 +48,11 @@ Do this by:
         ii. Else, if regular mark, add to clone.marks for every clone.
         iii. If fixture (is this possible?), set is_fixture to True for every clone in file.
 
-6. Find the pytest.ini file (if it exists) (eventually hidden .pytest.ini) (eventually eventually a pyproject.toml with [tool.pytest.ini_options]).
-Example of pytest.ini:
-```ini
-# content of pytest.ini
-# Example 1: have pytest look for "check" instead of "test"
-[pytest]
-python_files = check_*.py
-python_classes = Check
-python_functions = *_check
-norecursedirs = #dirs with files that should not tested. Should therefore not be copied in copytree
-testpaths = #if no arguments in CL, testpaths that should be recursed through to find tests. These need to be  
-``` 
-7. Add a #TODO comment over refactored tests? for renaming. probably, dont.
 -------------------------------------------------------------------------------------------
 
 
 KNOWN BUGS
 
-
--decorators inside inner functions inside our test functions... ignored by nicad, not by ast module
  
 -multiline strings can be wrongly indented after refactoring (only if test is in a class):
 
