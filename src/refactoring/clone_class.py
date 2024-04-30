@@ -6,6 +6,7 @@ from .node_difference import NodeDifference
 from .name_node_difference import NameNodeDifference
 from .attribute_node_difference import AttributeNodeDifference
 from .target_parametrize_decorator import TargetParametrizeDecorator
+from .kw_call_node_set import KwCallNodeSet
 
 
 import ast
@@ -53,7 +54,7 @@ class CloneClass():
         self.name_difference_in_import_statement = False
         self.inconsistent_local_identifiers = False
         self.crossmodule_and_different_global_identifiers = False
-
+        self.split = False #whether this clone class has been split
         
         self.names_with_store_ctx = [] 
         #a list of NameNodeDifference objects which arent actually necessarily differences
@@ -100,7 +101,6 @@ class CloneClass():
         for remove_clone in remove_on_index:
             self.clones.remove(remove_clone)
             if remove_clone is not None and not remove_clone.bad_parametrize_decorator: remove_clone.deregister()
-            #TODO: except bad_parametrize_decorator from deregister. is still a clone
 
 
 
@@ -226,6 +226,17 @@ class CloneClass():
                             param_names = [ast.Name(child_nodes[0].args.args[ind].arg, lineno=child.lineno, ctx = ast.Store) for child in child_nodes]
                             self.names_with_store_ctx.append(NameNodeDifference(param_names, child_nodes, self.target_ind))
 
+                    elif type(child_nodes[0]) == ast.Call:
+                        if child_nodes[0].keywords != []:
+                            kw_calls = KwCallNodeSet(child_nodes, self.target_ind)
+                            if kw_calls.same_keywords():
+                                #same keywords, sort so they are in same order...
+                                kw_calls.sort_keywords()
+                                #after this, walking the AST, 
+                                #the order of keyword parameters should be the same for function calls
+                            else:
+                                #not same keywords, split clone class
+                                self.split_clone_class(kw_calls.split_groups.values(), " because of a difference in keyword parameters")
 
                     get_differences_recursive(child_nodes)
 
@@ -366,6 +377,7 @@ class CloneClass():
 
         #make sure target no longer is target
         self.target.target = False
+        self.split = True
 
         classes_split = 0
         for cl in classes:
@@ -610,17 +622,18 @@ class CloneClass():
 
 
         #print("checking whether attribute differences")
-
         if self.attribute_difference:
             #difference in attributes,
             #split class and return
             self.split_on_attributes()
-            return
+            
         
         fixture_diff = self.fixture_difference
         if fixture_diff:
             self.split_clone_class(fixture_diff)
-            return
+            
+        if self.split:
+            return 
         
         self.find_common_parametrize_decorators()
 

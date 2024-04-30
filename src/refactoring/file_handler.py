@@ -111,7 +111,7 @@ class FileHandler:
             #from __future__ import ... OR docstring for module
             if (type(stmt) == ast.ImportFrom and stmt.module == "__future__") or \
             type(stmt) == ast.Expr and type(stmt.value) == ast.Constant and type(stmt.value.value) == str:
-                last_prioritized_lineno = stmt.lineno
+                last_prioritized_lineno = stmt.end_lineno
                 continue
             else:
                 self.lines.insert(last_prioritized_lineno, "import pytest\n")
