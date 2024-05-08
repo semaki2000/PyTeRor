@@ -12,8 +12,8 @@ class CloneASTUtilities:
 
         Parameters:
             - ast_base - base of an AST from 'ast' module
-            - clone_lineno - list of lists of clone pairs in AST, identified by function names
-            TODO: add rest
+            - clone_lineno - line number of the specific clone we are looking for
+            - filehandler - object handling the file this AST originates from. Sent through to clone when it are initialised.
 
         Returns:
             A single Clone object, representing the clone found at given line number.

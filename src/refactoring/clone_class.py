@@ -395,11 +395,8 @@ class CloneClass():
 
         For now, we assume definition of local variables is unconditional.
         """
-
-
         nodes_to_local_lineno_definition : dict = {}
         
-
         #find earliest definition of local name
         for local_def in self.names_with_store_ctx:
 
@@ -462,8 +459,6 @@ class CloneClass():
     def parametrizable(self):
         if len(self.node_differences) > 0 or len(self.param_decorator) > 0:
             return True
-        if self.id == "11":
-            print(self.clones[0].param_decorator.is_empty())
 
     @property
     def fixture_difference(self):

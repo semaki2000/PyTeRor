@@ -5,11 +5,11 @@ from .unparser import Unparser
 from .clone_ast_utilities import CloneASTUtilities
 
 class ASTParser():
-    tests = 0
     """Class which includes static methods for parsing and unparsing an AST for a file.
     Also does some sanity checks to make sure the file is correct, 
     in addition to formatting the pytest.mark.parametrize decorator line.
     """
+    tests = 0
     def parse_file_to_AST(path : str | Path ) -> ast.AST:
         """Takes a filename, checks validity (.py file, and exists) and 
         returns a complete abstract syntax tree (AST) for the file, from the 'ast' module
